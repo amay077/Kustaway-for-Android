@@ -638,6 +638,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 BaseFragment f = mMainPagerAdapter.findFragmentByPosition(position);
+                f.firstLoad();
                 if (f.isTop()) {
                     showTopView();
                 }

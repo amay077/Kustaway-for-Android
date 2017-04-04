@@ -94,7 +94,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
             // Status(ツイート)をViewに描写するアダプター
             mAdapter = new TwitterAdapter(getActivity(), R.layout.row_tweet);
             mListView.setVisibility(View.GONE);
-            taskExecute();
+//            taskExecute();
         }
 
         mListView.setAdapter(mAdapter);
@@ -115,6 +115,23 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     @Override
     public void onRefreshStarted(View view) {
         reload();
+    }
+
+    public void firstLoad() {
+        // 初回読み込み済だったら何もしない
+        if (mAutoLoader) {
+            return;
+        }
+
+        // 起動直後に MainActivity から呼ばれる TimelineFragment の firstLoad は、
+        // タイミング的にまだ onCreateView 前で mPullToRefreshLayout が null なので
+        // とりあえず無視
+        // TODO あとでなんとかする
+        if (mPullToRefreshLayout != null) {
+            mPullToRefreshLayout.setRefreshing(true);
+        }
+
+        taskExecute();
     }
 
     public void reload() {

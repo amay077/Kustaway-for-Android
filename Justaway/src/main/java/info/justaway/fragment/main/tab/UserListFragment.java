@@ -87,7 +87,6 @@ public class UserListFragment extends BaseFragment {
                     mAdapter.add(Row.newStatus(status));
                 }
                 mReloading = false;
-                mPullToRefreshLayout.setRefreshComplete();
             } else {
                 for (twitter4j.Status status : statuses) {
                     if (mMaxId <= 0L || mMaxId > status.getId()) {
@@ -102,6 +101,7 @@ public class UserListFragment extends BaseFragment {
                 mAutoLoader = true;
                 mListView.setVisibility(View.VISIBLE);
             }
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 }

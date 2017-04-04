@@ -82,7 +82,6 @@ public class FavoritesFragment extends BaseFragment {
                     mAdapter.add(Row.newStatus(status));
                 }
                 mReloading = false;
-                mPullToRefreshLayout.setRefreshComplete();
             } else {
                 for (twitter4j.Status status : statuses) {
                     FavRetweetManager.setFav(status.getId());
@@ -94,6 +93,7 @@ public class FavoritesFragment extends BaseFragment {
                 mAutoLoader = true;
                 mListView.setVisibility(View.VISIBLE);
             }
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 

@@ -111,7 +111,6 @@ public class DirectMessagesFragment extends BaseFragment {
                     mAdapter.add(Row.newDirectMessage(status));
                 }
                 mReloading = false;
-                mPullToRefreshLayout.setRefreshComplete();
             } else {
                 for (DirectMessage status : statuses) {
                     mAdapter.extensionAdd(Row.newDirectMessage(status));
@@ -119,6 +118,7 @@ public class DirectMessagesFragment extends BaseFragment {
                 mAutoLoader = true;
                 mListView.setVisibility(View.VISIBLE);
             }
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 

@@ -1,7 +1,10 @@
 package info.justaway.fragment.main.tab;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import info.justaway.model.AccessTokenManager;
 import info.justaway.model.Row;
@@ -16,6 +19,13 @@ import twitter4j.Status;
  * タイムライン、すべての始まり
  */
 public class TimelineFragment extends BaseFragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        firstLoad();
+        return view;
+    }
 
     /**
      * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
@@ -80,7 +90,6 @@ public class TimelineFragment extends BaseFragment {
                     mAdapter.add(Row.newStatus(status));
                 }
                 mReloading = false;
-                mPullToRefreshLayout.setRefreshComplete();
             } else {
                 for (twitter4j.Status status : statuses) {
                     if (mMaxId <= 0L || mMaxId > status.getId()) {
@@ -91,6 +100,7 @@ public class TimelineFragment extends BaseFragment {
                 mAutoLoader = true;
                 mListView.setVisibility(View.VISIBLE);
             }
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 }

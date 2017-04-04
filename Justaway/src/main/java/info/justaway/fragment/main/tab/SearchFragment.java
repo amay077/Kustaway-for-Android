@@ -100,7 +100,6 @@ public class SearchFragment extends BaseFragment {
                     mQuery = null;
                     mAutoLoader = false;
                 }
-                mPullToRefreshLayout.setRefreshComplete();
             } else {
                 for (twitter4j.Status status : queryResult.getTweets()) {
                     mAdapter.extensionAdd(Row.newStatus(status));
@@ -109,6 +108,7 @@ public class SearchFragment extends BaseFragment {
                 mQuery = queryResult.nextQuery();
                 mListView.setVisibility(View.VISIBLE);
             }
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 }
