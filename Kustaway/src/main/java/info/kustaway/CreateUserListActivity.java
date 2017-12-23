@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import info.kustaway.task.CreateUserListTask;
 import info.kustaway.util.MessageUtil;
 import info.kustaway.util.ThemeUtil;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import twitter4j.TwitterException;
 
@@ -19,11 +19,11 @@ public class CreateUserListActivity extends Activity {
 
     public static final int ERROR_CODE_NAME_BLANK = 403;
 
-    @Bind(R.id.list_name)
+    @BindView(R.id.list_name)
     EditText mListName;
-    @Bind(R.id.list_description)
+    @BindView(R.id.list_description)
     EditText mListDescription;
-    @Bind(R.id.privacy_radio_group)
+    @BindView(R.id.privacy_radio_group)
     RadioGroup mPrivacyRadioGroup;
 
 

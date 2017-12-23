@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import info.kustaway.adapter.SimplePagerAdapter;
 import info.kustaway.fragment.list.UserListStatusesFragment;
@@ -25,9 +25,9 @@ import twitter4j.UserList;
 
 public class UserListActivity extends FragmentActivity {
 
-    @Bind(R.id.users_label) TextView mUsersLabel;
-    @Bind(R.id.tweets_label) TextView mTweetsLabel;
-    @Bind(R.id.list_pager) ViewPager mListPager;
+    @BindView(R.id.users_label) TextView mUsersLabel;
+    @BindView(R.id.tweets_label) TextView mTweetsLabel;
+    @BindView(R.id.list_pager) ViewPager mListPager;
 
     private UserList mUserList;
     private Boolean mIsFollowing;

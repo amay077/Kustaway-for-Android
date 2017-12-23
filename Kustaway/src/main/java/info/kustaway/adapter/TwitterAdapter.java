@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import info.kustaway.BuildConfig;
@@ -50,37 +50,37 @@ import twitter4j.User;
 public class TwitterAdapter extends ArrayAdapter<Row> {
 
     static class ViewHolder {
-        @Bind(R.id.action_container) ViewGroup mActionContainer;
-        @Bind(R.id.action_icon) TextView mActionIcon;
-        @Bind(R.id.action_by_display_name) TextView mActionByDisplayName;
-        @Bind(R.id.action_by_screen_name) TextView mActionByScreenName;
-        @Bind(R.id.icon) ImageView mIcon;
-        @Bind(R.id.display_name) TextView mDisplayName;
-        @Bind(R.id.screen_name) TextView mScreenName;
-        @Bind(R.id.lock) TextView mLock;
-        @Bind(R.id.datetime_relative) TextView mDatetimeRelative;
-        @Bind(R.id.status) TextView mStatus;
-        @Bind(R.id.quoted_display_name) TextView mQuotedDisplayName;
-        @Bind(R.id.quoted_screen_name) TextView mQuotedScreenName;
-        @Bind(R.id.quoted_status) TextView mQuotedStatus;
-        @Bind(R.id.quoted_tweet) RelativeLayout mQuotedTweet;
-        @Bind(R.id.quoted_images_container_wrapper) ViewGroup mQuotedImagesContainerWrapper;
-        @Bind(R.id.quoted_images_container) ViewGroup mQuotedImagesContainer;
-        @Bind(R.id.quoted_play) TextView mQuotedPlay;
-        @Bind(R.id.images_container_wrapper) ViewGroup mImagesContainerWrapper;
-        @Bind(R.id.images_container) ViewGroup mImagesContainer;
-        @Bind(R.id.play) TextView mPlay;
-        @Bind(R.id.menu_and_via_container) ViewGroup mMenuAndViaContainer;
-        @Bind(R.id.do_reply) TextView mDoReply;
-        @Bind(R.id.do_retweet) TextView mDoRetweet;
-        @Bind(R.id.retweet_count) TextView mRetweetCount;
-        @Bind(R.id.do_fav) TextView mDoFav;
-        @Bind(R.id.fav_count) TextView mFavCount;
-        @Bind(R.id.via) TextView mVia;
-        @Bind(R.id.datetime) TextView mDatetime;
-        @Bind(R.id.retweet_container) View mRetweetContainer;
-        @Bind(R.id.retweet_icon) ImageView mRetweetIcon;
-        @Bind(R.id.retweet_by) TextView mRetweetBy;
+        @BindView(R.id.action_container) ViewGroup mActionContainer;
+        @BindView(R.id.action_icon) TextView mActionIcon;
+        @BindView(R.id.action_by_display_name) TextView mActionByDisplayName;
+        @BindView(R.id.action_by_screen_name) TextView mActionByScreenName;
+        @BindView(R.id.icon) ImageView mIcon;
+        @BindView(R.id.display_name) TextView mDisplayName;
+        @BindView(R.id.screen_name) TextView mScreenName;
+        @BindView(R.id.lock) TextView mLock;
+        @BindView(R.id.datetime_relative) TextView mDatetimeRelative;
+        @BindView(R.id.status) TextView mStatus;
+        @BindView(R.id.quoted_display_name) TextView mQuotedDisplayName;
+        @BindView(R.id.quoted_screen_name) TextView mQuotedScreenName;
+        @BindView(R.id.quoted_status) TextView mQuotedStatus;
+        @BindView(R.id.quoted_tweet) RelativeLayout mQuotedTweet;
+        @BindView(R.id.quoted_images_container_wrapper) ViewGroup mQuotedImagesContainerWrapper;
+        @BindView(R.id.quoted_images_container) ViewGroup mQuotedImagesContainer;
+        @BindView(R.id.quoted_play) TextView mQuotedPlay;
+        @BindView(R.id.images_container_wrapper) ViewGroup mImagesContainerWrapper;
+        @BindView(R.id.images_container) ViewGroup mImagesContainer;
+        @BindView(R.id.play) TextView mPlay;
+        @BindView(R.id.menu_and_via_container) ViewGroup mMenuAndViaContainer;
+        @BindView(R.id.do_reply) TextView mDoReply;
+        @BindView(R.id.do_retweet) TextView mDoRetweet;
+        @BindView(R.id.retweet_count) TextView mRetweetCount;
+        @BindView(R.id.do_fav) TextView mDoFav;
+        @BindView(R.id.fav_count) TextView mFavCount;
+        @BindView(R.id.via) TextView mVia;
+        @BindView(R.id.datetime) TextView mDatetime;
+        @BindView(R.id.retweet_container) View mRetweetContainer;
+        @BindView(R.id.retweet_icon) ImageView mRetweetIcon;
+        @BindView(R.id.retweet_by) TextView mRetweetBy;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

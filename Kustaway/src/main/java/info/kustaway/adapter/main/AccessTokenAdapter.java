@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.R;
 import info.kustaway.model.AccessTokenManager;
 import info.kustaway.model.UserIconManager;
@@ -20,8 +20,8 @@ import twitter4j.auth.AccessToken;
 public class AccessTokenAdapter extends ArrayAdapter<AccessToken> {
 
     static class ViewHolder {
-        @Bind(R.id.icon) ImageView mIcon;
-        @Bind(R.id.screen_name) TextView mScreenName;
+        @BindView(R.id.icon) ImageView mIcon;
+        @BindView(R.id.screen_name) TextView mScreenName;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

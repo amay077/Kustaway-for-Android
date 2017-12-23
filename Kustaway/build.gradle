@@ -10,7 +10,7 @@ android {
     compileSdkVersion 25
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 25
 
         versionCode 100
@@ -30,28 +30,39 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
+
+    // https://stackoverflow.com/a/46974168/3309589
+    compile ('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2')
+            { exclude module: 'support-v4' }
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile fileTree(include: '*.jar', dir: 'libs')
 
-    annotationProcessor "com.jakewharton:butterknife:${butterKnifeVersion}"
+    // Butter Knife
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+    kapt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
 
-    //noinspection GradleDynamicVersion
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.google.guava:guava:19.0'
-    compile 'de.greenrobot:eventbus:2.2.0'
+    // Support Libraries
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support.constraint:constraint-layout:1.0.2"
+    compile "com.android.support:design:${supportLibVersion}"
+
+    // Twitter4J
     compile "org.twitter4j:twitter4j-core:${twitter4jVersion}"
     compile "org.twitter4j:twitter4j-async:${twitter4jVersion}"
     compile "org.twitter4j:twitter4j-media-support:${twitter4jVersion}"
     compile "org.twitter4j:twitter4j-stream:${twitter4jVersion}"
+
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.google.guava:guava:19.0'
+    compile 'de.greenrobot:eventbus:2.2.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.1'
-    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
     compile "com.viewpagerindicator:library:${viewpagerIndicatorVersion}"
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:0.9.9'
 }

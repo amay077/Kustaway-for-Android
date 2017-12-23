@@ -17,7 +17,7 @@ import android.widget.VideoView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import info.kustaway.model.TwitterManager;
@@ -27,10 +27,10 @@ import twitter4j.Status;
 
 public class VideoActivity extends FragmentActivity {
 
-    @Bind(R.id.player)
+    @BindView(R.id.player)
     VideoView player;
 
-    @Bind(R.id.guruguru)
+    @BindView(R.id.guruguru)
     ProgressBar guruguru;
 
 

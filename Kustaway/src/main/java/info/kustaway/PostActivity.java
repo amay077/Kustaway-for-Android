@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import info.kustaway.model.AccessTokenManager;
 import info.kustaway.model.UserIconManager;
@@ -91,25 +91,25 @@ public class PostActivity extends FragmentActivity {
     private List<ResolveInfo> mTwiccaPlugins;
     private ActionBarHolder mActionBarHolder;
 
-    @Bind(R.id.in_reply_to_cancel) TextView mCancel;
-    @Bind(R.id.in_reply_to_user_icon) ImageView mInReplyToUserIcon;
-    @Bind(R.id.in_reply_to_status) TextView mInReplyToStatus;
-    @Bind(R.id.in_reply_to_layout) RelativeLayout mInReplyToLayout;
-    @Bind(R.id.switch_account_spinner) Spinner mSwitchAccountSpinner;
-    @Bind(R.id.status_text) EditText mStatusText;
-    @Bind(R.id.suddenly_button) Button mSuddenlyButton;
-    @Bind(R.id.tweet_button) Button mTweetButton;
-    @Bind(R.id.img_button) Button mImgButton;
-    @Bind(R.id.draft_button) Button mDraftButton;
-    @Bind(R.id.hashtag_button) Button mHashtagButton;
-    @Bind(R.id.count) TextView mCount;
-    @Bind(R.id.image_preview_container)
+    @BindView(R.id.in_reply_to_cancel) TextView mCancel;
+    @BindView(R.id.in_reply_to_user_icon) ImageView mInReplyToUserIcon;
+    @BindView(R.id.in_reply_to_status) TextView mInReplyToStatus;
+    @BindView(R.id.in_reply_to_layout) RelativeLayout mInReplyToLayout;
+    @BindView(R.id.switch_account_spinner) Spinner mSwitchAccountSpinner;
+    @BindView(R.id.status_text) EditText mStatusText;
+    @BindView(R.id.suddenly_button) Button mSuddenlyButton;
+    @BindView(R.id.tweet_button) Button mTweetButton;
+    @BindView(R.id.img_button) Button mImgButton;
+    @BindView(R.id.draft_button) Button mDraftButton;
+    @BindView(R.id.hashtag_button) Button mHashtagButton;
+    @BindView(R.id.count) TextView mCount;
+    @BindView(R.id.image_preview_container)
     ViewGroup mImagePreviewContainer;
 
     class ActionBarHolder {
 
-        @Bind(R.id.title) TextView mTitle;
-        @Bind(R.id.undo) FontelloButton mUndo;
+        @BindView(R.id.title) TextView mTitle;
+        @BindView(R.id.undo) FontelloButton mUndo;
 
         @OnClick(R.id.undo)
         void undo() {

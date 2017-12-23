@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 import info.kustaway.R;
@@ -43,11 +43,11 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     protected long mSentDirectMessagesMaxId = 0L; // 読み込んだ最新の送信メッセージID
     private ArrayList<Row> mStackRows = new ArrayList<>();
 
-    @Bind(R.id.list_view)
+    @BindView(R.id.list_view)
     protected ListView mListView;
-    @Bind(R.id.guruguru)
+    @BindView(R.id.guruguru)
     protected ProgressBar mFooter;
-    @Bind(R.id.ptr_layout)
+    @BindView(R.id.ptr_layout)
     protected PullToRefreshLayout mPullToRefreshLayout;
 
     @Override

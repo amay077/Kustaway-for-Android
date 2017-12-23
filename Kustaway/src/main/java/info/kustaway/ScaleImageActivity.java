@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.adapter.SimplePagerAdapter;
 import info.kustaway.fragment.ScaleImageFragment;
 import info.kustaway.model.TwitterManager;
@@ -47,8 +47,8 @@ import info.kustaway.widget.ScaleImageViewPager;
  */
 public class ScaleImageActivity extends FragmentActivity {
 
-    @Bind(R.id.pager) ScaleImageViewPager pager;
-    @Bind(R.id.symbol) CirclePageIndicator symbol;
+    @BindView(R.id.pager) ScaleImageViewPager pager;
+    @BindView(R.id.symbol) CirclePageIndicator symbol;
 
     private ArrayList<String> imageUrls = new ArrayList<>();
     private SimplePagerAdapter simplePagerAdapter;

@@ -14,7 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import de.greenrobot.event.EventBus;
 import info.kustaway.R;
 import info.kustaway.event.AlertDialogEvent;
@@ -31,8 +31,8 @@ public class SubscribeUserListAdapter extends ArrayAdapter<UserListWithRegistere
     private int mLayout;
 
     static class ViewHolder {
-        @Bind(R.id.checkbox) CheckBox mCheckBox;
-        @Bind(R.id.trash) FontelloTextView mTrash;
+        @BindView(R.id.checkbox) CheckBox mCheckBox;
+        @BindView(R.id.trash) FontelloTextView mTrash;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

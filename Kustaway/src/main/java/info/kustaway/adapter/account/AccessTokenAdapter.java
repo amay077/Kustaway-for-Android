@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.R;
 import info.kustaway.listener.OnTrashListener;
 import info.kustaway.model.AccessTokenManager;
@@ -26,9 +26,9 @@ public class AccessTokenAdapter extends ArrayAdapter<AccessToken> {
     private int mColorBlue;
 
     class ViewHolder {
-        @Bind(R.id.icon) ImageView mIcon;
-        @Bind(R.id.screen_name) TextView mScreenName;
-        @Bind(R.id.trash) FontelloButton mTrash;
+        @BindView(R.id.icon) ImageView mIcon;
+        @BindView(R.id.screen_name) TextView mScreenName;
+        @BindView(R.id.trash) FontelloButton mTrash;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

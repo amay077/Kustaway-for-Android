@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.R;
 import info.kustaway.settings.MuteSettings;
 import info.kustaway.util.KeyboardUtil;
@@ -86,8 +86,8 @@ public class WordFragment extends Fragment {
     public class WordAdapter extends ArrayAdapter<String> {
 
         class ViewHolder {
-            @Bind(R.id.word) TextView mWord;
-            @Bind(R.id.trash) FontelloTextView mTrash;
+            @BindView(R.id.word) TextView mWord;
+            @BindView(R.id.trash) FontelloTextView mTrash;
 
             ViewHolder(View view) {
                 ButterKnife.bind(this, view);

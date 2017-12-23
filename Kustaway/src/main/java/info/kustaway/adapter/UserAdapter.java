@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.ProfileActivity;
 import info.kustaway.R;
 import info.kustaway.util.ImageUtil;
@@ -21,11 +21,11 @@ import twitter4j.User;
 public class UserAdapter extends ArrayAdapter<User> {
 
     static class ViewHolder {
-        @Bind(R.id.icon) ImageView mIcon;
-        @Bind(R.id.display_name) TextView mDisplayName;
-        @Bind(R.id.screen_name) TextView mScreenName;
-        @Bind(R.id.lock) FontelloTextView mFontelloLock;
-        @Bind(R.id.description) TextView mDescription;
+        @BindView(R.id.icon) ImageView mIcon;
+        @BindView(R.id.display_name) TextView mDisplayName;
+        @BindView(R.id.screen_name) TextView mScreenName;
+        @BindView(R.id.lock) FontelloTextView mFontelloLock;
+        @BindView(R.id.description) TextView mDescription;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

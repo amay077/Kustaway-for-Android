@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.InputStream;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import info.kustaway.fragment.profile.UpdateProfileImageFragment;
 import info.kustaway.model.TwitterManager;
@@ -31,11 +31,11 @@ public class EditProfileActivity extends FragmentActivity implements LoaderManag
 
     private static final int REQ_PICK_PROFILE_IMAGE = 1;
 
-    @Bind(R.id.icon) ImageView mIcon;
-    @Bind(R.id.name) EditText mName;
-    @Bind(R.id.location) EditText mLocation;
-    @Bind(R.id.url) EditText mUrl;
-    @Bind(R.id.description) EditText mDescription;
+    @BindView(R.id.icon) ImageView mIcon;
+    @BindView(R.id.name) EditText mName;
+    @BindView(R.id.location) EditText mLocation;
+    @BindView(R.id.url) EditText mUrl;
+    @BindView(R.id.description) EditText mDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

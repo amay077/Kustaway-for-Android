@@ -21,7 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import info.kustaway.model.TabManager;
 import info.kustaway.util.ThemeUtil;
 import info.kustaway.widget.FontelloTextView;
@@ -205,9 +205,9 @@ public class TabSettingsActivity extends FragmentActivity {
     public class TabAdapter extends ArrayAdapter<TabManager.Tab> {
 
         class ViewHolder {
-            @Bind(R.id.handle) FontelloTextView mHandle;
-            @Bind(R.id.tab_icon) FontelloTextView mTabIcon;
-            @Bind(R.id.name) TextView mName;
+            @BindView(R.id.handle) FontelloTextView mHandle;
+            @BindView(R.id.tab_icon) FontelloTextView mTabIcon;
+            @BindView(R.id.name) TextView mName;
 
             ViewHolder(View view) {
                 ButterKnife.bind(this, view);

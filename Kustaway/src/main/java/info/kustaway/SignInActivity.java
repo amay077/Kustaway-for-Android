@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import info.kustaway.model.AccessTokenManager;
 import info.kustaway.model.TwitterManager;
@@ -28,8 +28,8 @@ public class SignInActivity extends Activity {
     private static final String STATE_REQUEST_TOKEN = "request_token";
     private RequestToken mRequestToken;
 
-    @Bind(R.id.start_oauth_button) FontelloButton mStartOauthButton;
-    @Bind(R.id.connect_with_twitter) TextView mConnectWithTwitter;
+    @BindView(R.id.start_oauth_button) FontelloButton mStartOauthButton;
+    @BindView(R.id.connect_with_twitter) TextView mConnectWithTwitter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

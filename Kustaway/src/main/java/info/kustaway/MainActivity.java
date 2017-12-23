@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -102,26 +102,26 @@ public class MainActivity extends FragmentActivity {
     private int mDisabledTextColor;
     private ActionBarHolder mActionBarHolder;
 
-    @Bind(R.id.drawer_layout) DrawerLayout mDrawerLayout;
-    @Bind(R.id.quick_tweet_layout) LinearLayout mQuickTweetLayout;
-    @Bind(R.id.tab_menus) LinearLayout mTabMenus;
-    @Bind(R.id.account_list) ListView mDrawerList;
-    @Bind(R.id.send_button) TextView mSendButton;
-    @Bind(R.id.post_button) Button mPostButton;
-    @Bind(R.id.quick_tweet_edit) ClearEditText mQuickTweetEdit;
+    @BindView(R.id.drawer_layout) DrawerLayout mDrawerLayout;
+    @BindView(R.id.quick_tweet_layout) LinearLayout mQuickTweetLayout;
+    @BindView(R.id.tab_menus) LinearLayout mTabMenus;
+    @BindView(R.id.account_list) ListView mDrawerList;
+    @BindView(R.id.send_button) TextView mSendButton;
+    @BindView(R.id.post_button) Button mPostButton;
+    @BindView(R.id.quick_tweet_edit) ClearEditText mQuickTweetEdit;
 
     /**
      * ButterKnife for ActionBar
      */
     class ActionBarHolder {
-        @Bind(R.id.action_bar_title) TextView title;
-        @Bind(R.id.action_bar_sub_title) TextView subTitle;
-        @Bind(R.id.action_bar_normal_layout) LinearLayout normalLayout;
-        @Bind(R.id.action_bar_search_layout) FrameLayout searchLayout;
-        @Bind(R.id.action_bar_search_text) AutoCompleteEditText searchText;
-        @Bind(R.id.action_bar_search_button) TextView searchButton;
-        @Bind(R.id.action_bar_search_cancel) TextView cancelButton;
-        @Bind(R.id.action_bar_streaming_button) TextView streamingButton;
+        @BindView(R.id.action_bar_title) TextView title;
+        @BindView(R.id.action_bar_sub_title) TextView subTitle;
+        @BindView(R.id.action_bar_normal_layout) LinearLayout normalLayout;
+        @BindView(R.id.action_bar_search_layout) FrameLayout searchLayout;
+        @BindView(R.id.action_bar_search_text) AutoCompleteEditText searchText;
+        @BindView(R.id.action_bar_search_button) TextView searchButton;
+        @BindView(R.id.action_bar_search_cancel) TextView cancelButton;
+        @BindView(R.id.action_bar_streaming_button) TextView streamingButton;
 
         @OnClick(R.id.action_bar_search_button)
         void actionBarSearchButton() {

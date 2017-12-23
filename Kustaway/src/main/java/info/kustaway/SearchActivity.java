@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import info.kustaway.adapter.TwitterAdapter;
@@ -46,10 +46,10 @@ import twitter4j.SavedSearch;
 public class SearchActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<QueryResult> {
 
 
-    @Bind(R.id.searchWords) ClearEditText mSearchWords;
-    @Bind(R.id.search_button) FontelloButton mSearchButton;
-    @Bind(R.id.search_list) ListView mSearchList;
-    @Bind(R.id.guruguru) ProgressBar mGuruguru;
+    @BindView(R.id.searchWords) ClearEditText mSearchWords;
+    @BindView(R.id.search_button) FontelloButton mSearchButton;
+    @BindView(R.id.search_list) ListView mSearchList;
+    @BindView(R.id.guruguru) ProgressBar mGuruguru;
 
     private TwitterAdapter mAdapter;
     private Query mNextQuery;

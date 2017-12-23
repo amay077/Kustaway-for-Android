@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import info.kustaway.adapter.SimplePagerAdapter;
@@ -47,17 +47,17 @@ import twitter4j.User;
 public class ProfileActivity extends FragmentActivity implements
         LoaderManager.LoaderCallbacks<Profile> {
 
-    @Bind(R.id.banner) ImageView mBanner;
-    @Bind(R.id.pager) ViewPager mPager;
-    @Bind(R.id.symbol) CirclePageIndicator mSymbol;
-    @Bind(R.id.frame) FrameLayout mFrame;
-    @Bind(R.id.statuses_count) TextView mStatusesCount;
-    @Bind(R.id.friends_count) TextView mFriendsCount;
-    @Bind(R.id.followers_count) TextView mFollowersCount;
-    @Bind(R.id.listed_count) TextView mListedCount;
-    @Bind(R.id.favourites_count) TextView mFavouritesCount;
-    @Bind(R.id.collapse_label) FontelloTextView mCollapseLabel;
-    @Bind(R.id.list_pager) ViewPager mListPager;
+    @BindView(R.id.banner) ImageView mBanner;
+    @BindView(R.id.pager) ViewPager mPager;
+    @BindView(R.id.symbol) CirclePageIndicator mSymbol;
+    @BindView(R.id.frame) FrameLayout mFrame;
+    @BindView(R.id.statuses_count) TextView mStatusesCount;
+    @BindView(R.id.friends_count) TextView mFriendsCount;
+    @BindView(R.id.followers_count) TextView mFollowersCount;
+    @BindView(R.id.listed_count) TextView mListedCount;
+    @BindView(R.id.favourites_count) TextView mFavouritesCount;
+    @BindView(R.id.collapse_label) FontelloTextView mCollapseLabel;
+    @BindView(R.id.list_pager) ViewPager mListPager;
 
     private User mUser;
     private Relationship mRelationship;
