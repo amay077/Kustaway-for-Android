@@ -8,46 +8,21 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:2.3.2'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.6'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
 subprojects {
     repositories {
-//https://plus.google.com/109385828142935151413/posts/hF7W59uZ7rX
-//        mavenLocal()
         maven {
-            // url "${System.env.HOME}/.m2/repository"
-            // viewpagerindicator の為
-            // http://stackoverflow.com/questions/22126576/viewpagerindicator-dependency-with-gradle-and-android-studio
             url "http://dl.bintray.com/populov/maven"
         }
         mavenCentral()
     }
-
-    project.plugins.whenPluginAdded { plugin ->
-        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        } else if ("com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
-            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
-        }
-    }
 }
 
-// http://www.gradle.org/docs/current/dsl/org.gradle.api.plugins.ExtraPropertiesExtension.html
 project.ext {
-    compileSdkVersion = 23
-    buildToolsVersion = "22.0.1"
-    // see http://tools.android.com/tech-docs/new-build-system/tips#TOC-Improving-Build-Server-performance.
-    // CIサーバなどでは -PdisablePreDex をつける。 preDexが省略されてビルドが速くなる
-    preDexLibs = !project.hasProperty('disablePreDex')
-
     twitter4jVersion = "4.0.4"
     butterKnifeVersion = '7.0.1'
     viewpagerIndicatorVersion = '2.4.1@aar'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.5'
 }
