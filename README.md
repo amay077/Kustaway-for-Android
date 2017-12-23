@@ -1,3 +1,3 @@
-# Justaway Original
+# Kustaway Original
 
-moved to https://github.com/s-aska/Justaway-for-Android
+moved to https://github.com/s-aska/Kustaway-for-Android

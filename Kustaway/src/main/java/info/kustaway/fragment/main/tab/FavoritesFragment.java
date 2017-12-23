@@ -1,0 +1,126 @@
+package info.kustaway.fragment.main.tab;
+
+import android.os.AsyncTask;
+import android.view.View;
+
+import java.util.ArrayList;
+
+import info.kustaway.event.model.StreamingCreateFavoriteEvent;
+import info.kustaway.event.model.StreamingUnFavoriteEvent;
+import info.kustaway.model.AccessTokenManager;
+import info.kustaway.model.FavRetweetManager;
+import info.kustaway.model.Row;
+import info.kustaway.model.TabManager;
+import info.kustaway.model.TwitterManager;
+import info.kustaway.settings.BasicSettings;
+import twitter4j.Paging;
+import twitter4j.ResponseList;
+import twitter4j.Status;
+
+/**
+ * お気に入りタブ
+ */
+public class FavoritesFragment extends BaseFragment {
+
+    /**
+     * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
+     */
+    public long getTabId() {
+        return TabManager.FAVORITES_TAB_ID;
+    }
+
+    /**
+     * このタブに表示するツイートの定義
+     * @param row ストリーミングAPIから受け取った情報（ツイート＋ふぁぼ）
+     *            CreateFavoriteEventをキャッチしている為、ふぁぼイベントを受け取ることが出来る
+     * @return trueは表示しない、falseは表示する
+     */
+    @Override
+    protected boolean isSkip(Row row) {
+        return !row.isFavorite() || row.getSource().getId() != AccessTokenManager.getUserId();
+    }
+
+    @Override
+    protected void taskExecute() {
+        new FavoritesTask().execute();
+    }
+
+    private class FavoritesTask extends AsyncTask<Void, Void, ResponseList<Status>> {
+        @Override
+        protected ResponseList<twitter4j.Status> doInBackground(Void... params) {
+            try {
+                Paging paging = new Paging();
+                if (mMaxId > 0 && !mReloading) {
+                    paging.setMaxId(mMaxId - 1);
+                    paging.setCount(BasicSettings.getPageCount());
+                }
+                return TwitterManager.getTwitter().getFavorites(paging);
+            } catch (OutOfMemoryError e) {
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(ResponseList<twitter4j.Status> statuses) {
+            mFooter.setVisibility(View.GONE);
+            if (statuses == null || statuses.size() == 0) {
+                mReloading = false;
+                mPullToRefreshLayout.setRefreshComplete();
+                mListView.setVisibility(View.VISIBLE);
+                return;
+            }
+            if (mReloading) {
+                clear();
+                for (twitter4j.Status status : statuses) {
+                    FavRetweetManager.setFav(status.getId());
+                    if (mMaxId <= 0L || mMaxId > status.getId()) {
+                        mMaxId = status.getId();
+                    }
+                    mAdapter.add(Row.newStatus(status));
+                }
+                mReloading = false;
+            } else {
+                for (twitter4j.Status status : statuses) {
+                    FavRetweetManager.setFav(status.getId());
+                    if (mMaxId <= 0L || mMaxId > status.getId()) {
+                        mMaxId = status.getId();
+                    }
+                    mAdapter.extensionAdd(Row.newStatus(status));
+                }
+                mAutoLoader = true;
+                mListView.setVisibility(View.VISIBLE);
+            }
+            mPullToRefreshLayout.setRefreshComplete();
+        }
+    }
+
+    /**
+     * ストリーミングAPIからふぁぼを受け取った時のイベント
+     * @param event ふぁぼイベント
+     */
+    public void onEventMainThread(StreamingCreateFavoriteEvent event) {
+        addStack(event.getRow());
+    }
+
+    /**
+     * ストリーミングAPIからあんふぁぼイベントを受信
+     * @param event ツイート
+     */
+    public void onEventMainThread(StreamingUnFavoriteEvent event) {
+        ArrayList<Integer> removePositions = mAdapter.removeStatus(event.getStatus().getId());
+        for (Integer removePosition : removePositions) {
+            if (removePosition >= 0) {
+                int visiblePosition = mListView.getFirstVisiblePosition();
+                if (visiblePosition > removePosition) {
+                    View view = mListView.getChildAt(0);
+                    int y = view != null ? view.getTop() : 0;
+                    mListView.setSelectionFromTop(visiblePosition - 1, y);
+                    break;
+                }
+            }
+        }
+    }
+}
