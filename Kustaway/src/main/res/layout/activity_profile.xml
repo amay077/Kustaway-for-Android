@@ -29,8 +29,7 @@
             android:layout_width="64dp"
             android:layout_gravity="bottom|center"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            app:radius="4dp"/>
+            android:padding="10dp" />
     </FrameLayout>
 
     <LinearLayout

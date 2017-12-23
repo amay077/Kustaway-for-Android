@@ -25,5 +25,4 @@ project.ext {
     supportLibVersion = "25.1.0"
     twitter4jVersion = "4.0.4"
     butterKnifeVersion = "8.5.1"
-    viewpagerIndicatorVersion = '2.4.1@aar'
 }
