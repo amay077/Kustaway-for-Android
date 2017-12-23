@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 import de.greenrobot.event.EventBus;
+import info.kustaway.BuildConfig;
 import info.kustaway.KustawayApplication;
 import info.kustaway.R;
 import info.kustaway.adapter.MyUserStreamAdapter;
@@ -59,11 +60,11 @@ public class TwitterManager {
     }
 
     private static String getConsumerKey() {
-        return KustawayApplication.getApplication().getString(R.string.twitter_consumer_key);
+        return BuildConfig.TwitterConsumerKey;
     }
 
     private static String getConsumerSecret() {
-        return KustawayApplication.getApplication().getString(R.string.twitter_consumer_secret);
+        return BuildConfig.TwitterConsumerSecret;
     }
 
     public static Twitter getTwitter() {

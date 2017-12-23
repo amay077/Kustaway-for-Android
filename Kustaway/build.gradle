@@ -6,6 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+// https://stackoverflow.com/a/45754564/3309589
+def getFromLocalProperties(key) {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    return properties.getProperty(key);
+}
+
+
 android {
     compileSdkVersion 25
 
@@ -21,9 +29,18 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+
+            // Twitter のキー:デバッグ時は local.properties から注入する
+            buildConfigField "String", "TwitterConsumerKey", "\""+getFromLocalProperties('twitter.consumer_key')+"\""
+            buildConfigField "String", "TwitterConsumerSecret", "\""+getFromLocalProperties('twitter.consumer_secret')+"\""
         }
 
         release {
+            // Twitter のキー:リリース時は CI の環境変数から注入する
+            // https://docs.microsoft.com/en-us/appcenter/build/custom/variables/#buildgradle-for-android
+            buildConfigField "String", "TwitterConsumerKey", "${System.env.TWITTER_CONSUMER_KEY}"
+            buildConfigField "String", "TwitterConsumerSecret", "${System.env.TWITTER_CONSUMER_SECRET}"
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
