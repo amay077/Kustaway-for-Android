@@ -8,7 +8,8 @@ apply plugin: 'kotlin-kapt'
 
 // https://stackoverflow.com/a/45754564/3309589
 def getFromLocalProperties(file, key) {
-    if (file != null) {
+    def f = new File(file)
+    if (f.exists()) {
         Properties properties = new Properties()
         properties.load(project.rootProject.file(file).newDataInputStream())
         return properties.getProperty(key);
