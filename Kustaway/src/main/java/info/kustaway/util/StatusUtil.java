@@ -144,8 +144,8 @@ public class StatusUtil {
             }
         }
 
-        if (status.getExtendedMediaEntities().length > 0) {
-            for (MediaEntity media : status.getExtendedMediaEntities()) {
+        if (status.getMediaEntities().length > 0) {
+            for (MediaEntity media : status.getMediaEntities()) {
                 imageUrls.add(media.getMediaURL());
             }
         } else {
@@ -158,8 +158,8 @@ public class StatusUtil {
     }
 
     public static String getVideoUrl(Status status) {
-        for (final ExtendedMediaEntity extendedMediaEntity : status.getExtendedMediaEntities()) {
-            for (final ExtendedMediaEntity.Variant videoVariant : extendedMediaEntity.getVideoVariants()) {
+        for (final MediaEntity extendedMediaEntity : status.getMediaEntities()) {
+            for (final MediaEntity.Variant videoVariant : extendedMediaEntity.getVideoVariants()) {
                 if (videoVariant.getUrl().lastIndexOf("mp4") != -1) {
                     return videoVariant.getUrl();
                 }
