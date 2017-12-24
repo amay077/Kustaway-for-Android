@@ -29,8 +29,8 @@ android {
 
         // Twitter のキー:リリース時は CI の環境変数から注入する
         // https://docs.microsoft.com/en-us/appcenter/build/custom/variables/#buildgradle-for-android
-        buildConfigField "String", "TwitterConsumerKey", "${System.env.TWITTER_CONSUMER_KEY}"
-        buildConfigField "String", "TwitterConsumerSecret", "${System.env.TWITTER_CONSUMER_SECRET}"
+        buildConfigField("string", "TwitterConsumerKey", "${System.env.TWITTER_CONSUMER_KEY}")
+        buildConfigField("string", "TwitterConsumerSecret", "${System.env.TWITTER_CONSUMER_SECRET}")
     }
 
     buildTypes {
