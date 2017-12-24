@@ -78,6 +78,9 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 @SuppressLint("InflateParams")
 @SuppressWarnings("MagicConstant")
@@ -148,6 +151,10 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCenter.start(getApplication(), BuildConfig.AppCenterAppSecret,
+                Analytics.class, Crashes.class);
+
         ThemeUtil.setTheme(this);
         mActivity = this;
 
@@ -234,8 +241,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        MyUncaughtExceptionHandler.showBugReportDialogIfExist(this);
 
         if (BasicSettings.getKeepScreenOn()) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

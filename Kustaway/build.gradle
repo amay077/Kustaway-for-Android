@@ -36,6 +36,9 @@ android {
             // Twitter のキー:デバッグ時は local.properties から注入する
             buildConfigField "String", "TwitterConsumerKey", "\""+getFromLocalProperties('local.properties', 'twitter.consumer_key')+"\""
             buildConfigField "String", "TwitterConsumerSecret", "\""+getFromLocalProperties('local.properties', 'twitter.consumer_secret')+"\""
+            // App Center
+            buildConfigField "String", "AppCenterAppSecret", "\""+getFromLocalProperties('local.properties', 'appcenter.appsecret')+"\""
+
         }
 
         release {
@@ -43,6 +46,8 @@ android {
             // https://docs.microsoft.com/en-us/appcenter/build/custom/variables/#buildgradle-for-android
             buildConfigField("String", "TwitterConsumerKey", "\""+"${System.env.TWITTER_CONSUMER_KEY}"+"\"")
             buildConfigField("String", "TwitterConsumerSecret", "\""+"${System.env.TWITTER_CONSUMER_SECRET}"+"\"")
+            // App Center
+            buildConfigField("String", "AppCenterAppSecret", "\""+"${System.env.APPCENTER_APP_SECRET}"+"\"")
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -63,6 +68,10 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile fileTree(include: '*.jar', dir: 'libs')
+
+    // App Center
+    compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
     // Butter Knife
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"

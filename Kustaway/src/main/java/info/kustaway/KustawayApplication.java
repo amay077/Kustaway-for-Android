@@ -43,11 +43,6 @@ public class KustawayApplication extends Application {
         Relationship.init();
 
         sFontello = Typeface.createFromAsset(getAssets(), "fontello.ttf");
-
-        // 例外発生時の処理を指定（スタックトレースを保存）
-        if (BuildConfig.DEBUG) {
-            Thread.setDefaultUncaughtExceptionHandler(new MyUncaughtExceptionHandler(sApplication));
-        }
     }
 
     /**
