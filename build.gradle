@@ -23,6 +23,6 @@ subprojects {
 
 project.ext {
     supportLibVersion = "25.1.0"
-    twitter4jVersion = "4.0.4"
+    twitter4jVersion = "4.0.6"
     butterKnifeVersion = "8.5.1"
 }
