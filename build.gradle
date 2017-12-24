@@ -16,20 +16,12 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
-}
-
-subprojects {
-    repositories {
         maven {
             url "http://dl.bintray.com/populov/maven"
         }
         google()
         jcenter()
-        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
