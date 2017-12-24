@@ -26,8 +26,8 @@
 -keep class com.google.gson.examples.android.model.** { *; }
 
 # http://qiita.com/petitviolet/items/1b709f3f0db2659a271a
--keepnames class info.kustaway.model.** { *; }
--keepnames class info.kustaway.settings.** { *; }
+-keepnames class net.amay077.kustaway.model.** { *; }
+-keepnames class net.amay077.kustaway.settings.** { *; }
 
 # for Twitter4j
 -dontwarn twitter4j.**

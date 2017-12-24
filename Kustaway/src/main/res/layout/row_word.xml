@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:textSize="18sp"/>
 
-    <info.kustaway.widget.FontelloTextView
+    <net.amay077.kustaway.widget.FontelloTextView
         android:id="@+id/trash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

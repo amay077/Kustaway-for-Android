@@ -4,7 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/listPreferredItemHeight">
 
-    <info.kustaway.widget.FontelloTextView
+    <net.amay077.kustaway.widget.FontelloTextView
         android:id="@+id/handle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:text="@string/fontello_menu"
         android:textSize="24sp"/>
 
-    <info.kustaway.widget.FontelloTextView
+    <net.amay077.kustaway.widget.FontelloTextView
         android:id="@+id/tab_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

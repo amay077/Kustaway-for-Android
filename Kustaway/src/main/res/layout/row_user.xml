@@ -41,7 +41,7 @@
         tools:text="kustawayfactory"
         tools:ignore="SmallSp"/>
 
-    <info.kustaway.widget.FontelloTextView
+    <net.amay077.kustaway.widget.FontelloTextView
         android:id="@+id/lock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

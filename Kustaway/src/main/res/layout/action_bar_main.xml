@@ -39,7 +39,7 @@
                 tools:ignore="SpUsage"/>
         </LinearLayout>
 
-        <info.kustaway.widget.FontelloButton
+        <net.amay077.kustaway.widget.FontelloButton
             android:id="@+id/action_bar_search_button"
             android:minWidth="0dp"
             android:layout_width="48dp"
@@ -51,7 +51,7 @@
             tools:paddingBottom="0dp"
             tools:textColor="@android:color/white"/>
 
-        <info.kustaway.widget.FontelloButton
+        <net.amay077.kustaway.widget.FontelloButton
             android:id="@+id/action_bar_streaming_button"
             android:minWidth="0dp"
             android:layout_width="48dp"
@@ -70,14 +70,14 @@
         android:layout_marginBottom="2dp"
         android:visibility="gone">
 
-        <info.kustaway.widget.AutoCompleteEditText
+        <net.amay077.kustaway.widget.AutoCompleteEditText
             android:id="@+id/action_bar_search_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/hint_search"
             android:singleLine="true"/>
 
-        <info.kustaway.widget.FontelloButton
+        <net.amay077.kustaway.widget.FontelloButton
             android:id="@+id/action_bar_search_cancel"
             android:minWidth="0dp"
             android:layout_width="48dp"
