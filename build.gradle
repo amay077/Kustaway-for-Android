@@ -4,6 +4,7 @@ buildscript {
     ext.kotlin_version = '1.2.10'
 
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
@@ -17,6 +18,7 @@ subprojects {
         maven {
             url "http://dl.bintray.com/populov/maven"
         }
+        google()
         mavenCentral()
     }
 }
