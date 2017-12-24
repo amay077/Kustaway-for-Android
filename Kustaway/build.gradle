@@ -7,10 +7,12 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 // https://stackoverflow.com/a/45754564/3309589
-def getFromLocalProperties(key) {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty(key);
+def getFromLocalProperties(file, key) {
+    if (file != null) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file(file).newDataInputStream())
+        return properties.getProperty(key);
+    }
 }
 
 
@@ -31,8 +33,8 @@ android {
             applicationIdSuffix ".debug"
 
             // Twitter のキー:デバッグ時は local.properties から注入する
-            buildConfigField "String", "TwitterConsumerKey", "\""+getFromLocalProperties('twitter.consumer_key')+"\""
-            buildConfigField "String", "TwitterConsumerSecret", "\""+getFromLocalProperties('twitter.consumer_secret')+"\""
+            buildConfigField "String", "TwitterConsumerKey", "\""+getFromLocalProperties('local.properties', 'twitter.consumer_key')+"\""
+            buildConfigField "String", "TwitterConsumerSecret", "\""+getFromLocalProperties('local.properties', 'twitter.consumer_secret')+"\""
         }
 
         release {
