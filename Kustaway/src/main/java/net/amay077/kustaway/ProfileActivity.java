@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -15,17 +16,10 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.viewpagerindicator.CirclePageIndicator;
-
-import butterknife.ButterKnife;
-import butterknife.BindView;
-import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import net.amay077.kustaway.adapter.SimplePagerAdapter;
+import net.amay077.kustaway.databinding.ActivityProfileBinding;
 import net.amay077.kustaway.event.AlertDialogEvent;
 import net.amay077.kustaway.fragment.profile.DescriptionFragment;
 import net.amay077.kustaway.fragment.profile.FavoritesListFragment;
@@ -40,24 +34,15 @@ import net.amay077.kustaway.task.ShowUserLoader;
 import net.amay077.kustaway.util.ImageUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
-import net.amay077.kustaway.widget.FontelloTextView;
+
+import de.greenrobot.event.EventBus;
 import twitter4j.Relationship;
 import twitter4j.User;
 
 public class ProfileActivity extends FragmentActivity implements
         LoaderManager.LoaderCallbacks<Profile> {
 
-    @BindView(R.id.banner) ImageView mBanner;
-    @BindView(R.id.pager) ViewPager mPager;
-    @BindView(R.id.symbol) CirclePageIndicator mSymbol;
-    @BindView(R.id.frame) FrameLayout mFrame;
-    @BindView(R.id.statuses_count) TextView mStatusesCount;
-    @BindView(R.id.friends_count) TextView mFriendsCount;
-    @BindView(R.id.followers_count) TextView mFollowersCount;
-    @BindView(R.id.listed_count) TextView mListedCount;
-    @BindView(R.id.favourites_count) TextView mFavouritesCount;
-    @BindView(R.id.collapse_label) FontelloTextView mCollapseLabel;
-    @BindView(R.id.list_pager) ViewPager mListPager;
+    private ActivityProfileBinding binding = null;
 
     private User mUser;
     private Relationship mRelationship;
@@ -74,8 +59,8 @@ public class ProfileActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.setTheme(this);
-        setContentView(R.layout.activity_profile);
-        ButterKnife.bind(this);
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -100,6 +85,18 @@ public class ProfileActivity extends FragmentActivity implements
         }
         MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
         getSupportLoaderManager().initLoader(0, args, this);
+
+
+        binding.collapseLabel.setOnClickListener(v -> {
+            View frame = findViewById(R.id.frame);
+            if (frame.getVisibility() == View.VISIBLE) {
+                binding.frame.setVisibility(View.GONE);
+                binding.collapseLabel.setText(R.string.fontello_down);
+            } else {
+                binding.frame.setVisibility(View.VISIBLE);
+                binding.collapseLabel.setText(R.string.fontello_up);
+            }
+        });
     }
 
     @Override
@@ -372,15 +369,15 @@ public class ProfileActivity extends FragmentActivity implements
             MessageUtil.showToast(R.string.toast_load_data_failure, "(missing user)");
             return;
         }
-        mFavouritesCount.setText(getString(R.string.label_favourites, String.format("%1$,3d", mUser.getFavouritesCount())));
-        mStatusesCount.setText(getString(R.string.label_tweets, String.format("%1$,3d", mUser.getStatusesCount())));
-        mFriendsCount.setText(getString(R.string.label_following, String.format("%1$,3d", mUser.getFriendsCount())));
-        mFollowersCount.setText(getString(R.string.label_followers, String.format("%1$,3d", mUser.getFollowersCount())));
-        mListedCount.setText(getString(R.string.label_listed, String.format("%1$,3d", mUser.getListedCount())));
+        binding.favouritesCount.setText(getString(R.string.label_favourites, String.format("%1$,3d", mUser.getFavouritesCount())));
+        binding.statusesCount.setText(getString(R.string.label_tweets, String.format("%1$,3d", mUser.getStatusesCount())));
+        binding.friendsCount.setText(getString(R.string.label_following, String.format("%1$,3d", mUser.getFriendsCount())));
+        binding.followersCount.setText(getString(R.string.label_followers, String.format("%1$,3d", mUser.getFollowersCount())));
+        binding.listedCount.setText(getString(R.string.label_listed, String.format("%1$,3d", mUser.getListedCount())));
 
         String bannerUrl = mUser.getProfileBannerMobileRetinaURL();
         if (bannerUrl != null) {
-            ImageUtil.displayImage(bannerUrl, mBanner);
+            ImageUtil.displayImage(bannerUrl, binding.banner);
         }
 
         Relationship relationship = profile.getRelationship();
@@ -409,7 +406,7 @@ public class ProfileActivity extends FragmentActivity implements
         /**
          * スワイプで動かせるタブを実装するのに最低限必要な実装
          */
-        SimplePagerAdapter simplePagerAdapter = new SimplePagerAdapter(this, mPager);
+        SimplePagerAdapter simplePagerAdapter = new SimplePagerAdapter(this, binding.pager);
 
         Bundle args = new Bundle();
         args.putSerializable("user", mUser);
@@ -417,14 +414,14 @@ public class ProfileActivity extends FragmentActivity implements
         simplePagerAdapter.addTab(SummaryFragment.class, args);
         simplePagerAdapter.addTab(DescriptionFragment.class, args);
         simplePagerAdapter.notifyDataSetChanged();
-        mSymbol.setViewPager(mPager);
+        binding.symbol.setViewPager(binding.pager);
 
         /**
          * スワイプの度合いに応じて背景色を暗くする
          * これは透明度＆背景色黒で実現している、背景色黒だけだと背景画像が見えないが、
          * 透明度を指定することで背景画像の表示と白色のテキストの視認性を両立している
          */
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -440,27 +437,27 @@ public class ProfileActivity extends FragmentActivity implements
 
                 final int maxHex = 153; // 0x99
                 String hex = position == 1 ? "99" : String.format("%02X", (int) (maxHex * positionOffset));
-                mPager.setBackgroundColor(Color.parseColor("#" + hex + "000000"));
+                binding.pager.setBackgroundColor(Color.parseColor("#" + hex + "000000"));
 
                 // OnPageChangeListenerは1つしかセットできないのでCirclePageIndicatorの奴も呼んであげる
-                mSymbol.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                binding.symbol.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
 
             @Override
             public void onPageSelected(int position) {
                 // OnPageChangeListenerは1つしかセットできないのでCirclePageIndicatorの奴も呼んであげる
-                mSymbol.onPageSelected(position);
+                binding.symbol.onPageSelected(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
                 // OnPageChangeListenerは1つしかセットできないのでCirclePageIndicatorの奴も呼んであげる
-                mSymbol.onPageScrollStateChanged(state);
+                binding.symbol.onPageScrollStateChanged(state);
             }
         });
 
         // ユーザリスト用のタブ
-        SimplePagerAdapter listPagerAdapter = new SimplePagerAdapter(this, mListPager);
+        SimplePagerAdapter listPagerAdapter = new SimplePagerAdapter(this, binding.listPager);
 
         Bundle listArgs = new Bundle();
         listArgs.putSerializable("user", mUser);
@@ -470,17 +467,17 @@ public class ProfileActivity extends FragmentActivity implements
         listPagerAdapter.addTab(UserListMembershipsFragment.class, listArgs);
         listPagerAdapter.addTab(FavoritesListFragment.class, listArgs);
         listPagerAdapter.notifyDataSetChanged();
-        mListPager.setOffscreenPageLimit(5);
+        binding.listPager.setOffscreenPageLimit(5);
 
         /**
          * タブのラベル情報を配列に入れておく
          */
         final TextView[] tabs = {
-                mStatusesCount,
-                mFriendsCount,
-                mFollowersCount,
-                mListedCount,
-                mFavouritesCount,
+                binding.statusesCount,
+                binding.friendsCount,
+                binding.followersCount,
+                binding.listedCount,
+                binding.favouritesCount,
         };
 
 
@@ -489,7 +486,7 @@ public class ProfileActivity extends FragmentActivity implements
 
         tabs[0].setTextColor(colorBlue);
 
-        mListPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        binding.listPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 /**
@@ -506,23 +503,11 @@ public class ProfileActivity extends FragmentActivity implements
             tabs[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListPager.setCurrentItem(finalI);
+                    binding.listPager.setCurrentItem(finalI);
                 }
             });
         }
 
-    }
-
-    @OnClick(R.id.collapse_label)
-    void onClickCollapse() {
-        View frame = findViewById(R.id.frame);
-        if (frame.getVisibility() == View.VISIBLE) {
-            mFrame.setVisibility(View.GONE);
-            mCollapseLabel.setText(R.string.fontello_down);
-        } else {
-            mFrame.setVisibility(View.VISIBLE);
-            mCollapseLabel.setText(R.string.fontello_up);
-        }
     }
 
     @Override

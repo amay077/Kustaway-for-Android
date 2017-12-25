@@ -58,9 +58,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
+    kapt 'com.android.databinding:compiler:3.0.1'
 
     // https://stackoverflow.com/a/46974168/3309589
     compile ('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2')
