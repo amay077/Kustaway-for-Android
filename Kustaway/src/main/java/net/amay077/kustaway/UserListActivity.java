@@ -1,11 +1,11 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -23,7 +23,7 @@ import net.amay077.kustaway.util.ThemeUtil;
 import twitter4j.ResponseList;
 import twitter4j.UserList;
 
-public class UserListActivity extends FragmentActivity {
+public class UserListActivity extends AppCompatActivity {
 
     @BindView(R.id.users_label) TextView mUsersLabel;
     @BindView(R.id.tweets_label) TextView mTweetsLabel;
@@ -44,7 +44,7 @@ public class UserListActivity extends FragmentActivity {
         setContentView(R.layout.activity_user_list);
         ButterKnife.bind(this);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

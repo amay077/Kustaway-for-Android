@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ListView;
@@ -27,7 +27,7 @@ import twitter4j.Status;
 /**
  * ツイート表示用のアクティビティ
  */
-public class StatusActivity extends FragmentActivity {
+public class StatusActivity extends AppCompatActivity {
 
     private ProgressDialog mProgressDialog;
     private TwitterAdapter mAdapter;

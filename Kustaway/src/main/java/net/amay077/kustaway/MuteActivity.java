@@ -1,9 +1,9 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -14,7 +14,7 @@ import net.amay077.kustaway.fragment.mute.UserFragment;
 import net.amay077.kustaway.fragment.mute.WordFragment;
 import net.amay077.kustaway.util.ThemeUtil;
 
-public class MuteActivity extends FragmentActivity {
+public class MuteActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class MuteActivity extends FragmentActivity {
         ThemeUtil.setTheme(this);
         setContentView(R.layout.activity_mute);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

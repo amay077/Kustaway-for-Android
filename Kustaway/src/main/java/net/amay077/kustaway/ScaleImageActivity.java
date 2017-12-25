@@ -9,8 +9,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +45,7 @@ import net.amay077.kustaway.widget.ScaleImageViewPager;
  *
  * @author aska
  */
-public class ScaleImageActivity extends FragmentActivity {
+public class ScaleImageActivity extends AppCompatActivity {
 
     @BindView(R.id.pager) ScaleImageViewPager pager;
     @BindView(R.id.symbol) CirclePageIndicator symbol;

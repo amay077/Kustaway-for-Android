@@ -1,13 +1,13 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,7 +27,7 @@ import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
 import twitter4j.User;
 
-public class EditProfileActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<User> {
+public class EditProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<User> {
 
     private static final int REQ_PICK_PROFILE_IMAGE = 1;
 
@@ -44,7 +44,7 @@ public class EditProfileActivity extends FragmentActivity implements LoaderManag
         setContentView(R.layout.activity_edit_profile);
         ButterKnife.bind(this);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

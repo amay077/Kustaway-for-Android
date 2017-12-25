@@ -2,7 +2,6 @@ package net.amay077.kustaway;
 
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -18,9 +17,10 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.RemoteInput;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
@@ -68,7 +68,7 @@ import twitter4j.StatusUpdate;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 
-public class PostActivity extends FragmentActivity {
+public class PostActivity extends AppCompatActivity {
 
     private static final int REQUEST_GALLERY = 1;
     private static final int REQUEST_CAMERA = 2;
@@ -168,7 +168,7 @@ public class PostActivity extends FragmentActivity {
             tweet();
         }
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             int options = actionBar.getDisplayOptions();
             if ((options & ActionBar.DISPLAY_SHOW_CUSTOM) == ActionBar.DISPLAY_SHOW_CUSTOM) {

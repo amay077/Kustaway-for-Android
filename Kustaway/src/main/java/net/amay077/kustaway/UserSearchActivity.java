@@ -1,10 +1,10 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +22,7 @@ import net.amay077.kustaway.util.ThemeUtil;
 import twitter4j.ResponseList;
 import twitter4j.User;
 
-public class UserSearchActivity extends FragmentActivity {
+public class UserSearchActivity extends AppCompatActivity {
 
     private EditText mSearchText;
     private String mSearchWord;
@@ -38,7 +38,7 @@ public class UserSearchActivity extends FragmentActivity {
         ThemeUtil.setTheme(this);
         setContentView(R.layout.activity_user_search);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

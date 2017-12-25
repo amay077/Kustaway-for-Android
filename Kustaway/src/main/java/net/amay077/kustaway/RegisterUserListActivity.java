@@ -1,12 +1,12 @@
 package net.amay077.kustaway;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -22,7 +22,7 @@ import twitter4j.ResponseList;
 import twitter4j.UserList;
 
 
-public class RegisterUserListActivity extends FragmentActivity implements
+public class RegisterUserListActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<ArrayList<ResponseList<UserList>>> {
 
     private RegisterListAdapter mAdapter;
@@ -33,7 +33,7 @@ public class RegisterUserListActivity extends FragmentActivity implements
         ThemeUtil.setTheme(this);
         setContentView(R.layout.list);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

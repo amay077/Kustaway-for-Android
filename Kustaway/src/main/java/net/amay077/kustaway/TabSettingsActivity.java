@@ -1,11 +1,11 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +26,7 @@ import net.amay077.kustaway.model.TabManager;
 import net.amay077.kustaway.util.ThemeUtil;
 import net.amay077.kustaway.widget.FontelloTextView;
 
-public class TabSettingsActivity extends FragmentActivity {
+public class TabSettingsActivity extends AppCompatActivity {
 
     private static final int REQUEST_CHOOSE_USER_LIST = 100;
     private static final int HIGH_LIGHT_COLOR = Color.parseColor("#9933b5e5");
@@ -45,7 +45,7 @@ public class TabSettingsActivity extends FragmentActivity {
         ThemeUtil.setTheme(this);
         setContentView(R.layout.activity_tab_settings);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

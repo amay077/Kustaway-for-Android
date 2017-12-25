@@ -1,13 +1,13 @@
 package net.amay077.kustaway;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +43,7 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.SavedSearch;
 
-public class SearchActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<QueryResult> {
+public class SearchActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<QueryResult> {
 
 
     @BindView(R.id.searchWords) ClearEditText mSearchWords;
@@ -62,7 +62,7 @@ public class SearchActivity extends FragmentActivity implements LoaderManager.Lo
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);

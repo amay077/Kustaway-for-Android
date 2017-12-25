@@ -7,7 +7,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -25,7 +25,7 @@ import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.StatusUtil;
 import twitter4j.Status;
 
-public class VideoActivity extends FragmentActivity {
+public class VideoActivity extends AppCompatActivity {
 
     @BindView(R.id.player)
     VideoView player;
