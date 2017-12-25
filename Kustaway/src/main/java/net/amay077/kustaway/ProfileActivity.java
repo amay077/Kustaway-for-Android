@@ -7,11 +7,8 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -31,26 +28,22 @@ import net.amay077.kustaway.fragment.profile.UserListMembershipsFragment;
 import net.amay077.kustaway.fragment.profile.UserTimelineFragment;
 import net.amay077.kustaway.model.Profile;
 import net.amay077.kustaway.model.TwitterManager;
-import net.amay077.kustaway.task.ShowUserLoader;
+import net.amay077.kustaway.repository.TwitterRepository;
 import net.amay077.kustaway.util.ImageUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
 import net.amay077.kustaway.viewmodel.ProfileViewModel;
 
-import java.util.concurrent.Executors;
-
 import de.greenrobot.event.EventBus;
 import twitter4j.Relationship;
 import twitter4j.User;
 
-public class ProfileActivity extends FragmentActivity implements
-        LoaderManager.LoaderCallbacks<Profile> {
+public class ProfileActivity extends FragmentActivity {
 
     private ActivityProfileBinding binding = null;
     private ProfileViewModel viewModel = null;
 
     private User mUser;
-    private Relationship mRelationship;
     private Menu menu;
     private static final int OPTION_MENU_GROUP_RELATION = 1;
     private static final int OPTION_MENU_CREATE_BLOCK = 1;
@@ -69,8 +62,7 @@ public class ProfileActivity extends FragmentActivity implements
 
         viewModel = ViewModelProviders
                 .of(this, new ProfileViewModel.Factory(
-                        TwitterManager.getTwitter(),
-                        Executors.newSingleThreadExecutor()
+                        new TwitterRepository(TwitterManager.getTwitter())
                 ))
                 .get(ProfileViewModel.class);
 
@@ -84,24 +76,26 @@ public class ProfileActivity extends FragmentActivity implements
 
         // インテント経由での起動をサポート
         Intent intent = getIntent();
-        Bundle args = new Bundle(1);
+        Long userId = null;
+        String screenName = null;
+
         if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
                 && intent.getData().getLastPathSegment() != null
                 && !intent.getData().getLastPathSegment().isEmpty()) {
-            args.putString("screenName", intent.getData().getLastPathSegment());
+            screenName = intent.getData().getLastPathSegment();
         } else {
-            String screenName = intent.getStringExtra("screenName");
-            if (screenName != null) {
-                args.putString("screenName", screenName);
-            } else {
-                args.putLong("userId", intent.getLongExtra("userId", 0));
+            screenName = intent.getStringExtra("screenName");
+            if (screenName == null) {
+                userId = intent.getLongExtra("userId", 0);
             }
         }
-        MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
-        getSupportLoaderManager().initLoader(0, args, this);
 
         // イベントハンドラ登録&ViewModelからの通知受信
         registerEvents();
+
+        // ユーザーのプロフィールが読む
+        MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
+        viewModel.loadProfile(userId, screenName);
     }
 
     private void registerEvents() {
@@ -134,6 +128,11 @@ public class ProfileActivity extends FragmentActivity implements
         // 画面の再起動要求に応答
         viewModel.getRestartRequest().observe(this, unit -> {
             restart();
+        });
+
+        // 読み込んだプロフィール
+        viewModel.getProfile().observe(this, profile -> {
+           onProfileReceived(profile);
         });
     }
 
@@ -172,7 +171,7 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_create_block,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        new CreateBlockTask().execute(mUser.getId());
+                                        viewModel.updateBlockEnabled(true);
                                     }
                             )
                             .setNegativeButton(
@@ -188,7 +187,7 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_create_official_mute,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        viewModel.createOfficialMuteWrapper(mUser.getId());
+                                        viewModel.updateOfficialMute(true);
                                     }
                             )
                             .setNegativeButton(
@@ -204,7 +203,7 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_create_no_retweet,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        new CreateNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
+                                        viewModel.updateFriendshipRetweetEnabled(false);
                                     }
                             )
                             .setNegativeButton(
@@ -220,7 +219,8 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_destroy_block,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        new DestroyBlockTask().execute(mUser.getId());
+                                        viewModel.updateBlockEnabled(false);
+
                                     }
                             )
                             .setNegativeButton(
@@ -236,7 +236,7 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_destroy_official_mute,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        viewModel.destroyOfficialMuteWrapper(mUser.getId());
+                                        viewModel.updateOfficialMute(false);
                                     }
                             )
                             .setNegativeButton(
@@ -252,7 +252,7 @@ public class ProfileActivity extends FragmentActivity implements
                                     R.string.button_destroy_no_retweet,
                                     (dialog, which) -> {
                                         MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        new DestroyNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
+                                        viewModel.updateFriendshipRetweetEnabled(true);
                                     }
                             )
                             .setNegativeButton(
@@ -318,7 +318,7 @@ public class ProfileActivity extends FragmentActivity implements
                                 R.string.button_report_spam,
                                 (dialog, which) -> {
                                     MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                    new ReportSpamTask().execute(mUser.getId());
+                                    viewModel.reportSpam();
                                 }
                         )
                         .setNegativeButton(
@@ -332,18 +332,7 @@ public class ProfileActivity extends FragmentActivity implements
         return true;
     }
 
-    @Override
-    public Loader<Profile> onCreateLoader(int arg0, Bundle args) {
-        String screenName = args.getString("screenName");
-        if (screenName != null) {
-            return new ShowUserLoader(this, screenName);
-        } else {
-            return new ShowUserLoader(this, args.getLong("userId"));
-        }
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Profile> arg0, Profile profile) {
+    private void onProfileReceived(Profile profile) {
         MessageUtil.dismissProgressDialog();
         if (profile == null) {
             MessageUtil.showToast(R.string.toast_load_data_failure, "(null)");
@@ -370,7 +359,6 @@ public class ProfileActivity extends FragmentActivity implements
         }
 
         Relationship relationship = profile.getRelationship();
-        mRelationship = relationship;
 
         if (menu != null) {
             if (relationship.isSourceBlockingTarget()) {
@@ -499,162 +487,11 @@ public class ProfileActivity extends FragmentActivity implements
 
     }
 
-    @Override
-    public void onLoaderReset(Loader<Profile> arg0) {
-    }
-
     public void restart() {
         Intent intent = new Intent();
         intent.setClass(this, ProfileActivity.class);
         intent.putExtra("userId", mUser.getId());
         startActivity(intent);
         finish();
-    }
-
-    private class ReportSpamTask extends AsyncTask<Long, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().reportSpam(userId);
-                net.amay077.kustaway.model.Relationship.setBlock(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_report_spam_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_report_spam_failure);
-            }
-
-        }
-    }
-
-    private class CreateBlockTask extends AsyncTask<Long, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().createBlock(userId);
-                net.amay077.kustaway.model.Relationship.setBlock(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_create_block_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_create_block_failure);
-            }
-
-        }
-    }
-
-    private class DestroyBlockTask extends AsyncTask<Long, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().destroyBlock(userId);
-                net.amay077.kustaway.model.Relationship.removeBlock(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_destroy_block_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_destroy_block_failure);
-            }
-
-        }
-    }
-
-    private class CreateNoRetweetTask extends AsyncTask<Long, Void, Boolean> {
-        private boolean notification;
-
-        public CreateNoRetweetTask(boolean notification) {
-            this.notification = notification;
-        }
-
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().updateFriendship(userId, notification, false);
-                net.amay077.kustaway.model.Relationship.setNoRetweet(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_create_no_retweet_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_create_no_retweet_failure);
-            }
-
-        }
-    }
-
-    private class DestroyNoRetweetTask extends AsyncTask<Long, Void, Boolean> {
-        private boolean notification;
-
-        public DestroyNoRetweetTask(boolean notification) {
-            this.notification = notification;
-        }
-
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().updateFriendship(userId, notification, true);
-                net.amay077.kustaway.model.Relationship.removeNoRetweet(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_destroy_no_retweet_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_destroy_no_retweet_failure);
-            }
-
-        }
     }
 }
