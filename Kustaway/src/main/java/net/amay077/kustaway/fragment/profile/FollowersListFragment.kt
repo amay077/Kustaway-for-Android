@@ -9,21 +9,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.RecyclerUserAdapter
 import net.amay077.kustaway.databinding.ListGuruguruBinding
 import net.amay077.kustaway.model.TwitterManager
-
-import java.util.ArrayList
-
 import twitter4j.PagableResponseList
 import twitter4j.User
+import java.util.*
 
 /**
- * フォロー一覧
+ * フォロワー一覧
  */
-class FollowingListFragment : Fragment() {
+class FollowersListFragment : Fragment() {
     private var mUserId: Long = 0
     private var mCursor: Long = -1
     private var mAutoLoader = false
@@ -54,7 +51,7 @@ class FollowingListFragment : Fragment() {
         mAdapter = RecyclerUserAdapter(activity, ArrayList())
         binding.recyclerView.adapter = mAdapter
 
-        FriendsListTask().execute(mUserId)
+        FollowersListTask().execute(mUserId)
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -93,13 +90,13 @@ class FollowingListFragment : Fragment() {
         }
         binding.guruguru.visibility = View.VISIBLE
         mAutoLoader = false
-        FriendsListTask().execute(mUserId)
+        FollowersListTask().execute(mUserId)
     }
 
-    private inner class FriendsListTask : AsyncTask<Long, Void, PagableResponseList<User>>() {
+    private inner class FollowersListTask : AsyncTask<Long, Void, PagableResponseList<User>>() {
         protected override fun doInBackground(vararg params: Long?): PagableResponseList<User>? {
             try {
-                val users = TwitterManager.getTwitter().getFriendsList(params[0] ?: -1, mCursor) // TODO 雑すぎ
+                val users = TwitterManager.getTwitter().getFollowersList(params[0] ?: -1, mCursor) // TODO 雑すぎ
                 mCursor = users.nextCursor
                 return users
             } catch (e: Exception) {
@@ -125,3 +122,4 @@ class FollowingListFragment : Fragment() {
         }
     }
 }
+
