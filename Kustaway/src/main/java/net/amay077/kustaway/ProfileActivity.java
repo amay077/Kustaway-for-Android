@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,6 @@ import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
 import net.amay077.kustaway.viewmodel.ProfileViewModel;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import de.greenrobot.event.EventBus;
@@ -118,6 +118,20 @@ public class ProfileActivity extends FragmentActivity implements
             }
         });
 
+        // Toastの表示要求に応答
+        viewModel.getToastRequest().observe(this, messageResId -> {
+            MessageUtil.showToast(messageResId);
+        });
+
+        // プログレスの表示要求に応答
+        viewModel.getProgressRequest().observe(this, message -> {
+            if (!TextUtils.isEmpty(message)) {
+                MessageUtil.showProgressDialog(ProfileActivity.this, message);
+            } else {
+                MessageUtil.dismissProgressDialog();
+            }
+        });
+
         // 画面の再起動要求に応答
         viewModel.getRestartRequest().observe(this, unit -> {
             restart();
@@ -184,7 +198,7 @@ public class ProfileActivity extends FragmentActivity implements
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            viewModel.createOfficialMute(mUser.getId());
+                                            viewModel.createOfficialMuteWrapper(mUser.getId());
 
                                         }
                                     }
@@ -254,7 +268,7 @@ public class ProfileActivity extends FragmentActivity implements
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            viewModel.destroyOfficialMute(mUser.getId());
+                                            viewModel.destroyOfficialMuteWrapper(mUser.getId());
                                         }
                                     }
                             )
