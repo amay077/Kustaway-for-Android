@@ -27,7 +27,7 @@ allprojects {
 
 project.ext {
     appCenterSdkVersion = "1.1.0"
-    supportLibVersion = "25.1.0"
+    supportLibVersion = "26.1.0"
     twitter4jVersion = "4.0.6"
     butterKnifeVersion = "8.5.1"
 }

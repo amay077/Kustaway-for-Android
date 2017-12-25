@@ -18,11 +18,11 @@ def getFromLocalProperties(file, key) {
 
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
 
         versionCode 101
         versionName '0.5.1'
@@ -77,6 +77,10 @@ dependencies {
     // App Center
     compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
     compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+
+    // Android Architecture Components
+    implementation 'android.arch.lifecycle:runtime:1.0.3'
+    implementation 'android.arch.lifecycle:extensions:1.0.0'
 
     // Butter Knife
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
