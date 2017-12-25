@@ -3,31 +3,35 @@ package net.amay077.kustaway.fragment.profile;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 
-import net.amay077.kustaway.R;
-import net.amay077.kustaway.adapter.UserAdapter;
+import net.amay077.kustaway.adapter.DividerItemDecoration;
+import net.amay077.kustaway.adapter.RecyclerUserAdapter;
+import net.amay077.kustaway.databinding.ListGuruguruBinding;
 import net.amay077.kustaway.model.TwitterManager;
+
+import java.util.ArrayList;
+
 import twitter4j.PagableResponseList;
 import twitter4j.User;
 
 public class FollowingListFragment extends Fragment {
-    private UserAdapter mAdapter;
+    private RecyclerUserAdapter mAdapter;
     private long mUserId;
     private long mCursor = -1;
-    private ListView mListView;
-    private ProgressBar mFooter;
     private boolean mAutoLoader = false;
+
+    private ListGuruguruBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.list_guruguru, container, false);
-        if (v == null) {
+        binding = ListGuruguruBinding.inflate(inflater, container, false);
+        if (binding == null) {
             return null;
         }
 
@@ -39,42 +43,59 @@ public class FollowingListFragment extends Fragment {
         mUserId = user.getId();
 
         // リストビューの設定
-        mListView = (ListView) v.findViewById(R.id.list_view);
-        mListView.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
 
         // コンテキストメニューを使える様にする為の指定、但しデフォルトではロングタップで開く
-        registerForContextMenu(mListView);
-
-        mFooter = (ProgressBar) v.findViewById(R.id.guruguru);
+        registerForContextMenu(binding.recyclerView);
 
         // Status(ツイート)をViewに描写するアダプター
-        mAdapter = new UserAdapter(getActivity(), R.layout.row_user);
-        mListView.setAdapter(mAdapter);
+        mAdapter = new RecyclerUserAdapter(getActivity(), new ArrayList<>());
+        binding.recyclerView.setAdapter(mAdapter);
 
         new FriendsListTask().execute(mUserId);
 
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onScrollStateChanged(RecyclerView view, int scrollState) {
             }
 
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                // 最後までスクロールされたかどうかの判定
-                if (totalItemCount == firstVisibleItem + visibleItemCount) {
-                    additionalReading();
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                // see - http://recyclerview.hatenablog.com/entry/2016/11/05/182404
+                int totalCount = recyclerView.getAdapter().getItemCount(); //合計のアイテム数
+                int childCount = recyclerView.getChildCount(); // RecyclerViewに表示されてるアイテム数
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+                if (layoutManager instanceof GridLayoutManager) { // GridLayoutManager
+                    GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+                    int firstPosition = gridLayoutManager.findFirstVisibleItemPosition(); // RecyclerViewに表示されている一番上のアイテムポジション
+                    if (totalCount == childCount + firstPosition) {
+                        // ページング処理
+                        // GridLayoutManagerを指定している時のページング処理
+                    }
+                } else if (layoutManager instanceof LinearLayoutManager) { // LinearLayoutManager
+                    LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+                    int firstPosition = linearLayoutManager.findFirstVisibleItemPosition(); // RecyclerViewの一番上に表示されているアイテムのポジション
+                    if (totalCount == childCount + firstPosition) {
+                        // ページング処理
+                        additionalReading();
+                    }
                 }
             }
         });
-        return v;
+
+        return binding.getRoot();
     }
 
     private void additionalReading() {
         if (!mAutoLoader) {
             return;
         }
-        mFooter.setVisibility(View.VISIBLE);
+        binding.guruguru.setVisibility(View.VISIBLE);
         mAutoLoader = false;
         new FriendsListTask().execute(mUserId);
     }
@@ -94,7 +115,7 @@ public class FollowingListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(PagableResponseList<User> friendsList) {
-            mFooter.setVisibility(View.GONE);
+            binding.guruguru.setVisibility(View.GONE);
             if (friendsList == null) {
                 return;
             }
@@ -104,7 +125,8 @@ public class FollowingListFragment extends Fragment {
             if (friendsList.hasNext()) {
                 mAutoLoader = true;
             }
-            mListView.setVisibility(View.VISIBLE);
+            mAdapter.notifyDataSetChanged();
+            binding.recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }

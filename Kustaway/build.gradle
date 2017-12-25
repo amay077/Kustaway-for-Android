@@ -97,8 +97,9 @@ dependencies {
 
     // Support Libraries
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support.constraint:constraint-layout:1.0.2"
     compile "com.android.support:design:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support.constraint:constraint-layout:1.0.2"
 
     // Twitter4J
     compile "org.twitter4j:twitter4j-core:${twitter4jVersion}"
