@@ -71,8 +71,16 @@ dependencies {
     compile ('org.eclipse.paho:org.eclipse.paho.android.service:1.0.2')
             { exclude module: 'support-v4' }
 
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile fileTree(include: '*.jar', dir: 'libs')
+
+    // Kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    // Kotlin Coroutines
+    // see - https://github.com/Kotlin/kotlinx.coroutines for latest version
+    def coroutines_version = '0.20'
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     // App Center
     compile "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
