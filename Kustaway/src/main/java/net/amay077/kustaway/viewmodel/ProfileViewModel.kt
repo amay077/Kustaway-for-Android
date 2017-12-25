@@ -28,9 +28,9 @@ class ProfileViewModel(
     private val _toastRequest = MutableLiveData<Int>()
     val toastRequest : LiveData<Int> = _toastRequest
 
-    // 画面再起動メッセージ
-    private val _restartRequest = MutableLiveData<Unit>()
-    val restartRequest : LiveData<Unit> = _restartRequest
+    // 画面再起動メッセージ(引数は UserId)
+    private val _restartRequest = MutableLiveData<Long>()
+    val restartRequest : LiveData<Long> = _restartRequest
 
     // プログレスの表示メッセージ（空文字の場合、プログレスを非表示にする ← TODO わかりづらい）
     private val _progressRequest = MutableLiveData<String>()
@@ -74,7 +74,7 @@ class ProfileViewModel(
                     true -> R.string.toast_create_official_mute_success
                     else -> R.string.toast_destroy_official_mute_success
                 })
-                _restartRequest.postValue(Unit)
+                _restartRequest.postValue(userId)
             } else {
                 _toastRequest.postValue(when(enabled){
                     true -> R.string.toast_create_official_mute_failure
@@ -103,7 +103,7 @@ class ProfileViewModel(
                     true -> R.string.toast_destroy_no_retweet_success
                     else -> R.string.toast_create_no_retweet_success
                 })
-                _restartRequest.postValue(Unit)
+                _restartRequest.postValue(userId)
             } else {
                 _toastRequest.postValue(when(enabled){
                     true -> R.string.toast_destroy_no_retweet_failure
@@ -130,7 +130,7 @@ class ProfileViewModel(
                     true -> R.string.toast_create_block_success
                     else -> R.string.toast_destroy_block_success
                 })
-                _restartRequest.postValue(Unit)
+                _restartRequest.postValue(userId)
             } else {
                 _toastRequest.postValue(when(enabled){
                     true -> R.string.toast_create_block_failure
@@ -154,7 +154,7 @@ class ProfileViewModel(
             _progressRequest.postValue("")
             if (success) {
                 _toastRequest.postValue(R.string.toast_report_spam_success)
-                _restartRequest.postValue(Unit)
+                _restartRequest.postValue(userId)
             } else {
                 _toastRequest.postValue(R.string.toast_report_spam_failure)
             }

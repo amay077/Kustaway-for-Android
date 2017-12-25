@@ -99,7 +99,7 @@ public class ProfileActivity extends FragmentActivity {
         // イベントハンドラ登録&ViewModelからの通知受信
         registerEvents();
 
-        // ユーザーのプロフィールが読む
+        // ユーザーのプロフィールを読む
         MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
         viewModel.loadProfile(userId, screenName);
     }
@@ -132,8 +132,8 @@ public class ProfileActivity extends FragmentActivity {
         });
 
         // 画面の再起動要求に応答
-        viewModel.getRestartRequest().observe(this, unit -> {
-            restart();
+        viewModel.getRestartRequest().observe(this, userId -> {
+            restart(userId);
         });
 
         // 読み込んだプロフィール
@@ -338,25 +338,27 @@ public class ProfileActivity extends FragmentActivity {
             MessageUtil.showToast(R.string.toast_load_data_failure, profile.getError());
             return;
         }
-        mUser = profile.getUser();
-        if (mUser == null) {
+
+        final User user = profile.getUser();
+        mUser = user;
+        if (user == null) {
             MessageUtil.showToast(R.string.toast_load_data_failure, "(missing user)");
             return;
         }
 
         // Option Menu 用のマッピング
-        navigateMenuMap.put(R.id.open_twitter, "https://twitter.com/" + mUser.getScreenName());
-        navigateMenuMap.put(R.id.open_favstar, "http://ja.favstar.fm/users/" + mUser.getScreenName() + "/recent");
-        navigateMenuMap.put(R.id.open_aclog, "http://aclog.koba789.com/" + mUser.getScreenName() + "/timeline");
-        navigateMenuMap.put(R.id.open_twilog, "http://twilog.org/" + mUser.getScreenName());
+        navigateMenuMap.put(R.id.open_twitter, "https://twitter.com/" + user.getScreenName());
+        navigateMenuMap.put(R.id.open_favstar, "http://ja.favstar.fm/users/" + user.getScreenName() + "/recent");
+        navigateMenuMap.put(R.id.open_aclog, "http://aclog.koba789.com/" + user.getScreenName() + "/timeline");
+        navigateMenuMap.put(R.id.open_twilog, "http://twilog.org/" + user.getScreenName());
 
-        binding.favouritesCount.setText(getString(R.string.label_favourites, String.format("%1$,3d", mUser.getFavouritesCount())));
-        binding.statusesCount.setText(getString(R.string.label_tweets, String.format("%1$,3d", mUser.getStatusesCount())));
-        binding.friendsCount.setText(getString(R.string.label_following, String.format("%1$,3d", mUser.getFriendsCount())));
-        binding.followersCount.setText(getString(R.string.label_followers, String.format("%1$,3d", mUser.getFollowersCount())));
-        binding.listedCount.setText(getString(R.string.label_listed, String.format("%1$,3d", mUser.getListedCount())));
+        binding.favouritesCount.setText(getString(R.string.label_favourites, String.format("%1$,3d", user.getFavouritesCount())));
+        binding.statusesCount.setText(getString(R.string.label_tweets, String.format("%1$,3d", user.getStatusesCount())));
+        binding.friendsCount.setText(getString(R.string.label_following, String.format("%1$,3d", user.getFriendsCount())));
+        binding.followersCount.setText(getString(R.string.label_followers, String.format("%1$,3d", user.getFollowersCount())));
+        binding.listedCount.setText(getString(R.string.label_listed, String.format("%1$,3d", user.getListedCount())));
 
-        String bannerUrl = mUser.getProfileBannerMobileRetinaURL();
+        String bannerUrl = user.getProfileBannerMobileRetinaURL();
         if (bannerUrl != null) {
             ImageUtil.displayImage(bannerUrl, binding.banner);
         }
@@ -389,7 +391,7 @@ public class ProfileActivity extends FragmentActivity {
         SimplePagerAdapter simplePagerAdapter = new SimplePagerAdapter(this, binding.pager);
 
         Bundle args = new Bundle();
-        args.putSerializable("user", mUser);
+        args.putSerializable("user", user);
         args.putSerializable("relationship", relationship);
         simplePagerAdapter.addTab(SummaryFragment.class, args);
         simplePagerAdapter.addTab(DescriptionFragment.class, args);
@@ -440,7 +442,7 @@ public class ProfileActivity extends FragmentActivity {
         SimplePagerAdapter listPagerAdapter = new SimplePagerAdapter(this, binding.listPager);
 
         Bundle listArgs = new Bundle();
-        listArgs.putSerializable("user", mUser);
+        listArgs.putSerializable("user", user);
         listPagerAdapter.addTab(UserTimelineFragment.class, listArgs);
         listPagerAdapter.addTab(FollowingListFragment.class, listArgs);
         listPagerAdapter.addTab(FollowersListFragment.class, listArgs);
@@ -490,10 +492,10 @@ public class ProfileActivity extends FragmentActivity {
 
     }
 
-    public void restart() {
+    public void restart(long userId) {
         Intent intent = new Intent();
         intent.setClass(this, ProfileActivity.class);
-        intent.putExtra("userId", mUser.getId());
+        intent.putExtra("userId", userId);
         startActivity(intent);
         finish();
     }
