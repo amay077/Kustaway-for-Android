@@ -2,6 +2,7 @@ package net.amay077.kustaway;
 
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -34,6 +35,10 @@ import net.amay077.kustaway.task.ShowUserLoader;
 import net.amay077.kustaway.util.ImageUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
+import net.amay077.kustaway.viewmodel.ProfileViewModel;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import de.greenrobot.event.EventBus;
 import twitter4j.Relationship;
@@ -43,6 +48,7 @@ public class ProfileActivity extends FragmentActivity implements
         LoaderManager.LoaderCallbacks<Profile> {
 
     private ActivityProfileBinding binding = null;
+    private ProfileViewModel viewModel = null;
 
     private User mUser;
     private Relationship mRelationship;
@@ -61,6 +67,15 @@ public class ProfileActivity extends FragmentActivity implements
         ThemeUtil.setTheme(this);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
+
+        viewModel = ViewModelProviders
+                .of(this, new ProfileViewModel.Factory(
+                        TwitterManager.getTwitter(),
+                        Executors.newSingleThreadExecutor()
+                ))
+                .get(ProfileViewModel.class);
+
+        binding.setViewModel(viewModel);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
@@ -86,7 +101,12 @@ public class ProfileActivity extends FragmentActivity implements
         MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
         getSupportLoaderManager().initLoader(0, args, this);
 
+        // イベントハンドラ登録&ViewModelからの通知受信
+        registerEvents();
+    }
 
+    private void registerEvents() {
+        // ヘッダの折りたたみON/OFF
         binding.collapseLabel.setOnClickListener(v -> {
             View frame = findViewById(R.id.frame);
             if (frame.getVisibility() == View.VISIBLE) {
@@ -96,6 +116,11 @@ public class ProfileActivity extends FragmentActivity implements
                 binding.frame.setVisibility(View.VISIBLE);
                 binding.collapseLabel.setText(R.string.fontello_up);
             }
+        });
+
+        // 画面の再起動要求に応答
+        viewModel.getRestartRequest().observe(this, unit -> {
+            restart();
         });
     }
 
@@ -159,7 +184,8 @@ public class ProfileActivity extends FragmentActivity implements
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new CreateOfficialMuteTask().execute(mUser.getId());
+                                            viewModel.createOfficialMute(mUser.getId());
+
                                         }
                                     }
                             )
@@ -228,7 +254,7 @@ public class ProfileActivity extends FragmentActivity implements
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new DestroyOfficialMuteTask().execute(mUser.getId());
+                                            viewModel.destroyOfficialMute(mUser.getId());
                                         }
                                     }
                             )
@@ -598,60 +624,6 @@ public class ProfileActivity extends FragmentActivity implements
                 restart();
             } else {
                 MessageUtil.showToast(R.string.toast_destroy_block_failure);
-            }
-
-        }
-    }
-
-    private class CreateOfficialMuteTask extends AsyncTask<Long, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().createMute(userId);
-                net.amay077.kustaway.model.Relationship.setOfficialMute(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_create_official_mute_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_create_official_mute_failure);
-            }
-
-        }
-    }
-
-    private class DestroyOfficialMuteTask extends AsyncTask<Long, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(Long... params) {
-            Long userId = params[0];
-            try {
-                TwitterManager.getTwitter().destroyMute(userId);
-                net.amay077.kustaway.model.Relationship.removeOfficialMute(userId);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            MessageUtil.dismissProgressDialog();
-            if (success) {
-                MessageUtil.showToast(R.string.toast_destroy_official_mute_success);
-                restart();
-            } else {
-                MessageUtil.showToast(R.string.toast_destroy_official_mute_failure);
             }
 
         }
