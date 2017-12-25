@@ -3,7 +3,6 @@ package net.amay077.kustaway;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -171,21 +170,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_create_block)
                             .setPositiveButton(
                                     R.string.button_create_block,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new CreateBlockTask().execute(mUser.getId());
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        new CreateBlockTask().execute(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -194,22 +186,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_create_official_mute)
                             .setPositiveButton(
                                     R.string.button_create_official_mute,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            viewModel.createOfficialMuteWrapper(mUser.getId());
-
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        viewModel.createOfficialMuteWrapper(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -218,21 +202,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_create_no_retweet)
                             .setPositiveButton(
                                     R.string.button_create_no_retweet,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new CreateNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        new CreateNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -241,21 +218,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_create_block)
                             .setPositiveButton(
                                     R.string.button_destroy_block,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new DestroyBlockTask().execute(mUser.getId());
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        new DestroyBlockTask().execute(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -264,21 +234,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_destroy_official_mute)
                             .setPositiveButton(
                                     R.string.button_destroy_official_mute,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            viewModel.destroyOfficialMuteWrapper(mUser.getId());
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        viewModel.destroyOfficialMuteWrapper(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -287,21 +250,14 @@ public class ProfileActivity extends FragmentActivity implements
                             .setMessage(R.string.confirm_destroy_no_retweet)
                             .setPositiveButton(
                                     R.string.button_destroy_no_retweet,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                            new DestroyNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
-                                        }
+                                    (dialog, which) -> {
+                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                        new DestroyNoRetweetTask(mRelationship.isSourceNotificationsEnabled()).execute(mUser.getId());
                                     }
                             )
                             .setNegativeButton(
                                     R.string.button_cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                        }
-                                    }
+                                    (dialog, which) -> { }
                             )
                             .show();
                     break;
@@ -360,21 +316,14 @@ public class ProfileActivity extends FragmentActivity implements
                         .setMessage(R.string.confirm_report_spam)
                         .setPositiveButton(
                                 R.string.button_report_spam,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
-                                        new ReportSpamTask().execute(mUser.getId());
-                                    }
+                                (dialog, which) -> {
+                                    MessageUtil.showProgressDialog(ProfileActivity.this, getString(R.string.progress_process));
+                                    new ReportSpamTask().execute(mUser.getId());
                                 }
                         )
                         .setNegativeButton(
                                 R.string.button_cancel,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                }
+                                (dialog, which) -> { }
                         )
                         .show();
 
