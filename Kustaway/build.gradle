@@ -27,6 +27,7 @@ android {
         versionCode 101
         versionName '0.5.1'
         applicationId "net.amay077.kustaway"
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

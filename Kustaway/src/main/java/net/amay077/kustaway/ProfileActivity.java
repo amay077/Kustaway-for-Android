@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,7 +42,7 @@ import de.greenrobot.event.EventBus;
 import twitter4j.Relationship;
 import twitter4j.User;
 
-public class ProfileActivity extends FragmentActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     private ActivityProfileBinding binding = null;
     private ProfileViewModel viewModel = null;

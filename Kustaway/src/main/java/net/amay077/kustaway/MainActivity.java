@@ -1,7 +1,6 @@
 package net.amay077.kustaway;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -11,10 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -30,16 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import butterknife.OnLongClick;
-import de.greenrobot.event.EventBus;
 import net.amay077.kustaway.adapter.SearchAdapter;
 import net.amay077.kustaway.adapter.main.AccessTokenAdapter;
 import net.amay077.kustaway.adapter.main.MainPagerAdapter;
@@ -73,18 +67,25 @@ import net.amay077.kustaway.util.TwitterUtil;
 import net.amay077.kustaway.widget.AutoCompleteEditText;
 import net.amay077.kustaway.widget.ClearEditText;
 import net.amay077.kustaway.widget.FontelloButton;
-import twitter4j.SavedSearch;
+
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+import butterknife.OnLongClick;
+import de.greenrobot.event.EventBus;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
 
 @SuppressLint("InflateParams")
 @SuppressWarnings("MagicConstant")
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_ACCOUNT_SETTING = 200;
     private static final int REQUEST_SETTINGS = 300;
@@ -178,10 +179,10 @@ public class MainActivity extends FragmentActivity {
         /**
          * ActionBarの初期化処理
          */
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
 
             int options = actionBar.getDisplayOptions();
             if ((options & ActionBar.DISPLAY_SHOW_CUSTOM) == ActionBar.DISPLAY_SHOW_CUSTOM) {
