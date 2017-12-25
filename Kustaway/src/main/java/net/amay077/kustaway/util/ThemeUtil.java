@@ -35,16 +35,4 @@ public class ThemeUtil {
         }
         return outValue.data;
     }
-
-    /**
-     * Theme に応じた NavigationDrawer のアイコン(ハンバーガーメニューのアイコン)を返す
-     */
-    public static int getThemeNavDrawerIcon() {
-        if (BasicSettings.getThemeName().equals("black")) {
-            return R.drawable.ic_menu_white_24dp;
-        } else {
-            return R.drawable.ic_menu_black_24dp;
-        }
-    }
-
 }

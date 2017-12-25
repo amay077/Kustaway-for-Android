@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
          */
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(ThemeUtil.getThemeNavDrawerIcon());
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_launcher_36dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
             int options = actionBar.getDisplayOptions();
