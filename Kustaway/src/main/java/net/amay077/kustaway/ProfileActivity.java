@@ -34,6 +34,9 @@ import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
 import net.amay077.kustaway.viewmodel.ProfileViewModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.greenrobot.event.EventBus;
 import twitter4j.Relationship;
 import twitter4j.User;
@@ -44,6 +47,9 @@ public class ProfileActivity extends FragmentActivity {
     private ProfileViewModel viewModel = null;
 
     private User mUser;
+    // Option Menu ID と遷移先URLのマップ
+    private final Map<Integer, String> navigateMenuMap = new HashMap<>();
+
     private Menu menu;
     private static final int OPTION_MENU_GROUP_RELATION = 1;
     private static final int OPTION_MENU_CREATE_BLOCK = 1;
@@ -292,25 +298,15 @@ public class ProfileActivity extends FragmentActivity {
                 startActivity(intent);
                 break;
             case R.id.open_twitter:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/"
-                        + mUser.getScreenName()));
-                startActivity(intent);
-                break;
             case R.id.open_favstar:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://ja.favstar.fm/users/"
-                        + mUser.getScreenName() + "/recent"));
-                startActivity(intent);
-                break;
             case R.id.open_aclog:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://aclog.koba789.com/"
-                        + mUser.getScreenName() + "/timeline"));
-                startActivity(intent);
-                break;
             case R.id.open_twilog:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://twilog.org/"
-                        + mUser.getScreenName()));
+            {
+                final String url = navigateMenuMap.get(item.getItemId());
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
                 break;
+            }
             case R.id.report_spam:
                 new AlertDialog.Builder(ProfileActivity.this)
                         .setMessage(R.string.confirm_report_spam)
@@ -347,6 +343,13 @@ public class ProfileActivity extends FragmentActivity {
             MessageUtil.showToast(R.string.toast_load_data_failure, "(missing user)");
             return;
         }
+
+        // Option Menu 用のマッピング
+        navigateMenuMap.put(R.id.open_twitter, "https://twitter.com/" + mUser.getScreenName());
+        navigateMenuMap.put(R.id.open_favstar, "http://ja.favstar.fm/users/" + mUser.getScreenName() + "/recent");
+        navigateMenuMap.put(R.id.open_aclog, "http://aclog.koba789.com/" + mUser.getScreenName() + "/timeline");
+        navigateMenuMap.put(R.id.open_twilog, "http://twilog.org/" + mUser.getScreenName());
+
         binding.favouritesCount.setText(getString(R.string.label_favourites, String.format("%1$,3d", mUser.getFavouritesCount())));
         binding.statusesCount.setText(getString(R.string.label_tweets, String.format("%1$,3d", mUser.getStatusesCount())));
         binding.friendsCount.setText(getString(R.string.label_following, String.format("%1$,3d", mUser.getFriendsCount())));
