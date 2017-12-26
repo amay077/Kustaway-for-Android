@@ -31,6 +31,10 @@ public class StatusLongClickListener implements AdapterView.OnItemLongClickListe
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
         TwitterAdapter twitterAdapter = getAdapter(adapterView);
         Row row = twitterAdapter.getItem(position);
+        return handleRow(mActivity, row);
+    }
+
+    public static boolean handleRow(FragmentActivity activity, Row row) {
         if (row == null) {
             return false;
         }
@@ -45,13 +49,13 @@ public class StatusLongClickListener implements AdapterView.OnItemLongClickListe
         Bundle args = new Bundle();
         String action = BasicSettings.getLongTapAction();
         if (action.equals("quote")) {
-            ActionUtil.doQuote(source, mActivity);
+            ActionUtil.doQuote(source, activity);
         } else if (action.equals("talk")) {
             if (source.getInReplyToStatusId() > 0) {
                 TalkFragment dialog = new TalkFragment();
                 args.putSerializable("status", source);
                 dialog.setArguments(args);
-                dialog.show(mActivity.getSupportFragmentManager(), "dialog");
+                dialog.show(activity.getSupportFragmentManager(), "dialog");
             } else {
                 return false;
             }
@@ -60,16 +64,16 @@ public class StatusLongClickListener implements AdapterView.OnItemLongClickListe
             Bundle aroundArgs = new Bundle();
             aroundArgs.putSerializable("status", source);
             aroundFragment.setArguments(aroundArgs);
-            aroundFragment.show(mActivity.getSupportFragmentManager(), "dialog");
+            aroundFragment.show(activity.getSupportFragmentManager(), "dialog");
         } else if (action.equals("share_url")) {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT, "https://twitter.com/" + status.getUser().getScreenName()
                     + "/status/" + String.valueOf(status.getId()));
-            mActivity.startActivity(intent);
+            activity.startActivity(intent);
         } else if (action.equals("reply_all")) {
-            ActionUtil.doReplyAll(source, mActivity);
+            ActionUtil.doReplyAll(source, activity);
         } else {
             return false;
         }

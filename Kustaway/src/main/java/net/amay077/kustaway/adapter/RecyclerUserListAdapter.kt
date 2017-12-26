@@ -60,6 +60,10 @@ class RecyclerUserListAdapter(
         private val userLists: MutableList<UserList>) :
         ProfileItemAdapter<UserList>() {
 
+    // 未対応
+    override var onItemClickListener: (UserList) -> Unit = {}
+    override var onItemLongClickListener: (UserList) -> Boolean = { false }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val view = RecyclerUserListView(context)
         return RecyclerUserListViewHolder(view)

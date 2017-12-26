@@ -10,15 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.ProfileItemAdapter
-import net.amay077.kustaway.adapter.RecyclerUserAdapter
 import net.amay077.kustaway.databinding.ListGuruguruBinding
 import twitter4j.User
-import java.util.*
 
 /**
  * プロフィール画面の「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベース Fragment
  */
 abstract class ProfileBaseFragment<T> : Fragment() {
+    protected var mUser: User? = null
     protected var mUserId: Long = 0
     protected var mCursor: Long = -1
     protected var mAutoLoader = false
@@ -36,6 +35,7 @@ abstract class ProfileBaseFragment<T> : Fragment() {
         val user = arguments.getSerializable("user") as User
 
         mUserId = user.id
+        mUser = user
 
         // RecyclerView の設定
         binding.listView.visibility = View.GONE // ListView は消しておく TODO 完全に RecyclerView 化できたら .xml からも消す
