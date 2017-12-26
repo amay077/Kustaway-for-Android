@@ -18,6 +18,7 @@ import net.amay077.kustaway.widget.FontelloTextView;
 import twitter4j.URLEntity;
 import twitter4j.User;
 
+// TODO すべて RecyclerUserAdapter に置き換えたら消す
 public class UserAdapter extends ArrayAdapter<User> {
 
     static class ViewHolder {

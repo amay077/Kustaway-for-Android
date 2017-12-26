@@ -47,6 +47,7 @@ import twitter4j.DirectMessage;
 import twitter4j.Status;
 import twitter4j.User;
 
+// TODO すべて RecyclerTwitterAdapter に置き換えたら消す
 public class TwitterAdapter extends ArrayAdapter<Row> {
 
     static class ViewHolder {

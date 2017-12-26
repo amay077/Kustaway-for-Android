@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
+ * RecycleView の区切り線
  *
  * see - https://qiita.com/wasabeef_jp/items/6399432b899cb5613fb1
  */

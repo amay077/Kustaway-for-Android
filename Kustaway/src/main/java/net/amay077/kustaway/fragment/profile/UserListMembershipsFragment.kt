@@ -1,22 +1,11 @@
 package net.amay077.kustaway.fragment.profile
 
 import android.os.AsyncTask
-import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.ListView
-import android.widget.ProgressBar
-
-import net.amay077.kustaway.R
 import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.adapter.RecyclerUserListAdapter
-import net.amay077.kustaway.adapter.UserListAdapter
 import net.amay077.kustaway.model.TwitterManager
 import twitter4j.PagableResponseList
-import twitter4j.User
 import twitter4j.UserList
 
 /**
