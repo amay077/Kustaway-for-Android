@@ -68,7 +68,7 @@ class FavoritesListFragment : ProfileBaseFragment<Row>() {
     }
 
     fun onEventMainThread(event: StreamingDestroyStatusEvent) {
-//        mAdapter!!.removeStatus(event.statusId!!)
+        mAdapter.remove(event.statusId!!)
     }
 
     private inner class FavoritesListTask : AsyncTask<String, Void, ResponseList<Status>>() {

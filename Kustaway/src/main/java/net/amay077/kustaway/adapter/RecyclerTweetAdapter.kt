@@ -465,4 +465,15 @@ class RecyclerTweetAdapter(
     override fun add(row: Row) {
         rows.add(row)
     }
+
+    override fun remove(id: Long) {
+        val row = rows.firstOrNull({ row -> row.status.id == id})
+        if (row != null) {
+            rows.remove(row)
+        }
+    }
+
+    override fun clear() {
+        rows.clear()
+    }
 }

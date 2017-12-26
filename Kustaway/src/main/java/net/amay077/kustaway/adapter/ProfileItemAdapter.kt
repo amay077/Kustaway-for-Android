@@ -10,4 +10,6 @@ abstract class ProfileItemAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHol
     abstract fun add(item: T)
     abstract var onItemClickListener: ((T)->Unit)
     abstract var onItemLongClickListener: ((T)->Boolean)
+    abstract fun clear()
+    abstract fun remove(id: Long)
 }

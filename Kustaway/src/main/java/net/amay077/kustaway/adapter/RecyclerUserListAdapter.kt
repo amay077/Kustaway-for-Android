@@ -82,4 +82,8 @@ class RecyclerUserListAdapter(
     override fun add(userList: UserList) {
         userLists.add(userList)
     }
+
+    // 未対応
+    override fun clear() {}
+    override fun remove(id: Long) { }
 }

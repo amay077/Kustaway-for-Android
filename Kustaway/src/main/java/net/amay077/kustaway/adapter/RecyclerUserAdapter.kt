@@ -91,4 +91,8 @@ class RecyclerUserAdapter(
     override fun add(user: User) {
         users.add(user)
     }
+
+    // 未対応
+    override fun clear() {}
+    override fun remove(id: Long) { }
 }
