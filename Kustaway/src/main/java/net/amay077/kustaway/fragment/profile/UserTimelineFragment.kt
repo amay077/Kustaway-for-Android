@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 
 import de.greenrobot.event.EventBus
 import net.amay077.kustaway.R
+import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.adapter.TwitterAdapter
 import net.amay077.kustaway.databinding.ListGuruguruBinding
@@ -67,6 +68,7 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
         // リストビューの設定
         binding.listView.visibility = View.GONE
         binding.recyclerView.visibility = View.GONE
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(context)) // 罫線付ける
 
         // Status(ツイート)をViewに描写するアダプター
         mAdapter = RecyclerTweetAdapter(activity, ArrayList())
