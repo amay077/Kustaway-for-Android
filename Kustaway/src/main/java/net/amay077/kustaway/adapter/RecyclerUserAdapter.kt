@@ -67,7 +67,7 @@ class RecyclerUserViewHolder(private val view: RecyclerUserView) : RecyclerView.
 class RecyclerUserAdapter(
         private val context: Context,
         private val users: MutableList<User>) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        ProfileItemAdapter<User>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val view = RecyclerUserView(context)
@@ -84,7 +84,7 @@ class RecyclerUserAdapter(
         return users.count()
     }
 
-    fun add(user: User) {
+    override fun add(user: User) {
         users.add(user)
     }
 }
