@@ -95,6 +95,20 @@ class TwitterRepository(
         }
     }
 
+    suspend fun loadUserListMembers(userId:Long, cursor:Long) : PagableResponseList<User> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val res = twitter.getUserListMembers(userId, cursor)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
     suspend fun loadUserTimeline(userId:Long, maxId:Long, count:Int) : ResponseList<Status> {
         return suspendCoroutine { cont ->
             twitterExecutor.submit {

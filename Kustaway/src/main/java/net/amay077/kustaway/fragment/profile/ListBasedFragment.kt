@@ -21,20 +21,23 @@ import twitter4j.User
  * TDataItem - API等から読み込んだデータ1行の型
  * TViewModel - Fragment に対応させる ViewModel の型
  */
-abstract class ProfileBaseFragment<
+abstract class ListBasedFragment<
         TViewItem,
+        TId,
         TDataItem : TwitterResponse?,
-        TViewModel : ProfileBaseFragmentViewModel<TDataItem>>
+        TViewModel : ProfileBaseFragmentViewModel<TId, TDataItem>>
     : Fragment() {
 
     /*** 実装クラスで、 Fragment 用の ViewModel を生成する */
-    abstract fun createViewModel(user: User): TViewModel
+    abstract fun createViewModel(id: TId): TViewModel
 
     /*** 実装クラスで、RecyclerView に設定する Adapter を生成する */
     abstract fun createAdapter() : ProfileItemAdapter<TViewItem>
 
     /*** 実装クラスで、モデル側の型からView用の型へ変換する */
     abstract fun convertDataToViewItem(dataItem:TDataItem): TViewItem
+
+    abstract val id : TId
 
     protected lateinit var adapter : ProfileItemAdapter<TViewItem>
 
@@ -45,8 +48,7 @@ abstract class ProfileBaseFragment<
         }
         val binding = bin
 
-        val user = arguments.getSerializable("user") as User
-        val viewModel = createViewModel(user)
+        val viewModel = createViewModel(id)
 
         // RecyclerView の設定
         binding.recyclerView.visibility = View.GONE

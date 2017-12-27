@@ -19,12 +19,15 @@ import net.amay077.kustaway.viewmodel.FavoritesListFragmentViewModel
 import twitter4j.Status
 import twitter4j.User
 
-class FavoritesListFragment : ProfileBaseFragment<Row, Status, FavoritesListFragmentViewModel>() {
-    override fun createViewModel(user: User): FavoritesListFragmentViewModel =
+class FavoritesListFragment : ListBasedFragment<Row, Long, Status, FavoritesListFragmentViewModel>() {
+    override val id: Long
+        get() = (arguments.getSerializable("user") as User).id
+
+    override fun createViewModel(userId: Long): FavoritesListFragmentViewModel =
             ViewModelProviders
                     .of(this, FavoritesListFragmentViewModel.Factory(
                             TwitterRepository(TwitterManager.getTwitter()),
-                            user
+                            userId
                     ))
                     .get(FavoritesListFragmentViewModel::class.java)
 

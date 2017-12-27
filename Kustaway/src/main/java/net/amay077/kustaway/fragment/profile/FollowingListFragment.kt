@@ -11,13 +11,15 @@ import twitter4j.User
 /**
  * フォロー一覧
  */
-class FollowingListFragment : ProfileBaseFragment<User, User, FollowingListFragmentViewModel>() {
+class FollowingListFragment : ListBasedFragment<User, Long, User, FollowingListFragmentViewModel>() {
+    override val id: Long
+        get() = (arguments.getSerializable("user") as User).id
 
-    override fun createViewModel(user: User): FollowingListFragmentViewModel =
+    override fun createViewModel(userId: Long): FollowingListFragmentViewModel =
             ViewModelProviders
                     .of(this, FollowingListFragmentViewModel.Factory(
                             TwitterRepository(TwitterManager.getTwitter()),
-                            user
+                            userId
                     ))
                     .get(FollowingListFragmentViewModel::class.java)
 

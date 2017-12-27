@@ -9,10 +9,10 @@ import twitter4j.User
 /**
  * フォロー一覧画面の ViewModel
  */
-class FollowingListFragmentViewModel (
+class UserMemberFragmentViewModel (
         private val twitterRepo: TwitterRepository,
-        userId: Long
-) : ProfileBaseFragmentViewModel<Long, User>(userId) {
+        listId: Long
+) : ProfileBaseFragmentViewModel<Long, User>(listId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
@@ -20,12 +20,11 @@ class FollowingListFragmentViewModel (
     ) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                FollowingListFragmentViewModel(twitterRepo, userId) as T
+                UserMemberFragmentViewModel(twitterRepo, userId) as T
     }
 
-    suspend override fun loadListItemsAsync(userId:Long, cursor: Long): PagedResponseList<User> {
-        val res = twitterRepo.loadFriendList(userId, cursor);
+    suspend override fun loadListItemsAsync(listId:Long, cursor: Long): PagedResponseList<User> {
+        val res = twitterRepo.loadUserListMembers(listId, cursor);
         return PagedResponseList(res, res.hasNext(), res.nextCursor)
     }
-
 }

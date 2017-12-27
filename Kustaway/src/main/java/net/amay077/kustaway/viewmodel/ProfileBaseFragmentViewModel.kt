@@ -7,17 +7,16 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import net.amay077.kustaway.model.PagedResponseList
 import twitter4j.TwitterResponse
-import twitter4j.User
 
 /**
  * プロフィール画面の各フラグメント用の共通ViewModel
  */
-abstract class ProfileBaseFragmentViewModel<T : TwitterResponse?>(
-        private val user: User
+abstract class ProfileBaseFragmentViewModel<TId, TDataItem : TwitterResponse?>(
+        private val id: TId
 ) : ViewModel() {
 
     /** List用のデータを非同期で読む */
-    protected suspend abstract fun loadListItemsAsync(userId:Long, cursor: Long) : PagedResponseList<T>
+    protected suspend abstract fun loadListItemsAsync(id:TId, cursor: Long) : PagedResponseList<TDataItem>
 
     /** List最下段のプログレスの表示ON/OFF */
     private val _isVisibleBottomProgress = MutableLiveData<Boolean>()
@@ -32,8 +31,8 @@ abstract class ProfileBaseFragmentViewModel<T : TwitterResponse?>(
     val isVisiblePullProgress : LiveData<Boolean> = _isVisiblePullProgress
 
     /** ListView にバインドするデータ */
-    private val _listItems = MutableLiveData<ProfileItemList<T>>()
-    val listItems: LiveData<ProfileItemList<T>> = _listItems
+    private val _listItems = MutableLiveData<ProfileItemList<TDataItem>>()
+    val listItems: LiveData<ProfileItemList<TDataItem>> = _listItems
 
     // 追加読み込みを有効とするか？
     private var isEnabledAdditionalLoading = false
@@ -56,7 +55,7 @@ abstract class ProfileBaseFragmentViewModel<T : TwitterResponse?>(
             isEnabledAdditionalLoading = false
 
             // データを非同期で読む
-            val res = loadListItemsAsync(user.id, cursor);
+            val res = loadListItemsAsync(id, cursor);
 
             cursor = res.nextCursor
             isEnabledAdditionalLoading = res.hasNext

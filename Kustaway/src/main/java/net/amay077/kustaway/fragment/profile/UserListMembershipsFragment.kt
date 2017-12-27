@@ -12,12 +12,15 @@ import twitter4j.UserList
 /**
  * ユーザーの持つリスト一覧
  */
-class UserListMembershipsFragment : ProfileBaseFragment<UserList, UserList, UserListMembershipsFragmentViewModel>() {
-    override fun createViewModel(user: User): UserListMembershipsFragmentViewModel =
+class UserListMembershipsFragment : ListBasedFragment<UserList, Long, UserList, UserListMembershipsFragmentViewModel>() {
+    override val id: Long
+        get() = (arguments.getSerializable("user") as User).id
+
+    override fun createViewModel(userId: Long): UserListMembershipsFragmentViewModel =
             ViewModelProviders
                     .of(this, UserListMembershipsFragmentViewModel.Factory(
                             TwitterRepository(TwitterManager.getTwitter()),
-                            user
+                            userId
                     ))
                     .get(UserListMembershipsFragmentViewModel::class.java)
 

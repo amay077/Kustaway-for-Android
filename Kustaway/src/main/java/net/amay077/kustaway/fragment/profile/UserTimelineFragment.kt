@@ -22,12 +22,15 @@ import twitter4j.User
 /**
  * ユーザーのタイムライン
  */
-class UserTimelineFragment : ProfileBaseFragment<Row, Status, UserTimelineFragmentViewModel>() {
-    override fun createViewModel(user: User): UserTimelineFragmentViewModel =
+class UserTimelineFragment : ListBasedFragment<Row, Long, Status, UserTimelineFragmentViewModel>() {
+    override val id: Long
+        get() = (arguments.getSerializable("user") as User).id
+
+    override fun createViewModel(userId: Long): UserTimelineFragmentViewModel =
             ViewModelProviders
                     .of(this, UserTimelineFragmentViewModel.Factory(
                             TwitterRepository(TwitterManager.getTwitter()),
-                            user
+                            userId
                     ))
                     .get(UserTimelineFragmentViewModel::class.java)
 

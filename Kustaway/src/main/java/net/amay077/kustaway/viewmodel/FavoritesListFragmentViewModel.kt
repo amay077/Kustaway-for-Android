@@ -13,16 +13,16 @@ import twitter4j.User
  */
 class FavoritesListFragmentViewModel (
         private val twitterRepo: TwitterRepository,
-        user: User
-) : ProfileBaseFragmentViewModel<Status>(user) {
+        userId: Long
+) : ProfileBaseFragmentViewModel<Long, Status>(userId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
-            private val user: User
+            private val userId: Long
     ) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                FavoritesListFragmentViewModel(twitterRepo, user) as T
+                FavoritesListFragmentViewModel(twitterRepo, userId) as T
     }
 
     suspend override fun loadListItemsAsync(userId: Long, cursor: Long): PagedResponseList<Status> {
