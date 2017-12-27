@@ -1,6 +1,6 @@
 package net.amay077.kustaway.fragment.profile
 
-import android.os.AsyncTask
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,22 +14,27 @@ import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.settings.BasicSettings
-import twitter4j.Paging
-import twitter4j.ResponseList
+import net.amay077.kustaway.repository.TwitterRepository
+import net.amay077.kustaway.viewmodel.UserTimelineFragmentViewModel
 import twitter4j.Status
+import twitter4j.User
 
 /**
  * ユーザーのタイムライン
  */
-class UserTimelineFragment : ProfileBaseFragment<Row>() {
+class UserTimelineFragment : ProfileBaseFragment<Row, Status, UserTimelineFragmentViewModel>() {
+    override fun createViewModel(user: User): UserTimelineFragmentViewModel =
+            ViewModelProviders
+                    .of(this, UserTimelineFragmentViewModel.Factory(
+                            TwitterRepository(TwitterManager.getTwitter()),
+                            user
+                    ))
+                    .get(UserTimelineFragmentViewModel::class.java)
 
     override fun createAdapter(): ProfileItemAdapter<Row> =
             RecyclerTweetAdapter(activity, ArrayList())
 
-    override fun executeTask(isAdditional: Boolean) {
-        UserTimelineTask(isAdditional).execute(user.screenName)
-    }
+    override fun convertDataToViewItem(dataItem: Status): Row = Row.newStatus(dataItem)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = super.onCreateView(inflater, container, savedInstanceState)
@@ -62,44 +67,5 @@ class UserTimelineFragment : ProfileBaseFragment<Row>() {
 
     fun onEventMainThread(event: StreamingDestroyStatusEvent) {
         adapter.remove(event.statusId)
-    }
-
-    private inner class UserTimelineTask(private val isAdditional: Boolean) : AsyncTask<String, Void, ResponseList<Status>>() {
-        override fun doInBackground(vararg params: String): ResponseList<twitter4j.Status>? {
-            try {
-                val paging = Paging()
-                if (cursor > 0) {
-                    paging.maxId = cursor - 1
-                    paging.count = BasicSettings.getPageCount()
-                }
-                return TwitterManager.getTwitter().getUserTimeline(params[0], paging)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
-            }
-
-        }
-
-        override fun onPostExecute(statuses: ResponseList<twitter4j.Status>?) {
-            binding.guruguru.visibility = View.GONE
-            if (statuses == null || statuses.size == 0) {
-                return
-            }
-
-            if (!isAdditional) {
-                adapter.clear()
-            }
-
-            for (status in statuses) {
-                if (cursor == 0L || cursor > status.id) {
-                    cursor = status.id
-                }
-                adapter.add(Row.newStatus(status))
-            }
-            autoLoader = true
-            adapter.notifyDataSetChanged()
-            binding.recyclerView.visibility = View.VISIBLE
-            binding.ptrLayout.setRefreshing(false)
-        }
     }
 }

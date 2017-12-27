@@ -1,10 +1,12 @@
 package net.amay077.kustaway.model;
 
 import twitter4j.DirectMessage;
+import twitter4j.RateLimitStatus;
 import twitter4j.Status;
+import twitter4j.TwitterResponse;
 import twitter4j.User;
 
-public class Row {
+public class Row implements TwitterResponse {
 
     private final static int TYPE_STATUS = 0;
     private final static int TYPE_FAVORITE = 1;
@@ -93,5 +95,15 @@ public class Row {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    @Override
+    public RateLimitStatus getRateLimitStatus() {
+        return null;
+    }
+
+    @Override
+    public int getAccessLevel() {
+        return READ;
     }
 }
