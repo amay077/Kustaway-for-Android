@@ -2,6 +2,7 @@ package net.amay077.kustaway.viewmodel
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
+import net.amay077.kustaway.model.PagedResponseList
 import net.amay077.kustaway.repository.TwitterRepository
 import twitter4j.User
 
@@ -22,8 +23,8 @@ class FollowersListFragmentViewModel (
                 FollowersListFragmentViewModel(twitterRepo, user) as T
     }
 
-    suspend override fun readDataAsync(cursor: Long): TwitterRes<User> {
-        val res = twitterRepo.loadFollowersList(user.id, cursor);
-        return TwitterRes(res, res.hasNext(), res.nextCursor)
+    suspend override fun loadListItemsAsync(userId:Long, cursor: Long): PagedResponseList<User> {
+        val res = twitterRepo.loadFollowersList(userId, cursor);
+        return PagedResponseList(res, res.hasNext(), res.nextCursor)
     }
 }

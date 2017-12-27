@@ -14,7 +14,7 @@ public class PostStockSettings {
     private KustawayApplication mApplication;
     private PostStockSettingsDate mPostStockSettingsDate;
     private static final String PREF_NAME = "post_settings";
-    private static final String PREF_KEY = "data";
+    private static final String PREF_KEY = "listItems";
 
     private static final String DRAFT_LIST_FILE = "DraftListFile";
 

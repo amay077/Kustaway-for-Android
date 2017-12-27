@@ -22,10 +22,10 @@ import twitter4j.auth.AccessToken;
 public class UserIconManager {
 
     private static final String PREF_NAME_USER_ICON_MAP = "user_icon_map";
-    private static final String PREF_KEY_USER_ICON_MAP = "data/v2";
+    private static final String PREF_KEY_USER_ICON_MAP = "listItems/v2";
     private static HashMap<String, String> sUserIconMap = new HashMap<String, String>();
 
-    private static final String PREF_KEY_USER_NAME_MAP = "data/name";
+    private static final String PREF_KEY_USER_NAME_MAP = "listItems/name";
     private static HashMap<String, String> sUserNameMap = new HashMap<String, String>();
 
     private static SharedPreferences getSharedPreferences() {
