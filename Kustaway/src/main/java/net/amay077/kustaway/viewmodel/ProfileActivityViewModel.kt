@@ -12,16 +12,16 @@ import net.amay077.kustaway.extensions.get
 import net.amay077.kustaway.model.Profile
 import net.amay077.kustaway.repository.TwitterRepository
 
-class ProfileViewModel(
+class ProfileActivityViewModel(
         private val twitterRepo: TwitterRepository
 ) : ViewModel() {
-    private val TAG = "ProfileViewModel"
+    private val TAG = "ProfileActivityViewModel"
 
     class Factory(
             private val twitterRepo: TwitterRepository
     ) : ViewModelProvider.NewInstanceFactory() {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = ProfileViewModel(twitterRepo) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = ProfileActivityViewModel(twitterRepo) as T
     }
 
     // Toastの表示メッセージ

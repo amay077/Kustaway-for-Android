@@ -32,7 +32,7 @@ import net.amay077.kustaway.repository.TwitterRepository;
 import net.amay077.kustaway.util.ImageUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
-import net.amay077.kustaway.viewmodel.ProfileViewModel;
+import net.amay077.kustaway.viewmodel.ProfileActivityViewModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ import twitter4j.User;
 public class ProfileActivity extends AppCompatActivity {
 
     private ActivityProfileBinding binding = null;
-    private ProfileViewModel viewModel = null;
+    private ProfileActivityViewModel viewModel = null;
 
     private User mUser;
     // Option Menu ID と遷移先URLのマップ
@@ -67,10 +67,10 @@ public class ProfileActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
 
         viewModel = ViewModelProviders
-                .of(this, new ProfileViewModel.Factory(
+                .of(this, new ProfileActivityViewModel.Factory(
                         new TwitterRepository(TwitterManager.getTwitter())
                 ))
-                .get(ProfileViewModel.class);
+                .get(ProfileActivityViewModel.class);
 
         binding.setViewModel(viewModel);
 
