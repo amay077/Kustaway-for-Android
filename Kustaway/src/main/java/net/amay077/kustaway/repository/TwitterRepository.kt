@@ -109,6 +109,20 @@ class TwitterRepository(
         }
     }
 
+    suspend fun loadRetweets(statusId:Long) : ResponseList<Status> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val res = twitter.getRetweets(statusId)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
     suspend fun loadUserTimeline(userId:Long, maxId:Long, count:Int) : ResponseList<Status> {
         return suspendCoroutine { cont ->
             twitterExecutor.submit {
@@ -150,6 +164,8 @@ class TwitterRepository(
             }
         }
     }
+
+
 
     /**
      * 指定ユーザーの公式ミュートをOn/Offする（enabled = true なら ON にする）
