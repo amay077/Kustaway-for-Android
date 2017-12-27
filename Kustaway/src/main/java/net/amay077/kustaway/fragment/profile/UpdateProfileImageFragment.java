@@ -10,13 +10,13 @@ import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import java.io.File;
-
-import net.amay077.kustaway.KustawayApplication;
 import net.amay077.kustaway.R;
 import net.amay077.kustaway.model.TwitterManager;
 import net.amay077.kustaway.util.ImageUtil;
 import net.amay077.kustaway.util.MessageUtil;
+
+import java.io.File;
+
 import twitter4j.User;
 
 import static android.app.AlertDialog.Builder;

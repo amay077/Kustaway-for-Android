@@ -2,23 +2,15 @@ package net.amay077.kustaway.fragment.profile
 
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.ListView
-import android.widget.ProgressBar
-
 import de.greenrobot.event.EventBus
-import net.amay077.kustaway.R
 import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
-import net.amay077.kustaway.adapter.TwitterAdapter
-import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
 import net.amay077.kustaway.event.action.StatusActionEvent
+import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
-import net.amay077.kustaway.listener.StatusClickListener
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
@@ -26,7 +18,6 @@ import net.amay077.kustaway.settings.BasicSettings
 import twitter4j.Paging
 import twitter4j.ResponseList
 import twitter4j.Status
-import twitter4j.User
 
 class FavoritesListFragment : ProfileBaseFragment<Row>() {
     override fun createAdapter(): ProfileItemAdapter<Row> =
