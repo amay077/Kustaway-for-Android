@@ -9,21 +9,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.ListView
-import android.widget.ProgressBar
-
 import de.greenrobot.event.EventBus
-import net.amay077.kustaway.R
 import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
-import net.amay077.kustaway.adapter.TwitterAdapter
-import net.amay077.kustaway.databinding.ListGuruguruBinding
-import net.amay077.kustaway.databinding.PullToRefreshListBinding
-import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
+import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.event.action.StatusActionEvent
+import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
-import net.amay077.kustaway.listener.StatusClickListener
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
@@ -32,15 +24,11 @@ import twitter4j.Paging
 import twitter4j.ResponseList
 import twitter4j.Status
 import twitter4j.User
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener
-
 
 /**
  * ユーザーのタイムライン
  */
-class UserTimelineFragment : Fragment(), OnRefreshListener {
+class UserTimelineFragment : Fragment() {
 
     private lateinit var mAdapter: RecyclerTweetAdapter
     private lateinit var mUser: User
@@ -48,10 +36,10 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
     private var mReload = false
     private var mMaxId = 0L
 
-    private lateinit var binding: PullToRefreshListBinding
+    private lateinit var binding: PullToRefreshList2Binding
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val bin = inflater?.let { inf -> PullToRefreshListBinding.inflate(inf, container, false) }
+        val bin = inflater?.let { inf -> PullToRefreshList2Binding.inflate(inf, container, false) }
         if (bin == null) {
             return null
         }
@@ -59,14 +47,7 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
 
         mUser = arguments.getSerializable("user") as User
 
-        // Now setup the PullToRefreshLayout
-        ActionBarPullToRefresh.from(activity)
-                .theseChildrenArePullable(R.id.list_view)
-                .listener(this)
-                .setup(binding.ptrLayout)
-
         // リストビューの設定
-        binding.listView.visibility = View.GONE
         binding.recyclerView.visibility = View.GONE
         binding.recyclerView.addItemDecoration(DividerItemDecoration(context)) // 罫線付ける
 
@@ -113,6 +94,12 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
             }
         })
 
+        binding.ptrLayout.setOnRefreshListener {
+            mReload = true
+            mMaxId = 0
+            UserTimelineTask().execute(mUser.screenName)
+        }
+
         return binding.root
     }
 
@@ -132,12 +119,6 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
 
     fun onEventMainThread(event: StreamingDestroyStatusEvent) {
         mAdapter.remove(event.statusId)
-    }
-
-    override fun onRefreshStarted(view: View) {
-        mReload = true
-        mMaxId = 0
-        UserTimelineTask().execute(mUser.screenName)
     }
 
     private fun additionalReading() {
@@ -180,7 +161,7 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
                     mAdapter.add(Row.newStatus(status))
                 }
                 mReload = false
-                binding.ptrLayout.setRefreshComplete()
+                binding.ptrLayout.setRefreshing(false)
                 return
             }
 
@@ -191,7 +172,7 @@ class UserTimelineFragment : Fragment(), OnRefreshListener {
                 mAdapter.add(Row.newStatus(status))
             }
             mAutoLoader = true
-            binding.ptrLayout.setRefreshComplete()
+            binding.ptrLayout.setRefreshing(false)
             binding.recyclerView.visibility = View.VISIBLE
         }
     }
