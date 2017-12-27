@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import net.amay077.kustaway.model.PagedResponseList
 import net.amay077.kustaway.repository.TwitterRepository
-import twitter4j.User
 import twitter4j.UserList
 
 /**
@@ -13,7 +12,7 @@ import twitter4j.UserList
 class UserListMembershipsFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         userId: Long
-) : ProfileBaseFragmentViewModel<Long, UserList>(userId) {
+) : ListBasedFragmentViewModel<Long, UserList>(userId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,

@@ -11,7 +11,7 @@ import twitter4j.TwitterResponse
 /**
  * プロフィール画面の各フラグメント用の共通ViewModel
  */
-abstract class ProfileBaseFragmentViewModel<TId, TDataItem : TwitterResponse?>(
+abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
         private val id: TId
 ) : ViewModel() {
 

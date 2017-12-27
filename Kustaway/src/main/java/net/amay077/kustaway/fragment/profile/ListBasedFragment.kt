@@ -10,14 +10,14 @@ import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
-import net.amay077.kustaway.viewmodel.ProfileBaseFragmentViewModel
+import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.TwitterResponse
-import twitter4j.User
 
 /**
  * プロフィール画面の「ユーザータイムライン」「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベースとなる Fragment
  *
  * TViewItem - RecyleView に表示する行の型
+ * TId - TDataItem を識別するIDの型
  * TDataItem - API等から読み込んだデータ1行の型
  * TViewModel - Fragment に対応させる ViewModel の型
  */
@@ -25,7 +25,7 @@ abstract class ListBasedFragment<
         TViewItem,
         TId,
         TDataItem : TwitterResponse?,
-        TViewModel : ProfileBaseFragmentViewModel<TId, TDataItem>>
+        TViewModel : ListBasedFragmentViewModel<TId, TDataItem>>
     : Fragment() {
 
     /*** 実装クラスで、 Fragment 用の ViewModel を生成する */
@@ -37,6 +37,7 @@ abstract class ListBasedFragment<
     /*** 実装クラスで、モデル側の型からView用の型へ変換する */
     abstract fun convertDataToViewItem(dataItem:TDataItem): TViewItem
 
+    /*** 実装クラスで、モデル側の型のIDを得る */
     abstract val id : TId
 
     protected lateinit var adapter : ProfileItemAdapter<TViewItem>

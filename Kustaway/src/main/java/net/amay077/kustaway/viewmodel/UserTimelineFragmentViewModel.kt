@@ -6,7 +6,6 @@ import net.amay077.kustaway.model.PagedResponseList
 import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.settings.BasicSettings
 import twitter4j.Status
-import twitter4j.User
 
 /**
  * ユーザータイムライン画面の ViewModel
@@ -14,7 +13,7 @@ import twitter4j.User
 class UserTimelineFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         userId: Long
-) : ProfileBaseFragmentViewModel<Long, Status>(userId) {
+) : ListBasedFragmentViewModel<Long, Status>(userId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,

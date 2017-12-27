@@ -12,7 +12,7 @@ import twitter4j.User
 class UserMemberFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         listId: Long
-) : ProfileBaseFragmentViewModel<Long, User>(listId) {
+) : ListBasedFragmentViewModel<Long, User>(listId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
