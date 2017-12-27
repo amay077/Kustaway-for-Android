@@ -12,7 +12,7 @@ import net.amay077.kustaway.extensions.addOnPagingListener
 import twitter4j.User
 
 /**
- * プロフィール画面の「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベース Fragment
+ * プロフィール画面の「ユーザータイムライン」「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベースとなる Fragment
  */
 abstract class ProfileBaseFragment<T> : Fragment() {
     protected lateinit var user: User
