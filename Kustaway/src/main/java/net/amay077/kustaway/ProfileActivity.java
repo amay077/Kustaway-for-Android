@@ -105,18 +105,6 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void registerEvents() {
-        // ヘッダの折りたたみON/OFF
-        binding.collapseLabel.setOnClickListener(v -> {
-            View frame = findViewById(R.id.frame);
-            if (frame.getVisibility() == View.VISIBLE) {
-                binding.frame.setVisibility(View.GONE);
-                binding.collapseLabel.setText(R.string.fontello_down);
-            } else {
-                binding.frame.setVisibility(View.VISIBLE);
-                binding.collapseLabel.setText(R.string.fontello_up);
-            }
-        });
-
         // Toastの表示要求に応答
         viewModel.getToastRequest().observe(this, messageResId -> {
             MessageUtil.showToast(messageResId);

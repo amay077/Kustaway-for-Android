@@ -7,111 +7,141 @@
         <variable name="viewModel" type="net.amay077.kustaway.viewmodel.ProfileActivityViewModel" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_width="match_parent">
 
-        <FrameLayout
-            android:id="@+id/frame"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/mainCoordinator"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/banner"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/description_icon"
-                android:scaleType="fitXY"/>
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true">
+
+                <android.support.design.widget.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    app:contentScrim="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <!--header-->
+                    <android.support.v7.widget.Toolbar
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="@android:color/transparent"
+                        app:contentInsetStart="0dp"
+                        app:layout_collapseMode="pin">
+                    </android.support.v7.widget.Toolbar>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent">
+
+                        <FrameLayout
+                            android:id="@+id/frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/banner"
+                                android:layout_width="match_parent"
+                                android:layout_height="180dp"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="@string/description_icon"
+                                android:scaleType="fitXY"/>
+
+                            <android.support.v4.view.ViewPager
+                                android:id="@+id/pager"
+                                android:layout_width="match_parent"
+                                android:layout_height="180dp"/>
+
+                            <com.viewpagerindicator.CirclePageIndicator
+                                android:id="@+id/symbol"
+                                android:layout_width="64dp"
+                                android:layout_gravity="bottom|center"
+                                android:layout_height="wrap_content"
+                                android:padding="10dp" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_below="@+id/frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center_vertical"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            tools:background="@android:color/background_dark"
+                            android:background="?attr/menu_background"
+                            android:orientation="horizontal"
+                            android:baselineAligned="false">
+
+                            <TextView
+                                android:id="@+id/statuses_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textSize="11dp"
+                                tools:text="1234567\nTWEETS"
+                                tools:ignore="SpUsage"/>
+
+                            <TextView
+                                android:id="@+id/friends_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textSize="11dp"
+                                tools:text="1234567\nFOLLOWING"
+                                tools:ignore="SpUsage"/>
+
+                            <TextView
+                                android:id="@+id/followers_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textSize="11dp"
+                                tools:text="1234567\nFOLLOWERS"
+                                tools:ignore="SpUsage"/>
+
+                            <TextView
+                                android:id="@+id/listed_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textSize="11dp"
+                                tools:text="1234567\nLISTS"
+                                tools:ignore="SpUsage"/>
+
+                            <TextView
+                                android:id="@+id/favourites_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:textSize="11dp"
+                                tools:text="1234567\nFAVOURITES"
+                                tools:ignore="SpUsage"/>
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+            </android.support.design.widget.AppBarLayout>
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
+                android:id="@+id/list_pager"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"/>
-
-            <com.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/symbol"
-                android:layout_width="64dp"
-                android:layout_gravity="bottom|center"
-                android:layout_height="wrap_content"
-                android:padding="10dp" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            tools:background="@android:color/background_dark"
-            android:background="?attr/menu_background"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-
-            <TextView
-                android:id="@+id/statuses_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="11dp"
-                tools:text="1234567\nTWEETS"
-                tools:ignore="SpUsage"/>
-
-            <TextView
-                android:id="@+id/friends_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="11dp"
-                tools:text="1234567\nFOLLOWING"
-                tools:ignore="SpUsage"/>
-
-            <TextView
-                android:id="@+id/followers_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="11dp"
-                tools:text="1234567\nFOLLOWERS"
-                tools:ignore="SpUsage"/>
-
-            <TextView
-                android:id="@+id/listed_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="11dp"
-                tools:text="1234567\nLISTS"
-                tools:ignore="SpUsage"/>
-
-            <TextView
-                android:id="@+id/favourites_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="11dp"
-                tools:text="1234567\nFAVOURITES"
-                tools:ignore="SpUsage"/>
-
-            <net.amay077.kustaway.widget.FontelloTextView
-                android:id="@+id/collapse_label"
-                android:layout_width="36dp"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:textSize="18sp"
-                tools:textColor="@android:color/background_dark"
-                android:textColor="?attr/holo_blue"
-                android:text="@string/fontello_up"/>
-        </LinearLayout>
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/list_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        </android.support.design.widget.CoordinatorLayout>
+    </FrameLayout>
 </layout>
