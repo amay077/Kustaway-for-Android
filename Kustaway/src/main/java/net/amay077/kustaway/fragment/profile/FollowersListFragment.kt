@@ -15,15 +15,15 @@ class FollowersListFragment : ProfileBaseFragment<User>() {
     override fun createAdapter(): ProfileItemAdapter<User> =
         RecyclerUserAdapter(activity, ArrayList())
 
-    override fun executeTask(userId: Long) {
-        FollowersListTask().execute(mUserId)
+    override fun executeTask(isAdditional: Boolean) {
+        FollowersListTask(isAdditional).execute(user.id)
     }
 
-    private inner class FollowersListTask : AsyncTask<Long, Void, PagableResponseList<User>>() {
-        protected override fun doInBackground(vararg params: Long?): PagableResponseList<User>? {
+    private inner class FollowersListTask(private val isAdditional: Boolean) : AsyncTask<Long, Void, PagableResponseList<User>>() {
+        override fun doInBackground(vararg params: Long?): PagableResponseList<User>? {
             try {
-                val users = TwitterManager.getTwitter().getFollowersList(params[0] ?: -1, mCursor) // TODO 雑すぎ
-                mCursor = users.nextCursor
+                val users = TwitterManager.getTwitter().getFollowersList(params[0] ?: -1, cursor) // TODO 雑すぎ
+                cursor = users.nextCursor
                 return users
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -37,14 +37,20 @@ class FollowersListFragment : ProfileBaseFragment<User>() {
             if (users == null) {
                 return
             }
+
+            if (!isAdditional) {
+                adapter.clear()
+            }
+
             for (user in users) {
-                mAdapter.add(user)
+                adapter.add(user)
             }
             if (users.hasNext()) {
-                mAutoLoader = true
+                autoLoader = true
             }
-            mAdapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
             binding.recyclerView.visibility = View.VISIBLE
+            binding.ptrLayout.setRefreshing(false)
         }
     }
 }

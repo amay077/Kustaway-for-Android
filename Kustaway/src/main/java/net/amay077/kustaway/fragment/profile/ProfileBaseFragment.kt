@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.ProfileItemAdapter
-import net.amay077.kustaway.databinding.ListGuruguruBinding
+import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
 import twitter4j.User
 
@@ -15,28 +15,23 @@ import twitter4j.User
  * プロフィール画面の「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベース Fragment
  */
 abstract class ProfileBaseFragment<T> : Fragment() {
-    protected var mUser: User? = null
-    protected var mUserId: Long = 0
-    protected var mCursor: Long = -1
-    protected var mAutoLoader = false
+    protected lateinit var user: User
+    protected var cursor: Long = -1
+    protected var autoLoader = false
 
-    protected lateinit var binding: ListGuruguruBinding
-    protected  lateinit var mAdapter: ProfileItemAdapter<T>
+    protected lateinit var binding: PullToRefreshList2Binding
+    protected lateinit var adapter: ProfileItemAdapter<T>
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val bin = inflater?.let { inf -> ListGuruguruBinding.inflate(inf, container, false) }
+        val bin = inflater?.let { inf -> PullToRefreshList2Binding.inflate(inf, container, false) }
         if (bin == null) {
             return null
         }
         binding = bin
 
-        val user = arguments.getSerializable("user") as User
-
-        mUserId = user.id
-        mUser = user
+        user = arguments.getSerializable("user") as User
 
         // RecyclerView の設定
-        binding.listView.visibility = View.GONE // ListView は消しておく TODO 完全に RecyclerView 化できたら .xml からも消す
         binding.recyclerView.visibility = View.GONE
         binding.recyclerView.addItemDecoration(DividerItemDecoration(context)) // 罫線付ける
 
@@ -44,14 +39,20 @@ abstract class ProfileBaseFragment<T> : Fragment() {
         registerForContextMenu(binding.recyclerView)
 
         // Status(ツイート)をViewに描写するアダプター
-        mAdapter = createAdapter()
-        binding.recyclerView.adapter = mAdapter
+        adapter = createAdapter()
+        binding.recyclerView.adapter = adapter
 
-        executeTask(mUserId)
+        executeTask(false)
 
         binding.recyclerView.addOnPagingListener {
-            // ページング処理
-            additionalReading()
+            // ページング処理(追加読み込み)
+            readData(true)
+        }
+
+        // Pull to Refresh の開始
+        binding.ptrLayout.setOnRefreshListener {
+            // 洗い替え
+            readData(false)
         }
 
         return binding.root
@@ -59,15 +60,21 @@ abstract class ProfileBaseFragment<T> : Fragment() {
 
     abstract fun createAdapter() : ProfileItemAdapter<T>
 
-    abstract fun executeTask(userId : Long)
+    abstract fun executeTask(isAdditional:Boolean)
 
-    private fun additionalReading() {
-        if (!mAutoLoader) {
+    private fun readData(isAdditional:Boolean) {
+        if (!autoLoader) {
             return
         }
-        binding.guruguru.visibility = View.VISIBLE
-        mAutoLoader = false
-        executeTask(mUserId)
+
+        if (!isAdditional) {
+            cursor = -1
+        } else {
+            binding.guruguru.visibility = View.VISIBLE
+        }
+
+        autoLoader = false
+        executeTask(isAdditional)
     }
 }
 

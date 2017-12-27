@@ -23,8 +23,8 @@ class FavoritesListFragment : ProfileBaseFragment<Row>() {
     override fun createAdapter(): ProfileItemAdapter<Row> =
             RecyclerTweetAdapter(context, ArrayList())
 
-    override fun executeTask(userId: Long) {
-        FavoritesListTask().execute(mUser!!.screenName)
+    override fun executeTask(isAdditional: Boolean) {
+        FavoritesListTask(isAdditional).execute(user.screenName)
     }
 
     private var mMaxId = 0L
@@ -32,12 +32,12 @@ class FavoritesListFragment : ProfileBaseFragment<Row>() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = super.onCreateView(inflater, container, savedInstanceState)
 
-        mAdapter.onItemClickListener = { row ->
+        adapter.onItemClickListener = { row ->
             StatusMenuFragment.newInstance(row)
                     .show(activity.getSupportFragmentManager(), "dialog")
         }
 
-        mAdapter.onItemLongClickListener = { row ->
+        adapter.onItemLongClickListener = { row ->
             StatusLongClickListener.handleRow(activity, row)
         }
 
@@ -55,14 +55,14 @@ class FavoritesListFragment : ProfileBaseFragment<Row>() {
     }
 
     fun onEventMainThread(event: StatusActionEvent) {
-        mAdapter!!.notifyDataSetChanged()
+        adapter!!.notifyDataSetChanged()
     }
 
     fun onEventMainThread(event: StreamingDestroyStatusEvent) {
-        mAdapter.remove(event.statusId!!)
+        adapter.remove(event.statusId!!)
     }
 
-    private inner class FavoritesListTask : AsyncTask<String, Void, ResponseList<Status>>() {
+    private inner class FavoritesListTask(private val isAdditional: Boolean) : AsyncTask<String, Void, ResponseList<Status>>() {
         override fun doInBackground(vararg params: String): ResponseList<twitter4j.Status>? {
             try {
                 val paging = Paging()
@@ -85,14 +85,20 @@ class FavoritesListFragment : ProfileBaseFragment<Row>() {
                 return
             }
 
+            if (!isAdditional) {
+                adapter.clear()
+            }
+
             for (status in statuses) {
                 if (mMaxId == 0L || mMaxId > status.id) {
                     mMaxId = status.id
                 }
-                mAdapter.add(Row.newStatus(status))
+                adapter.add(Row.newStatus(status))
             }
-            mAutoLoader = true
+            autoLoader = true
+            adapter.notifyDataSetChanged()
             binding.recyclerView.visibility = View.VISIBLE
+            binding.ptrLayout.setRefreshing(false)
         }
     }
 }
