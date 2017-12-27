@@ -1,6 +1,8 @@
 package net.amay077.kustaway;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -14,29 +16,34 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import net.amay077.kustaway.adapter.RecyclerUserAdapter;
 import net.amay077.kustaway.adapter.UserAdapter;
+import net.amay077.kustaway.databinding.ActivityUserSearchBinding;
+import net.amay077.kustaway.extensions.RecyclerViewExtensionsKt;
 import net.amay077.kustaway.model.TwitterManager;
 import net.amay077.kustaway.util.KeyboardUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
+
+import java.util.ArrayList;
+
+import kotlin.Unit;
 import twitter4j.ResponseList;
 import twitter4j.User;
 
 public class UserSearchActivity extends AppCompatActivity {
 
-    private EditText mSearchText;
     private String mSearchWord;
     private int mPage = 1;
-    private UserAdapter mAdapter;
-    private ListView mListView;
-    private ProgressBar mProgressBar;
+    private RecyclerUserAdapter mAdapter;
     private boolean mAutoLoading = false;
+    private ActivityUserSearchBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.setTheme(this);
-        setContentView(R.layout.activity_user_search);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_user_search);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -44,25 +51,20 @@ public class UserSearchActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        Button search = (Button) findViewById(R.id.search);
-
-        mSearchText = (EditText) findViewById(R.id.search_text);
-        mProgressBar = (ProgressBar) findViewById(R.id.guruguru);
-        mListView = (ListView) findViewById(R.id.list_view);
-        mListView.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.GONE);
 
         // ユーザをViewに描写するアダプター
-        mAdapter = new UserAdapter(this, R.layout.row_user);
-        mListView.setAdapter(mAdapter);
+        mAdapter = new RecyclerUserAdapter(this, new ArrayList<>());
+        binding.recyclerView.setAdapter(mAdapter);
 
-        search.setOnClickListener(new View.OnClickListener() {
+        binding.search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 search();
             }
         });
 
-        mSearchText.setOnKeyListener(new View.OnKeyListener() {
+        binding.searchText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 //EnterKeyが押されたかを判定
@@ -78,25 +80,16 @@ public class UserSearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String query = intent.getStringExtra("query");
         if (query != null) {
-            mSearchText.setText(query);
-            search.performClick();
+            binding.searchText.setText(query);
+            binding.search.performClick();
         } else {
-            KeyboardUtil.showKeyboard(mSearchText);
+            KeyboardUtil.showKeyboard(binding.searchText);
         }
 
-        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                // 最後までスクロールされたかどうかの判定
-                if (totalItemCount == firstVisibleItem + visibleItemCount) {
-                    additionalReading();
-                }
-            }
+        // 追加読み込み
+        RecyclerViewExtensionsKt.addOnPagingListener(binding.recyclerView, () -> {
+            additionalReading();
+            return Unit.INSTANCE;
         });
     }
 
@@ -114,19 +107,19 @@ public class UserSearchActivity extends AppCompatActivity {
         if (!mAutoLoading) {
             return;
         }
-        mProgressBar.setVisibility(View.VISIBLE);
+        binding.guruguru.setVisibility(View.VISIBLE);
         mAutoLoading = false;
         new UserSearchTask().execute(mSearchWord);
     }
 
     private void search() {
-        KeyboardUtil.hideKeyboard(mSearchText);
-        if (mSearchText.getText() == null) return;
+        KeyboardUtil.hideKeyboard(binding.searchText);
+        if (binding.searchText.getText() == null) return;
         mAdapter.clear();
         mPage = 1;
-        mListView.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
-        mSearchWord = mSearchText.getText().toString();
+        binding.recyclerView.setVisibility(View.GONE);
+        binding.guruguru.setVisibility(View.VISIBLE);
+        mSearchWord = binding.searchText.getText().toString();
         new UserSearchTask().execute(mSearchWord);
     }
 
@@ -144,7 +137,7 @@ public class UserSearchActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(ResponseList<User> users) {
-            mProgressBar.setVisibility(View.GONE);
+            binding.guruguru.setVisibility(View.GONE);
             if (users == null) {
                 MessageUtil.showToast(R.string.toast_load_data_failure);
                 return;
@@ -156,7 +149,7 @@ public class UserSearchActivity extends AppCompatActivity {
                 mAutoLoading = true;
                 mPage++;
             }
-            mListView.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
         }
     }
 }
