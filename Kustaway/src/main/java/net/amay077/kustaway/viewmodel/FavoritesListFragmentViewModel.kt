@@ -8,7 +8,7 @@ import net.amay077.kustaway.settings.BasicSettings
 import twitter4j.Status
 
 /**
- * フォロワー一覧画面の ViewModel
+ * いいね一覧画面の ViewModel
  */
 class FavoritesListFragmentViewModel (
         private val twitterRepo: TwitterRepository,

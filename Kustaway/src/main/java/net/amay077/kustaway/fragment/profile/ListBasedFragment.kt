@@ -14,7 +14,7 @@ import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.TwitterResponse
 
 /**
- * プロフィール画面の「ユーザータイムライン」「フォロー一覧」「フォロワー一覧」「リストユーザー一覧」「お気に入り一覧」のベースとなる Fragment
+ * List(RecyclerView) を持つ画面のベースFragment
  *
  * TViewItem - RecyleView に表示する行の型
  * TId - TDataItem を識別するIDの型

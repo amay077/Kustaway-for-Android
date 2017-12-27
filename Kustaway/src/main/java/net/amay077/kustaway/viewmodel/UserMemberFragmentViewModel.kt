@@ -7,7 +7,7 @@ import net.amay077.kustaway.repository.TwitterRepository
 import twitter4j.User
 
 /**
- * フォロー一覧画面の ViewModel
+ * リストのユーザー一覧画面の ViewModel
  */
 class UserMemberFragmentViewModel (
         private val twitterRepo: TwitterRepository,

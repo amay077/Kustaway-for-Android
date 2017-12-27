@@ -9,7 +9,7 @@ import net.amay077.kustaway.model.PagedResponseList
 import twitter4j.TwitterResponse
 
 /**
- * プロフィール画面の各フラグメント用の共通ViewModel
+ * List(RecyclerView) を持つ画面(Fragment)のベースViewModel
  */
 abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
         private val id: TId
