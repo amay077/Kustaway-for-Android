@@ -27,9 +27,9 @@ class UserTimelineFragmentViewModel (
     suspend override fun loadListItemsAsync(userId:Long, cursor: Long): PagedResponseList<Status> {
         val res = twitterRepo.loadUserTimeline(userId, cursor, BasicSettings.getPageCount());
 
-        val nextCursor = res.firstOrNull { status ->
-            cursor == 0L || cursor > status.id
-        }?.id ?: -1
+        val nextCursor = res.lastOrNull { status ->
+            cursor < 0L || cursor > status.id
+        }?.id ?: -1L
 
         return PagedResponseList(res, true, nextCursor)
     }
