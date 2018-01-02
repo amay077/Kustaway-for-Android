@@ -254,5 +254,5 @@
     <string name="pref_title_talk_order_newest">The latest order of conversation</string>
     <string name="pref_description_talk_order_newest">Display the conversation from newest to oldest.</string>
 
-    <string name="transition_profile_icon">transition_profile_icon</string>
+    <string name="transition_profile_icon" translatable="false">transition_profile_icon</string>
 </resources>
