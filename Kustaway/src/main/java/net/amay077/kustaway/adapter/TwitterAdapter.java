@@ -1,6 +1,8 @@
 package net.amay077.kustaway.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -517,7 +519,17 @@ public class TwitterAdapter extends ArrayAdapter<Row> {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ProfileActivity.class);
                 intent.putExtra("screenName", status.getUser().getScreenName());
-                mContext.startActivity(intent);
+                intent.putExtra("profileImageURL", status.getUser().getBiggerProfileImageURL());
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    holder.mIcon.setTransitionName("image");
+
+                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext,
+                            holder.mIcon, "image");
+                    mContext.startActivity(intent, options.toBundle());
+                } else {
+                    mContext.startActivity(intent);
+                }
             }
         });
 

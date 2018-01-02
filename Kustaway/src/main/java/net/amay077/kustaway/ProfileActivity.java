@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.transition.Transition;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -80,6 +82,41 @@ public class ProfileActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            binding.transitionIcon.setTransitionName("image");
+
+            final Transition transition = getWindow().getSharedElementEnterTransition();
+
+            if (transition != null) {
+                transition.addListener(new Transition.TransitionListener() {
+                    @Override
+                    public void onTransitionStart(Transition transition) { }
+
+                    @Override
+                    public void onTransitionEnd(Transition transition) {
+                        binding.transitionFrame.setVisibility(View.GONE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            transition.removeListener(this);
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionCancel(Transition transition) {
+                        binding.transitionFrame.setVisibility(View.GONE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            transition.removeListener(this);
+                        }
+                    }
+
+                    @Override
+                    public void onTransitionPause(Transition transition) { }
+                    @Override
+                    public void onTransitionResume(Transition transition) { }
+                });
+            }
+
+        }
+
         // インテント経由での起動をサポート
         Intent intent = getIntent();
         Long userId = null;
@@ -96,11 +133,15 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
+        final String profileImageURL = intent.getStringExtra("profileImageURL");
+        if (!TextUtils.isEmpty(profileImageURL)) {
+            ImageUtil.displayRoundedImage(profileImageURL, binding.transitionIcon);
+        }
+
         // イベントハンドラ登録&ViewModelからの通知受信
         registerEvents();
 
         // ユーザーのプロフィールを読む
-        MessageUtil.showProgressDialog(this, getString(R.string.progress_loading));
         viewModel.loadProfile(userId, screenName);
     }
 

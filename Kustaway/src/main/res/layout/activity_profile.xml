@@ -42,34 +42,114 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent">
 
-                        <FrameLayout
-                            android:id="@+id/frame"
+                        <RelativeLayout
+                            android:id="@+id/frameContainer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/banner"
+                            <FrameLayout
+                                android:id="@+id/frame"
                                 android:layout_width="match_parent"
-                                android:layout_height="180dp"
-                                android:adjustViewBounds="true"
-                                android:contentDescription="@string/description_icon"
-                                android:scaleType="fitXY"/>
+                                android:layout_height="wrap_content">
 
-                            <android.support.v4.view.ViewPager
-                                android:id="@+id/pager"
+                                <ImageView
+                                    android:id="@+id/banner"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="180dp"
+                                    android:adjustViewBounds="true"
+                                    android:contentDescription="@string/description_icon"
+                                    android:scaleType="fitXY"/>
+
+                                <android.support.v4.view.ViewPager
+                                    android:id="@+id/pager"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="180dp"/>
+
+                                <com.viewpagerindicator.CirclePageIndicator
+                                    android:id="@+id/symbol"
+                                    android:layout_width="64dp"
+                                    android:layout_gravity="bottom|center"
+                                    android:layout_height="wrap_content"
+                                    android:padding="10dp" />
+                            </FrameLayout>
+
+                            <LinearLayout
+                                android:id="@+id/transitionFrame"
                                 android:layout_width="match_parent"
-                                android:layout_height="180dp"/>
+                                android:layout_height="match_parent"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
-                            <com.viewpagerindicator.CirclePageIndicator
-                                android:id="@+id/symbol"
-                                android:layout_width="64dp"
-                                android:layout_gravity="bottom|center"
-                                android:layout_height="wrap_content"
-                                android:padding="10dp" />
-                        </FrameLayout>
+                                <ImageView
+                                    android:id="@+id/transitionIcon"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:contentDescription="@string/description_icon"
+                                    tools:src="@drawable/ic_launcher"/>
+
+                                <LinearLayout
+                                    tools:visibility="visible"
+                                    android:visibility="invisible"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:shadowColor="@android:color/black"
+                                        android:shadowDx="3.0"
+                                        android:shadowDy="3.0"
+                                        android:shadowRadius="10.0"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="23sp"
+                                        tools:text="Kustaway"/>
+
+                                    <net.amay077.kustaway.widget.FontelloTextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:shadowDx="3.0"
+                                        android:shadowDy="3.0"
+                                        android:shadowRadius="10.0"
+                                        android:textColor="@android:color/white"
+                                        android:textSize="20sp"
+                                        android:layout_marginTop="3dp"
+                                        android:layout_marginLeft="6dp" />
+                                </LinearLayout>
+
+                                <TextView
+                                    tools:visibility="visible"
+                                    android:visibility="invisible"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:shadowColor="@android:color/black"
+                                    android:shadowDx="5.0"
+                                    android:shadowDy="5.0"
+                                    android:shadowRadius="10.0"
+                                    android:textSize="18sp"
+                                    tools:text="kustawayfactory"/>
+
+                                <TextView
+                                    tools:visibility="visible"
+                                    android:visibility="invisible"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:shadowDx="5.0"
+                                    android:shadowDy="5.0"
+                                    android:textSize="12sp"
+                                    tools:text="@string/label_followed_by_target"/>
+                            </LinearLayout>
+
+                        </RelativeLayout>
 
                         <LinearLayout
-                            android:layout_below="@+id/frame"
+                            android:layout_below="@+id/frameContainer"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:gravity="center_vertical"
