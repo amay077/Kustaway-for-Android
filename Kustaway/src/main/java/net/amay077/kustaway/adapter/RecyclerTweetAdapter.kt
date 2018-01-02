@@ -1,12 +1,14 @@
 package net.amay077.kustaway.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
@@ -54,6 +56,10 @@ class RecyclerTweetView constructor(
             binding.displayName.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize.toFloat())
             binding.screenName.setTextSize(TypedValue.COMPLEX_UNIT_SP, (fontSize - 2).toFloat())
             binding.datetimeRelative.setTextSize(TypedValue.COMPLEX_UNIT_SP, (fontSize - 2).toFloat())
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            binding.icon.transitionName = context.getString(R.string.transition_profile_icon)
         }
 
         if (row.isDirectMessage())
@@ -115,10 +121,12 @@ class RecyclerTweetView constructor(
         binding.imagesContainer.setVisibility(View.GONE)
         binding.imagesContainerWrapper.setVisibility(View.GONE)
         UserIconManager.displayUserIcon(message.sender, binding.icon)
-        binding.icon.setOnClickListener(OnClickListener { v ->
-            val intent = Intent(v.context, ProfileActivity::class.java)
-            intent.putExtra("screenName", message.sender.screenName)
-            context.startActivity(intent)
+        binding.icon.setOnClickListener({ v ->
+            ProfileActivity.startActivity(v.context as Activity,
+                    message.sender.screenName,
+                    message.sender.biggerProfileImageURL,
+                    binding.icon,
+                    v.context.getString(R.string.transition_profile_icon))
         })
         binding.actionContainer.setVisibility(View.GONE)
         binding.lock.setVisibility(View.INVISIBLE)
@@ -311,10 +319,12 @@ class RecyclerTweetView constructor(
             binding.lock.setVisibility(View.INVISIBLE)
         }
         UserIconManager.displayUserIcon(status.user, binding.icon)
-        binding.icon.setOnClickListener(OnClickListener { v ->
-            val intent = Intent(v.context, ProfileActivity::class.java)
-            intent.putExtra("screenName", status.user.screenName)
-            context.startActivity(intent)
+        binding.icon.setOnClickListener({ v ->
+            ProfileActivity.startActivity(v.context as Activity,
+                    status.user.screenName,
+                    status.user.biggerProfileImageURL,
+                    binding.icon,
+                    v.context.getString(R.string.transition_profile_icon))
         })
 
         // RTの場合はRT元

@@ -1,8 +1,11 @@
 package net.amay077.kustaway
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
@@ -16,12 +19,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import de.greenrobot.event.EventBus
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import net.amay077.kustaway.adapter.SimplePagerAdapter
 import net.amay077.kustaway.databinding.ActivityProfileBinding
 import net.amay077.kustaway.event.AlertDialogEvent
-import net.amay077.kustaway.extensions.waitForFinish
 import net.amay077.kustaway.fragment.profile.*
 import net.amay077.kustaway.model.Profile
 import net.amay077.kustaway.model.TwitterManager
@@ -34,6 +34,40 @@ import twitter4j.User
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
+
+    companion object {
+        @JvmStatic
+        fun startActivity(
+                activity : Activity,
+                screenName : String,
+                profileImageURL : String,
+                sharedView : View?,
+                transitionName : String?) {
+
+            val intent = Intent(activity, ProfileActivity::class.java).also { i ->
+                i.putExtra("screenName", screenName)
+                i.putExtra("profileImageURL", profileImageURL)
+            }
+
+            if (sharedView != null && transitionName != null &&
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                val options = ActivityOptions.makeSceneTransitionAnimation(activity,
+                        sharedView, transitionName)
+                activity.startActivity(intent, options.toBundle())
+            } else {
+                activity.startActivity(intent)
+            }
+        }
+
+
+        private val OPTION_MENU_GROUP_RELATION = 1
+        private val OPTION_MENU_CREATE_BLOCK = 1
+        private val OPTION_MENU_CREATE_OFFICIAL_MUTE = 2
+        private val OPTION_MENU_CREATE_NO_RETWEET = 3
+        private val OPTION_MENU_DESTROY_BLOCK = 4
+        private val OPTION_MENU_DESTROY_OFFICIAL_MUTE = 5
+        private val OPTION_MENU_DESTROY_NO_RETWEET = 6
+    }
 
     private lateinit var binding: ActivityProfileBinding
     private lateinit var viewModel: ProfileActivityViewModel
@@ -65,14 +99,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            binding.transitionIcon.transitionName = "image"
-            launch (UI) {
-                val transition = window.sharedElementEnterTransition
-                if (transition != null) {
-                    transition.waitForFinish()
-                }
-                binding.transitionFrame.visibility = View.GONE
-            }
+            binding.transitionIcon.transitionName = getString(R.string.transition_profile_icon)
         } else {
             binding.transitionFrame.visibility = View.GONE
         }
@@ -122,7 +149,12 @@ class ProfileActivity : AppCompatActivity() {
         viewModel.restartRequest.observe(this, Observer { userId -> restart(userId!!) })
 
         // 読み込んだプロフィール
-        viewModel.profile.observe(this, Observer { profile -> onProfileReceived(profile) })
+        viewModel.profile.observe(this, Observer { profile ->
+            onProfileReceived(profile)
+
+            // プロフィールを読み込んだら、Transition 用のアイコンを消す
+            binding.transitionFrame.visibility = View.GONE
+        })
     }
 
     override fun onResume() {
@@ -424,15 +456,5 @@ class ProfileActivity : AppCompatActivity() {
         intent.putExtra("userId", userId)
         startActivity(intent)
         finish()
-    }
-
-    companion object {
-        private val OPTION_MENU_GROUP_RELATION = 1
-        private val OPTION_MENU_CREATE_BLOCK = 1
-        private val OPTION_MENU_CREATE_OFFICIAL_MUTE = 2
-        private val OPTION_MENU_CREATE_NO_RETWEET = 3
-        private val OPTION_MENU_DESTROY_BLOCK = 4
-        private val OPTION_MENU_DESTROY_OFFICIAL_MUTE = 5
-        private val OPTION_MENU_DESTROY_NO_RETWEET = 6
     }
 }

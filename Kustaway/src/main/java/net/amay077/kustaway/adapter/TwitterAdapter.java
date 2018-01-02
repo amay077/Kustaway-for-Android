@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -270,6 +271,10 @@ public class TwitterAdapter extends ArrayAdapter<Row> {
             holder.mDatetimeRelative.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize - 2);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.mIcon.setTransitionName(mContext.getString(R.string.transition_profile_icon));
+        }
+
         // 表示すべきデータの取得
         Row row = getItem(position);
 
@@ -514,24 +519,12 @@ public class TwitterAdapter extends ArrayAdapter<Row> {
             holder.mLock.setVisibility(View.INVISIBLE);
         }
         UserIconManager.displayUserIcon(status.getUser(), holder.mIcon);
-        holder.mIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ProfileActivity.class);
-                intent.putExtra("screenName", status.getUser().getScreenName());
-                intent.putExtra("profileImageURL", status.getUser().getBiggerProfileImageURL());
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    holder.mIcon.setTransitionName("image");
-
-                    ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)mContext,
-                            holder.mIcon, "image");
-                    mContext.startActivity(intent, options.toBundle());
-                } else {
-                    mContext.startActivity(intent);
-                }
-            }
-        });
+        holder.mIcon.setOnClickListener(v ->
+            ProfileActivity.startActivity((Activity)mContext,
+                status.getUser().getScreenName(),
+                status.getUser().getBiggerProfileImageURL(),
+                holder.mIcon,
+                mContext.getString(R.string.transition_profile_icon)));
 
         // RTの場合はRT元
         String statusString = StatusUtil.getExpandedText(status);
