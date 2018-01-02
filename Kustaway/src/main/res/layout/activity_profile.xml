@@ -73,78 +73,15 @@
                                     android:padding="10dp" />
                             </FrameLayout>
 
-                            <LinearLayout
-                                android:id="@+id/transitionFrame"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_centerInParent="true"
-                                android:gravity="center"
-                                android:orientation="vertical">
+                            <ImageView
+                                android:id="@+id/transitionIcon"
+                                android:layout_marginTop="10dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_width="64dp"
+                                android:layout_height="64dp"
+                                android:contentDescription="@string/description_icon"
+                                tools:src="@drawable/ic_launcher"/>
 
-                                <ImageView
-                                    android:id="@+id/transitionIcon"
-                                    android:layout_width="64dp"
-                                    android:layout_height="64dp"
-                                    android:contentDescription="@string/description_icon"
-                                    tools:src="@drawable/ic_launcher"/>
-
-                                <LinearLayout
-                                    tools:visibility="visible"
-                                    android:visibility="invisible"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:shadowColor="@android:color/black"
-                                        android:shadowDx="3.0"
-                                        android:shadowDy="3.0"
-                                        android:shadowRadius="10.0"
-                                        android:textColor="@android:color/white"
-                                        android:textSize="23sp"
-                                        tools:text="Kustaway"/>
-
-                                    <net.amay077.kustaway.widget.FontelloTextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:shadowDx="3.0"
-                                        android:shadowDy="3.0"
-                                        android:shadowRadius="10.0"
-                                        android:textColor="@android:color/white"
-                                        android:textSize="20sp"
-                                        android:layout_marginTop="3dp"
-                                        android:layout_marginLeft="6dp" />
-                                </LinearLayout>
-
-                                <TextView
-                                    tools:visibility="visible"
-                                    android:visibility="invisible"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:shadowColor="@android:color/black"
-                                    android:shadowDx="5.0"
-                                    android:shadowDy="5.0"
-                                    android:shadowRadius="10.0"
-                                    android:textSize="18sp"
-                                    tools:text="kustawayfactory"/>
-
-                                <TextView
-                                    tools:visibility="visible"
-                                    android:visibility="invisible"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:shadowDx="5.0"
-                                    android:shadowDy="5.0"
-                                    android:textSize="12sp"
-                                    tools:text="@string/label_followed_by_target"/>
-                            </LinearLayout>
 
                         </RelativeLayout>
 

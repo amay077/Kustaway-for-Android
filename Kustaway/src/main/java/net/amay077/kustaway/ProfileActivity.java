@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onTransitionEnd(Transition transition) {
-                        binding.transitionFrame.setVisibility(View.GONE);
+                        binding.transitionIcon.setVisibility(View.GONE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             transition.removeListener(this);
                         }
@@ -102,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onTransitionCancel(Transition transition) {
-                        binding.transitionFrame.setVisibility(View.GONE);
+                        binding.transitionIcon.setVisibility(View.GONE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             transition.removeListener(this);
                         }
