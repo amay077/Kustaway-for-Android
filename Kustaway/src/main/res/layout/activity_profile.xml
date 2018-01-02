@@ -73,14 +73,19 @@
                                     android:padding="10dp" />
                             </FrameLayout>
 
-                            <ImageView
-                                android:id="@+id/transitionIcon"
+                            <FrameLayout
+                                android:id="@+id/transitionFrame"
                                 android:layout_marginTop="10dp"
                                 android:layout_centerHorizontal="true"
-                                android:layout_width="64dp"
-                                android:layout_height="64dp"
-                                android:contentDescription="@string/description_icon"
-                                tools:src="@drawable/ic_launcher"/>
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <ImageView
+                                    android:id="@+id/transitionIcon"
+                                    android:layout_width="64dp"
+                                    android:layout_height="64dp"
+                                    android:contentDescription="@string/description_icon"
+                                    tools:src="@drawable/ic_launcher"/>
+                            </FrameLayout>
 
 
                         </RelativeLayout>
