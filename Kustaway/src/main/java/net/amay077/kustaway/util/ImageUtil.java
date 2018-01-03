@@ -1,7 +1,9 @@
 package net.amay077.kustaway.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 
 import net.amay077.kustaway.KustawayApplication;
+import net.amay077.kustaway.R;
 import net.amay077.kustaway.ScaleImageActivity;
 import net.amay077.kustaway.VideoActivity;
 import net.amay077.kustaway.display.FadeInRoundedBitmapDisplayer;
@@ -101,18 +104,21 @@ public class ImageUtil {
                 viewGroup.addView(image, layoutParams);
                 displayRoundedImage(url, image);
 
+                // Activity Transition 用の translationName を設定
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    image.setTransitionName(context.getString(R.string.transition_tweet_image));
+                }
+
+
                 if (videoUrl.isEmpty()) {
                     // 画像タップで拡大表示（ピンチイン・ピンチアウトいつかちゃんとやる）
                     final int openIndex = index;
-                    image.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(v.getContext(), ScaleImageActivity.class);
-                            intent.putExtra("status", status);
-                            intent.putExtra("index", openIndex);
-                            context.startActivity(intent);
-                        }
-                    });
+                    image.setOnClickListener(v -> ScaleImageActivity.startActivityWithImage(
+                            (Activity)v.getContext(),
+                            status,
+                            openIndex,
+                            image,
+                            context.getString(R.string.transition_tweet_image)));
                 } else {
                     // 画像タップで拡大表示（ピンチイン・ピンチアウトいつかちゃんとやる）
                     image.setOnClickListener(new View.OnClickListener() {
