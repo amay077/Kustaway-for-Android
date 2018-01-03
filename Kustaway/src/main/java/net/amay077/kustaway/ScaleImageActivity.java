@@ -190,7 +190,7 @@ public class ScaleImageActivity extends AppCompatActivity {
 
         // Activity Transition 用の TransitionName を設定
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ImageUtil.displayImage(imageUrls.get(0), transitionImage);
+            ImageUtil.displayImage(imageUrls.get(index), transitionImage);
             transitionImage.setTransitionName(getString(R.string.transition_tweet_image));
         }
 
