@@ -25,9 +25,8 @@ class FavoritesFragment : BaseFragment() {
     /**
      * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
      */
-    override fun getTabId(): Long {
-        return TabManager.FAVORITES_TAB_ID
-    }
+    override val tabId: Long
+        get() = TabManager.FAVORITES_TAB_ID
 
     /**
      * このタブに表示するツイートの定義
@@ -76,7 +75,7 @@ class FavoritesFragment : BaseFragment() {
                     if (mMaxId <= 0L || mMaxId > status.id) {
                         mMaxId = status.id
                     }
-                    mAdapter.add(Row.newStatus(status))
+                    mAdapter!!.add(Row.newStatus(status))
                 }
                 mReloading = false
             } else {
@@ -85,7 +84,7 @@ class FavoritesFragment : BaseFragment() {
                     if (mMaxId <= 0L || mMaxId > status.id) {
                         mMaxId = status.id
                     }
-                    mAdapter.extensionAdd(Row.newStatus(status))
+                    mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
@@ -107,7 +106,7 @@ class FavoritesFragment : BaseFragment() {
      * @param event ツイート
      */
     fun onEventMainThread(event: StreamingUnFavoriteEvent) {
-        val removePositions = mAdapter.removeStatus(event.status.id)
+        val removePositions = mAdapter!!.removeStatus(event.status.id)
         for (removePosition in removePositions) {
             if (removePosition >= 0) {
                 val visiblePosition = mListView.firstVisiblePosition

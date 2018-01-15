@@ -21,13 +21,12 @@ class SearchFragment : BaseFragment() {
     /**
      * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
      */
-    override fun getTabId(): Long {
-        return TabManager.SEARCH_TAB_ID - Math.abs(mSearchWord!!.hashCode())
-    }
+    override val tabId: Long
+        get() = TabManager.SEARCH_TAB_ID - Math.abs(mSearchWord!!.hashCode())
 
-    override fun getSearchWord(): String {
-        return mSearchWord ?: ""
-    }
+//    fun getSearchWord(): String {
+//        return mSearchWord ?: ""
+//    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         if (mSearchWord == null) {
@@ -86,7 +85,7 @@ class SearchFragment : BaseFragment() {
             if (mReloading) {
                 clear()
                 for (status in queryResult.tweets) {
-                    mAdapter.add(Row.newStatus(status))
+                    mAdapter!!.add(Row.newStatus(status))
                 }
                 mReloading = false
                 if (queryResult.hasNext()) {
@@ -98,7 +97,7 @@ class SearchFragment : BaseFragment() {
                 }
             } else {
                 for (status in queryResult.tweets) {
-                    mAdapter.extensionAdd(Row.newStatus(status))
+                    mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
                 mQuery = queryResult.nextQuery()

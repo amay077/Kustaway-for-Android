@@ -21,9 +21,8 @@ class DirectMessagesFragment : BaseFragment() {
     /**
      * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
      */
-    override fun getTabId(): Long {
-        return TabManager.DIRECT_MESSAGES_TAB_ID
-    }
+    override val tabId: Long
+        get() = TabManager.DIRECT_MESSAGES_TAB_ID
 
     /**
      * このタブに表示するツイートの定義
@@ -101,12 +100,12 @@ class DirectMessagesFragment : BaseFragment() {
             if (mReloading) {
                 clear()
                 for (status in statuses) {
-                    mAdapter.add(Row.newDirectMessage(status))
+                    mAdapter!!.add(Row.newDirectMessage(status))
                 }
                 mReloading = false
             } else {
                 for (status in statuses) {
-                    mAdapter.extensionAdd(Row.newDirectMessage(status))
+                    mAdapter!!.extensionAdd(Row.newDirectMessage(status))
                 }
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
@@ -120,6 +119,6 @@ class DirectMessagesFragment : BaseFragment() {
      * @param event DMのID
      */
     fun onEventMainThread(event: StreamingDestroyMessageEvent) {
-        mAdapter.removeDirectMessage(event.statusId!!)
+        mAdapter!!.removeDirectMessage(event.statusId!!)
     }
 }

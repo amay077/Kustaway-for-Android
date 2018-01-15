@@ -29,9 +29,8 @@ class TimelineFragment : BaseFragment() {
     /**
      * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
      */
-    override fun getTabId(): Long {
-        return TabManager.TIMELINE_TAB_ID
-    }
+    override val tabId: Long
+        get() = TabManager.TIMELINE_TAB_ID
 
     /**
      * このタブに表示するツイートの定義
@@ -83,7 +82,7 @@ class TimelineFragment : BaseFragment() {
                     if (mMaxId <= 0L || mMaxId > status.id) {
                         mMaxId = status.id
                     }
-                    mAdapter.add(Row.newStatus(status))
+                    mAdapter!!.add(Row.newStatus(status))
                 }
                 mReloading = false
             } else {
@@ -91,7 +90,7 @@ class TimelineFragment : BaseFragment() {
                     if (mMaxId <= 0L || mMaxId > status.id) {
                         mMaxId = status.id
                     }
-                    mAdapter.extensionAdd(Row.newStatus(status))
+                    mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE

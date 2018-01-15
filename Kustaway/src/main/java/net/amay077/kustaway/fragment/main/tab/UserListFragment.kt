@@ -23,9 +23,8 @@ class UserListFragment : BaseFragment() {
 
     private val mMembers = LongSparseArray<Boolean>()
 
-    override fun getTabId(): Long {
-        return mUserListId
-    }
+    override val tabId: Long
+        get() = mUserListId
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         if (mUserListId == 0L) {
@@ -80,7 +79,7 @@ class UserListFragment : BaseFragment() {
                     if (mMaxId <= 0L || mMaxId > status.id) {
                         mMaxId = status.id
                     }
-                    mAdapter.add(Row.newStatus(status))
+                    mAdapter!!.add(Row.newStatus(status))
                 }
                 mReloading = false
             } else {
@@ -92,7 +91,7 @@ class UserListFragment : BaseFragment() {
                     // 最初のツイートに登場ユーザーをStreaming APIからの取り込み対象にすることでAPI節約!!!
                     mMembers.append(status.user.id, true)
 
-                    mAdapter.extensionAdd(Row.newStatus(status))
+                    mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
