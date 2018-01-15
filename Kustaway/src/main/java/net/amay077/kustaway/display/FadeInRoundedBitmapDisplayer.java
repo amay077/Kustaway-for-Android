@@ -54,9 +54,7 @@ public class FadeInRoundedBitmapDisplayer implements BitmapDisplayer {
 
         Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
-        RectF bounds = new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin);
-//        canvas.drawRoundRect(bounds, radius, radius, paint);
-        canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width(), paint);
+        canvas.drawRoundRect(new RectF(margin, margin, source.getWidth() - margin, source.getHeight() - margin), radius, radius, paint);
 
         return output;
     }
