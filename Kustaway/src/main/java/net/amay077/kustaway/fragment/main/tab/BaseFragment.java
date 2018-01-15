@@ -9,13 +9,9 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 import net.amay077.kustaway.R;
 import net.amay077.kustaway.adapter.TwitterAdapter;
+import net.amay077.kustaway.databinding.PullToRefreshListBinding;
 import net.amay077.kustaway.event.NewRecordEvent;
 import net.amay077.kustaway.event.action.GoToTopEvent;
 import net.amay077.kustaway.event.action.PostAccountChangeEvent;
@@ -28,6 +24,10 @@ import net.amay077.kustaway.listener.StatusLongClickListener;
 import net.amay077.kustaway.model.AccessTokenManager;
 import net.amay077.kustaway.model.Row;
 import net.amay077.kustaway.settings.BasicSettings;
+
+import java.util.ArrayList;
+
+import de.greenrobot.event.EventBus;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
@@ -43,11 +43,10 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     protected long mSentDirectMessagesMaxId = 0L; // 読み込んだ最新の送信メッセージID
     private ArrayList<Row> mStackRows = new ArrayList<>();
 
-    @BindView(R.id.list_view)
+    private PullToRefreshListBinding binding;
+
     protected ListView mListView;
-    @BindView(R.id.guruguru)
     protected ProgressBar mFooter;
-    @BindView(R.id.ptr_layout)
     protected PullToRefreshLayout mPullToRefreshLayout;
 
     @Override
@@ -58,11 +57,16 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.pull_to_refresh_list, container, false);
-        if (v == null) {
+        PullToRefreshListBinding bin = PullToRefreshListBinding.inflate(inflater, container, false);
+        if (bin == null) {
             return null;
         }
-        ButterKnife.bind(this, v);
+
+        this.binding = bin;
+
+        this.mListView = binding.listView;
+        this.mFooter = binding.guruguru;
+        this.mPullToRefreshLayout = binding.ptrLayout;
 
         /**
          * PullToRefreshの初期化処理
@@ -78,7 +82,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         mFooter.setVisibility(View.GONE);
         mListView.setFastScrollEnabled(BasicSettings.getFastScrollOn());
 
-        return v;
+        return bin.getRoot();
     }
 
     @Override
