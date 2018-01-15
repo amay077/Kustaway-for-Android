@@ -5,14 +5,14 @@ import android.view.View
 
 import net.amay077.kustaway.event.model.StreamingCreateFavoriteEvent
 import net.amay077.kustaway.event.model.StreamingUnFavoriteEvent
+import net.amay077.kustaway.extensions.firstVisiblePosition
+import net.amay077.kustaway.extensions.setSelectionFromTop
 import net.amay077.kustaway.model.AccessTokenManager
 import net.amay077.kustaway.model.FavRetweetManager
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TabManager
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.settings.BasicSettings
-import net.amay077.kustaway.util.firstVisiblePosition
-import net.amay077.kustaway.util.setSelectionFromTop
 import twitter4j.Paging
 import twitter4j.ResponseList
 import twitter4j.Status

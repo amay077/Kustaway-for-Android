@@ -30,14 +30,12 @@ import de.greenrobot.event.EventBus
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
+import net.amay077.kustaway.extensions.firstVisiblePosition
+import net.amay077.kustaway.extensions.setSelection
+import net.amay077.kustaway.extensions.setSelectionFromTop
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
-import net.amay077.kustaway.util.firstVisiblePosition
-import net.amay077.kustaway.util.setSelection
-import net.amay077.kustaway.util.setSelectionFromTop
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener
 
-abstract class BaseFragment : Fragment(), OnRefreshListener {
+abstract class BaseFragment : Fragment() {
 
     protected var mAdapter: RecyclerTweetAdapter? = null
     protected var mAutoLoader = false
@@ -47,8 +45,6 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
     protected var mDirectMessagesMaxId = 0L // 読み込んだ最新の受信メッセージID
     protected var mSentDirectMessagesMaxId = 0L // 読み込んだ最新の送信メッセージID
     private val mStackRows = ArrayList<Row>()
-
-    private var binding: PullToRefreshList2Binding? = null
 
     protected lateinit var mListView: RecyclerView
     protected lateinit var mFooter: ProgressBar
@@ -107,7 +103,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         }
 
         if (autoScroll) {
-            mListView!!.setSelection(0)
+            mListView.setSelection(0)
         } else {
             // TODO あとで
 //            // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
@@ -181,19 +177,9 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bin = PullToRefreshList2Binding.inflate(inflater!!, container, false) ?: return null
 
-        this.binding = bin
-
-        this.mListView = binding!!.recyclerView
-        this.mFooter = binding!!.guruguru
-        this.mPullToRefreshLayout = binding!!.ptrLayout
-
-//        /**
-//         * PullToRefreshの初期化処理
-//         */
-//        ActionBarPullToRefresh.from(activity)
-//                .theseChildrenArePullable(mListView)
-//                .listener(this)
-//                .setup(mPullToRefreshLayout!!)
+        this.mListView = bin.recyclerView
+        this.mFooter = bin.guruguru
+        this.mPullToRefreshLayout = bin.ptrLayout
 
         var adapter = mAdapter
         if (adapter != null) {
@@ -207,9 +193,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
             }
         }
 
-//        mListView!!.onItemClickListener = StatusClickListener(activity)
-//        mListView!!.onItemLongClickListener = StatusLongClickListener(activity)
-        mListView!!.addOnScrollListener(mOnScrollListener2)
+        mListView.addOnScrollListener(mOnScrollListener2)
         mListView.addOnPagingListener {
             additionalReading()
         }
@@ -236,11 +220,11 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         if (mAdapter == null) {
             // Status(ツイート)をViewに描写するアダプター
             mAdapter = RecyclerTweetAdapter(activity, arrayListOf())
-            mListView!!.visibility = View.GONE
+            mListView.visibility = View.GONE
             //            taskExecute();
         }
 
-        mListView!!.adapter = mAdapter
+        mListView.adapter = mAdapter
     }
 
     override fun onResume() {
@@ -251,10 +235,6 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
     override fun onPause() {
         EventBus.getDefault().unregister(this)
         super.onPause()
-    }
-
-    override fun onRefreshStarted(view: View) {
-        reload()
     }
 
     fun firstLoad() {
@@ -301,7 +281,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
             activity.finish()
             return false
         }
-        mListView!!.setSelection(0)
+        mListView.setSelection(0)
         if (mStackRows.size > 0) {
             showStack()
             return false
@@ -320,8 +300,8 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         if (mListView == null) {
             return
         }
-        mListView!!.removeCallbacks(mRender)
-        mListView!!.postDelayed(mRender, 250)
+        mListView.removeCallbacks(mRender)
+        mListView.postDelayed(mRender, 250)
     }
 
     /**
@@ -380,11 +360,11 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         val removePositions = mAdapter!!.removeStatus(event.statusId!!)
         for (removePosition in removePositions) {
             if (removePosition >= 0) {
-                val visiblePosition = mListView!!.firstVisiblePosition()
+                val visiblePosition = mListView.firstVisiblePosition()
                 if (visiblePosition > removePosition) {
-                    val view = mListView!!.getChildAt(0)
+                    val view = mListView.getChildAt(0)
                     val y = view?.top ?: 0
-                    mListView!!.setSelectionFromTop(visiblePosition - 1, y)
+                    mListView.setSelectionFromTop(visiblePosition - 1, y)
                     break
                 }
             }
