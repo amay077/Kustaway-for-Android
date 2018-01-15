@@ -13,6 +13,8 @@ import net.amay077.kustaway.model.TabManager
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.settings.BasicSettings
 import net.amay077.kustaway.util.StatusUtil
+import net.amay077.kustaway.util.firstVisiblePosition
+import net.amay077.kustaway.util.setSelectionFromTop
 import twitter4j.Paging
 import twitter4j.ResponseList
 import twitter4j.Status
@@ -86,7 +88,7 @@ class InteractionsFragment : BaseFragment() {
             mFooter.visibility = View.GONE
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
-                mPullToRefreshLayout.setRefreshComplete()
+                mPullToRefreshLayout.isRefreshing = false
                 mListView.visibility = View.VISIBLE
                 return
             }
@@ -109,7 +111,7 @@ class InteractionsFragment : BaseFragment() {
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
             }
-            mPullToRefreshLayout.setRefreshComplete()
+            mPullToRefreshLayout.isRefreshing = false
         }
     }
 
@@ -129,7 +131,7 @@ class InteractionsFragment : BaseFragment() {
         val removePositions = mAdapter!!.removeStatus(event.status.id)
         for (removePosition in removePositions) {
             if (removePosition >= 0) {
-                val visiblePosition = mListView.firstVisiblePosition
+                val visiblePosition = mListView.firstVisiblePosition()
                 if (visiblePosition > removePosition) {
                     val view = mListView.getChildAt(0)
                     val y = view?.top ?: 0

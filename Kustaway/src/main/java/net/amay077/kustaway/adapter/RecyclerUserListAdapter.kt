@@ -12,6 +12,7 @@ import net.amay077.kustaway.R
 import net.amay077.kustaway.UserListActivity
 import net.amay077.kustaway.databinding.RowUserListBinding
 import net.amay077.kustaway.util.ImageUtil
+import twitter4j.User
 import twitter4j.UserList
 
 class RecyclerUserListView constructor(
@@ -81,6 +82,10 @@ class RecyclerUserListAdapter(
 
     override fun add(userList: UserList) {
         userLists.add(userList)
+    }
+
+    override fun insert(index: Int, item: UserList) {
+        TODO("not supported") //To change body of created functions use File | Settings | File Templates.
     }
 
     // 未対応

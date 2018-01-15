@@ -92,6 +92,10 @@ class RecyclerUserAdapter(
         users.add(user)
     }
 
+    override fun insert(index: Int, item: User) {
+        TODO("not supported") //To change body of created functions use File | Settings | File Templates.
+    }
+
     // 未対応
     override fun clear() {}
     override fun remove(id: Long) { }

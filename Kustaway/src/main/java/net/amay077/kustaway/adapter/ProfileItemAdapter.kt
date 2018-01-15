@@ -10,6 +10,9 @@ abstract class ProfileItemAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHol
     /** アイテムを追加する */
     abstract fun add(item: T)
 
+    /** アイテムを挿入する */
+    abstract fun insert(index:Int, item: T)
+
     /** アイテムを ID で削除する */
     abstract fun remove(id: Long)
 

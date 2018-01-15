@@ -93,7 +93,7 @@ class DirectMessagesFragment : BaseFragment() {
             mFooter.visibility = View.GONE
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
-                mPullToRefreshLayout.setRefreshComplete()
+                mPullToRefreshLayout.isRefreshing = false
                 mListView.visibility = View.VISIBLE
                 return
             }
@@ -110,7 +110,7 @@ class DirectMessagesFragment : BaseFragment() {
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
             }
-            mPullToRefreshLayout.setRefreshComplete()
+            mPullToRefreshLayout.isRefreshing = false
         }
     }
 

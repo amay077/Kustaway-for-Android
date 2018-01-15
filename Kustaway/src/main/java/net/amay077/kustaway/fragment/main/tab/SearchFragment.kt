@@ -77,7 +77,7 @@ class SearchFragment : BaseFragment() {
             mFooter.visibility = View.GONE
             if (queryResult == null) {
                 mReloading = false
-                mPullToRefreshLayout.setRefreshComplete()
+                mPullToRefreshLayout.isRefreshing = false
                 mListView.visibility = View.VISIBLE
                 mQuery = null
                 return
@@ -103,7 +103,7 @@ class SearchFragment : BaseFragment() {
                 mQuery = queryResult.nextQuery()
                 mListView.visibility = View.VISIBLE
             }
-            mPullToRefreshLayout.setRefreshComplete()
+            mPullToRefreshLayout.isRefreshing = false
         }
     }
 }

@@ -3,8 +3,6 @@ package net.amay077.kustaway.fragment.main.tab
 import android.os.AsyncTask
 import android.view.View
 
-import java.util.ArrayList
-
 import net.amay077.kustaway.event.model.StreamingCreateFavoriteEvent
 import net.amay077.kustaway.event.model.StreamingUnFavoriteEvent
 import net.amay077.kustaway.model.AccessTokenManager
@@ -13,6 +11,8 @@ import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TabManager
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.settings.BasicSettings
+import net.amay077.kustaway.util.firstVisiblePosition
+import net.amay077.kustaway.util.setSelectionFromTop
 import twitter4j.Paging
 import twitter4j.ResponseList
 import twitter4j.Status
@@ -64,7 +64,7 @@ class FavoritesFragment : BaseFragment() {
             mFooter.visibility = View.GONE
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
-                mPullToRefreshLayout.setRefreshComplete()
+                mPullToRefreshLayout.isRefreshing = false
                 mListView.visibility = View.VISIBLE
                 return
             }
@@ -89,7 +89,7 @@ class FavoritesFragment : BaseFragment() {
                 mAutoLoader = true
                 mListView.visibility = View.VISIBLE
             }
-            mPullToRefreshLayout.setRefreshComplete()
+            mPullToRefreshLayout.isRefreshing = false
         }
     }
 
@@ -109,7 +109,7 @@ class FavoritesFragment : BaseFragment() {
         val removePositions = mAdapter!!.removeStatus(event.status.id)
         for (removePosition in removePositions) {
             if (removePosition >= 0) {
-                val visiblePosition = mListView.firstVisiblePosition
+                val visiblePosition = mListView.firstVisiblePosition()
                 if (visiblePosition > removePosition) {
                     val view = mListView.getChildAt(0)
                     val y = view?.top ?: 0

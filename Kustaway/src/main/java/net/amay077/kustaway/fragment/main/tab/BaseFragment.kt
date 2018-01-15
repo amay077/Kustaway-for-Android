@@ -2,16 +2,17 @@ package net.amay077.kustaway.fragment.main.tab
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import android.widget.ListView
+import android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.ProgressBar
 
-import net.amay077.kustaway.R
-import net.amay077.kustaway.adapter.TwitterAdapter
-import net.amay077.kustaway.databinding.PullToRefreshListBinding
 import net.amay077.kustaway.event.NewRecordEvent
 import net.amay077.kustaway.event.action.GoToTopEvent
 import net.amay077.kustaway.event.action.PostAccountChangeEvent
@@ -19,22 +20,26 @@ import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingCreateStatusEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
 import net.amay077.kustaway.event.settings.BasicSettingsChangeEvent
-import net.amay077.kustaway.listener.StatusClickListener
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.AccessTokenManager
 import net.amay077.kustaway.model.Row
-import net.amay077.kustaway.settings.BasicSettings
 
 import java.util.ArrayList
 
 import de.greenrobot.event.EventBus
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh
+import net.amay077.kustaway.adapter.RecyclerTweetAdapter
+import net.amay077.kustaway.databinding.PullToRefreshList2Binding
+import net.amay077.kustaway.extensions.addOnPagingListener
+import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
+import net.amay077.kustaway.util.firstVisiblePosition
+import net.amay077.kustaway.util.setSelection
+import net.amay077.kustaway.util.setSelectionFromTop
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener
 
 abstract class BaseFragment : Fragment(), OnRefreshListener {
 
-    protected var mAdapter: TwitterAdapter? = null
+    protected var mAdapter: RecyclerTweetAdapter? = null
     protected var mAutoLoader = false
     protected var mReloading = false
     private var mScrolling = false
@@ -43,14 +48,14 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
     protected var mSentDirectMessagesMaxId = 0L // 読み込んだ最新の送信メッセージID
     private val mStackRows = ArrayList<Row>()
 
-    private var binding: PullToRefreshListBinding? = null
+    private var binding: PullToRefreshList2Binding? = null
 
-    protected lateinit var mListView: ListView
+    protected lateinit var mListView: RecyclerView
     protected lateinit var mFooter: ProgressBar
-    protected lateinit var mPullToRefreshLayout: PullToRefreshLayout
+    protected lateinit var mPullToRefreshLayout: SwipeRefreshLayout
 
     val isTop: Boolean
-        get() = mListView != null && mListView!!.firstVisiblePosition == 0
+        get() = mListView.firstVisiblePosition() == 0
 
     /**
      * ツイートの表示処理、画面のスクロール位置によって適切な処理を行う、まだバグがある
@@ -59,22 +64,22 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         if (mScrolling) {
             return@Runnable
         }
-        if (mListView == null || mAdapter == null) {
+        if (mAdapter == null) {
             return@Runnable
         }
 
         // 表示している要素の位置
-        val position = mListView!!.firstVisiblePosition
+        val position = mListView.firstVisiblePosition()
 
         // 縦スクロール位置
-        val view = mListView!!.getChildAt(0)
+        val view = mListView.getChildAt(0)
         val y = view?.top ?: 0
 
         // 要素を上に追加（ addだと下に追加されてしまう ）
         var count = 0
         var highlight = false
         for (row in mStackRows) {
-            mAdapter!!.insert(row, 0)
+            mAdapter!!.insert(0, row)
             count++
             if (row.isFavorite) {
                 // お気に入りしたのが自分じゃない時
@@ -104,11 +109,29 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         if (autoScroll) {
             mListView!!.setSelection(0)
         } else {
-            // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
-            mListView!!.setSelectionFromTop(position + count, y)
-            // 未読の新規ツイートをチラ見せ
-            if (position == 0 && y == 0) {
-                mListView!!.smoothScrollToPositionFromTop(position + count, 120)
+            // TODO あとで
+//            // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
+//            mListView!!.setSelectionFromTop(position + count, y)
+//            // 未読の新規ツイートをチラ見せ
+//            if (position == 0 && y == 0) {
+//                mListView!!.smoothScrollToPositionFromTop(position + count, 120)
+//            }
+        }
+    }
+
+    private val mOnScrollListener2 = object : RecyclerView.OnScrollListener() {
+
+        override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {
+            when (scrollState) {
+                SCROLL_STATE_IDLE -> {
+                    mScrolling = false
+                    if (mStackRows.size > 0) {
+                        showStack()
+                    } else if (isTop) {
+                        EventBus.getDefault().post(GoToTopEvent())
+                    }
+                }
+                SCROLL_STATE_TOUCH_SCROLL, SCROLL_STATE_DRAGGING -> mScrolling = true
             }
         }
     }
@@ -156,27 +179,48 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val bin = PullToRefreshListBinding.inflate(inflater!!, container, false) ?: return null
+        val bin = PullToRefreshList2Binding.inflate(inflater!!, container, false) ?: return null
 
         this.binding = bin
 
-        this.mListView = binding!!.listView
+        this.mListView = binding!!.recyclerView
         this.mFooter = binding!!.guruguru
         this.mPullToRefreshLayout = binding!!.ptrLayout
 
-        /**
-         * PullToRefreshの初期化処理
-         */
-        ActionBarPullToRefresh.from(activity)
-                .theseChildrenArePullable(mListView)
-                .listener(this)
-                .setup(mPullToRefreshLayout!!)
+//        /**
+//         * PullToRefreshの初期化処理
+//         */
+//        ActionBarPullToRefresh.from(activity)
+//                .theseChildrenArePullable(mListView)
+//                .listener(this)
+//                .setup(mPullToRefreshLayout!!)
 
-        mListView!!.onItemClickListener = StatusClickListener(activity)
-        mListView!!.onItemLongClickListener = StatusLongClickListener(activity)
-        mListView!!.setOnScrollListener(mOnScrollListener)
+        var adapter = mAdapter
+        if (adapter != null) {
+            adapter.onItemClickListener = { row ->
+                StatusMenuFragment.newInstance(row)
+                        .show(this.activity.supportFragmentManager, "dialog")
+            }
+
+            adapter.onItemLongClickListener = { row ->
+                StatusLongClickListener.handleRow(this.activity, row)
+            }
+        }
+
+//        mListView!!.onItemClickListener = StatusClickListener(activity)
+//        mListView!!.onItemLongClickListener = StatusLongClickListener(activity)
+        mListView!!.addOnScrollListener(mOnScrollListener2)
+        mListView.addOnPagingListener {
+            additionalReading()
+        }
+
+        mListView.visibility = View.VISIBLE
         mFooter.visibility = View.GONE
-        mListView!!.isFastScrollEnabled = BasicSettings.getFastScrollOn()
+//        mListView!!.isFastScrollEnabled = BasicSettings.getFastScrollOn()
+
+        this.mPullToRefreshLayout.setOnRefreshListener {
+            reload()
+        }
 
         return bin.root
     }
@@ -191,7 +235,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
          */
         if (mAdapter == null) {
             // Status(ツイート)をViewに描写するアダプター
-            mAdapter = TwitterAdapter(activity, R.layout.row_tweet)
+            mAdapter = RecyclerTweetAdapter(activity, arrayListOf())
             mListView!!.visibility = View.GONE
             //            taskExecute();
         }
@@ -224,7 +268,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         // とりあえず無視
         // TODO あとでなんとかする
         if (mPullToRefreshLayout != null) {
-            mPullToRefreshLayout!!.isRefreshing = true
+            mPullToRefreshLayout.isRefreshing = true
         }
 
         taskExecute()
@@ -232,7 +276,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
 
     fun reload() {
         mReloading = true
-        mPullToRefreshLayout!!.isRefreshing = true
+        mPullToRefreshLayout.isRefreshing = true
         taskExecute()
     }
 
@@ -320,7 +364,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
      * 高速スクロールの設定が変わったら切り替える
      */
     fun onEventMainThread(event: BasicSettingsChangeEvent) {
-        mListView!!.isFastScrollEnabled = BasicSettings.getFastScrollOn()
+//        mListView!!.isFastScrollEnabled = BasicSettings.getFastScrollOn() // TODO RecyclerView にはFastなさそう
     }
 
     fun onEventMainThread(event: StatusActionEvent) {
@@ -336,7 +380,7 @@ abstract class BaseFragment : Fragment(), OnRefreshListener {
         val removePositions = mAdapter!!.removeStatus(event.statusId!!)
         for (removePosition in removePositions) {
             if (removePosition >= 0) {
-                val visiblePosition = mListView!!.firstVisiblePosition
+                val visiblePosition = mListView!!.firstVisiblePosition()
                 if (visiblePosition > removePosition) {
                     val view = mListView!!.getChildAt(0)
                     val y = view?.top ?: 0

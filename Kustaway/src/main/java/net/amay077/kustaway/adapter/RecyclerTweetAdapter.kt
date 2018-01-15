@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
+import android.support.v4.util.LongSparseArray
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.util.TypedValue
@@ -30,10 +31,12 @@ import net.amay077.kustaway.model.FavRetweetManager
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.UserIconManager
 import net.amay077.kustaway.settings.BasicSettings
+import net.amay077.kustaway.settings.MuteSettings
 import net.amay077.kustaway.util.*
 import twitter4j.DirectMessage
 import twitter4j.Status
 import twitter4j.User
+import java.util.ArrayList
 
 class RecyclerTweetView constructor(
         context: Context,
@@ -473,7 +476,33 @@ class RecyclerTweetAdapter(
     }
 
     override fun add(row: Row) {
+        if (MuteSettings.isMute(row)) {
+            return
+        }
+        if (exists(row)) {
+            return
+        }
         rows.add(row)
+        if (row.isStatus) {
+            mIdMap.put(row.status.id, true)
+        }
+        filter(row)
+        limitation()
+    }
+
+    override fun insert(index:Int, row: Row) {
+        if (MuteSettings.isMute(row)) {
+            return
+        }
+        if (exists(row)) {
+            return
+        }
+        rows.add(index, row)
+        if (row.isStatus) {
+            mIdMap.put(row.status.id, true)
+        }
+        filter(row)
+        limitation()
     }
 
     override fun remove(id: Long) {
@@ -483,7 +512,88 @@ class RecyclerTweetAdapter(
         }
     }
 
+    fun limitation() {
+        val size = rows.size
+        if (size > mLimit) {
+            val count = size - mLimit
+            for (i in 0 until count) {
+                rows.removeAt(size - i - 1)
+            }
+        }
+    }
+
     override fun clear() {
         rows.clear()
+        mIdMap.clear()
+        mLimit = LIMIT
     }
+
+    private val LIMIT = 100
+    private var mLimit = LIMIT
+    private val mIdMap = LongSparseArray<Boolean>()
+
+    fun removeStatus(statusId: Long): ArrayList<Int> {
+        var position = 0
+        val positions = ArrayList<Int>()
+        val rows = ArrayList<Row>()
+        for (i in 0 until rows.size) {
+            val row = rows.get(i)
+            if (row.isDirectMessage()) {
+                continue
+            }
+            val status = row.getStatus()
+            val retweet = status.getRetweetedStatus()
+            if (row.getStatus().getId() == statusId || retweet != null && retweet.getId() == statusId) {
+                rows.add(row)
+                positions.add(position)
+            }
+            position++
+        }
+        for (row in rows) {
+            if (row.isStatus) {
+                remove(row.status.id)
+            }
+        }
+        return positions
+    }
+
+    fun extensionAdd(row: Row) {
+        if (MuteSettings.isMute(row)) {
+            return
+        }
+        if (exists(row)) {
+            return
+        }
+        rows.add(row)
+        if (row.isStatus) {
+            mIdMap.put(row.status.id, true)
+        }
+        filter(row)
+        mLimit++
+    }
+
+    private fun filter(row: Row) {
+        val status = row.status
+        if (status != null && status.isRetweeted) {
+            val retweet = status.retweetedStatus
+            if (retweet != null && status.user.id == AccessTokenManager.getUserId()) {
+                FavRetweetManager.setRtId(retweet.id, status.id)
+            }
+        }
+    }
+
+    private fun exists(row: Row): Boolean {
+        return row.isStatus && mIdMap.get(row.status.id, false)
+    }
+
+    fun removeDirectMessage(directMessageId: Long) {
+        for (i in 0 until rows.size) {
+            val row = rows.get(i)
+            if (row.isDirectMessage() && row.getMessage().getId() == directMessageId) {
+                remove(row.message.id)
+                break
+            }
+        }
+    }
+
 }
