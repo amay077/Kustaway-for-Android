@@ -1,0 +1,125 @@
+package net.amay077.kustaway.fragment.main.tab
+
+import android.os.AsyncTask
+import android.view.View
+
+import java.util.Collections
+import java.util.Comparator
+
+import net.amay077.kustaway.event.model.StreamingDestroyMessageEvent
+import net.amay077.kustaway.model.Row
+import net.amay077.kustaway.model.TabManager
+import net.amay077.kustaway.model.TwitterManager
+import net.amay077.kustaway.settings.BasicSettings
+import twitter4j.DirectMessage
+import twitter4j.Paging
+import twitter4j.ResponseList
+import twitter4j.Twitter
+
+class DirectMessagesFragment : BaseFragment() {
+
+    /**
+     * このタブを表す固有のID、ユーザーリストで正数を使うため負数を使う
+     */
+    override fun getTabId(): Long {
+        return TabManager.DIRECT_MESSAGES_TAB_ID
+    }
+
+    /**
+     * このタブに表示するツイートの定義
+     * @param row ストリーミングAPIから受け取った情報（ツイートやDM）
+     * @return trueは表示しない、falseは表示する
+     */
+    override fun isSkip(row: Row): Boolean {
+        return !row.isDirectMessage
+    }
+
+    override fun taskExecute() {
+        DirectMessagesTask().execute()
+    }
+
+    private inner class DirectMessagesTask : AsyncTask<Void, Void, ResponseList<DirectMessage>>() {
+        override fun doInBackground(vararg params: Void): ResponseList<DirectMessage>? {
+            try {
+                val twitter = TwitterManager.getTwitter()
+
+                // 受信したDM
+                val directMessagesPaging = Paging()
+                if (mDirectMessagesMaxId > 0 && !mReloading) {
+                    directMessagesPaging.maxId = mDirectMessagesMaxId - 1
+                    directMessagesPaging.count = BasicSettings.getPageCount() / 2
+                } else {
+                    directMessagesPaging.count = 10
+                }
+                val directMessages = twitter.getDirectMessages(directMessagesPaging)
+                for (directMessage in directMessages) {
+                    if (mDirectMessagesMaxId <= 0L || mDirectMessagesMaxId > directMessage.id) {
+                        mDirectMessagesMaxId = directMessage.id
+                    }
+                }
+
+                // 送信したDM
+                val sentDirectMessagesPaging = Paging()
+                if (mSentDirectMessagesMaxId > 0 && !mReloading) {
+                    sentDirectMessagesPaging.maxId = mSentDirectMessagesMaxId - 1
+                    sentDirectMessagesPaging.count = BasicSettings.getPageCount() / 2
+                } else {
+                    sentDirectMessagesPaging.count = 10
+                }
+                val sentDirectMessages = twitter.getSentDirectMessages(sentDirectMessagesPaging)
+                for (directMessage in sentDirectMessages) {
+                    if (mSentDirectMessagesMaxId <= 0L || mSentDirectMessagesMaxId > directMessage.id) {
+                        mSentDirectMessagesMaxId = directMessage.id
+                    }
+                }
+
+                directMessages.addAll(sentDirectMessages)
+
+                // 日付でソート
+                Collections.sort(directMessages) { arg0, arg1 ->
+                    arg1.createdAt.compareTo(
+                            arg0.createdAt)
+                }
+                return directMessages
+            } catch (e: OutOfMemoryError) {
+                return null
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return null
+            }
+
+        }
+
+        override fun onPostExecute(statuses: ResponseList<DirectMessage>?) {
+            mFooter.visibility = View.GONE
+            if (statuses == null || statuses.size == 0) {
+                mReloading = false
+                mPullToRefreshLayout.setRefreshComplete()
+                mListView.visibility = View.VISIBLE
+                return
+            }
+            if (mReloading) {
+                clear()
+                for (status in statuses) {
+                    mAdapter.add(Row.newDirectMessage(status))
+                }
+                mReloading = false
+            } else {
+                for (status in statuses) {
+                    mAdapter.extensionAdd(Row.newDirectMessage(status))
+                }
+                mAutoLoader = true
+                mListView.visibility = View.VISIBLE
+            }
+            mPullToRefreshLayout.setRefreshComplete()
+        }
+    }
+
+    /**
+     * DM削除通知
+     * @param event DMのID
+     */
+    fun onEventMainThread(event: StreamingDestroyMessageEvent) {
+        mAdapter.removeDirectMessage(event.statusId!!)
+    }
+}
