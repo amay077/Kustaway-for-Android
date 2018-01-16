@@ -94,7 +94,7 @@ class DirectMessagesFragment : BaseFragment() {
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
                 mPullToRefreshLayout.isRefreshing = false
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
                 return
             }
             if (mReloading) {
@@ -108,8 +108,9 @@ class DirectMessagesFragment : BaseFragment() {
                     mAdapter!!.extensionAdd(Row.newDirectMessage(status))
                 }
                 mAutoLoader = true
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
             }
+            mAdapter.notifyDataSetChanged()
             mPullToRefreshLayout.isRefreshing = false
         }
     }

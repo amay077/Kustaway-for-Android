@@ -73,7 +73,7 @@ class TimelineFragment : BaseFragment() {
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
                 mPullToRefreshLayout.isRefreshing = false
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
                 return
             }
             if (mReloading) {
@@ -93,8 +93,9 @@ class TimelineFragment : BaseFragment() {
                     mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
             }
+            mAdapter.notifyDataSetChanged()
             mPullToRefreshLayout.isRefreshing = false
         }
     }

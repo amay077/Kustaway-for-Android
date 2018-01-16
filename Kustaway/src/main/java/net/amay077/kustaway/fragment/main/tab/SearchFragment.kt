@@ -78,7 +78,7 @@ class SearchFragment : BaseFragment() {
             if (queryResult == null) {
                 mReloading = false
                 mPullToRefreshLayout.isRefreshing = false
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
                 mQuery = null
                 return
             }
@@ -97,11 +97,11 @@ class SearchFragment : BaseFragment() {
                 }
             } else {
                 for (status in queryResult.tweets) {
-                    mAdapter!!.extensionAdd(Row.newStatus(status))
+                    mAdapter.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
                 mQuery = queryResult.nextQuery()
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
             }
             mPullToRefreshLayout.isRefreshing = false
         }

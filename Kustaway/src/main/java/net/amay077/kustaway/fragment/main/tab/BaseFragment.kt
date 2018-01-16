@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.ProgressBar
 
@@ -37,7 +36,7 @@ import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 
 abstract class BaseFragment : Fragment() {
 
-    protected var mAdapter: RecyclerTweetAdapter? = null
+    protected  lateinit var mAdapter: RecyclerTweetAdapter
     protected var mAutoLoader = false
     protected var mReloading = false
     private var mScrolling = false
@@ -46,9 +45,13 @@ abstract class BaseFragment : Fragment() {
     protected var mSentDirectMessagesMaxId = 0L // 読み込んだ最新の送信メッセージID
     private val mStackRows = ArrayList<Row>()
 
-    protected lateinit var mListView: RecyclerView
+    private lateinit var mListView: RecyclerView
     protected lateinit var mFooter: ProgressBar
     protected lateinit var mPullToRefreshLayout: SwipeRefreshLayout
+
+    fun setListViewVisible(isVisible:Boolean) {
+        mListView.visibility = if (isVisible) View.VISIBLE else View.GONE;
+    }
 
     val isTop: Boolean
         get() = mListView.firstVisiblePosition() == 0
@@ -115,6 +118,11 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
+    /**
+     * 1. スクロールが終わった瞬間にストリーミングAPIから受信し溜めておいたツイートがあればそれを表示する
+     * 2. スクロールが終わった瞬間に表示位置がトップだったらボタンのハイライトを消すためにイベント発行
+     * 3. スクロール中はスクロール中のフラグを立てる
+     */
     private val mOnScrollListener2 = object : RecyclerView.OnScrollListener() {
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, scrollState: Int) {
@@ -128,35 +136,6 @@ abstract class BaseFragment : Fragment() {
                     }
                 }
                 SCROLL_STATE_TOUCH_SCROLL, SCROLL_STATE_DRAGGING -> mScrolling = true
-            }
-        }
-    }
-
-    /**
-     * 1. スクロールが終わった瞬間にストリーミングAPIから受信し溜めておいたツイートがあればそれを表示する
-     * 2. スクロールが終わった瞬間に表示位置がトップだったらボタンのハイライトを消すためにイベント発行
-     * 3. スクロール中はスクロール中のフラグを立てる
-     */
-    private val mOnScrollListener = object : AbsListView.OnScrollListener {
-
-        override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
-            when (scrollState) {
-                AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> {
-                    mScrolling = false
-                    if (mStackRows.size > 0) {
-                        showStack()
-                    } else if (isTop) {
-                        EventBus.getDefault().post(GoToTopEvent())
-                    }
-                }
-                AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL, AbsListView.OnScrollListener.SCROLL_STATE_FLING -> mScrolling = true
-            }
-        }
-
-        override fun onScroll(view: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-            // 最後までスクロールされたかどうかの判定
-            if (totalItemCount > 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-                additionalReading()
             }
         }
     }
@@ -181,16 +160,16 @@ abstract class BaseFragment : Fragment() {
         this.mFooter = bin.guruguru
         this.mPullToRefreshLayout = bin.ptrLayout
 
-        var adapter = mAdapter
-        if (adapter != null) {
-            adapter.onItemClickListener = { row ->
-                StatusMenuFragment.newInstance(row)
-                        .show(this.activity.supportFragmentManager, "dialog")
-            }
+        mAdapter = createAdapter()
+        mListView.adapter = mAdapter
 
-            adapter.onItemLongClickListener = { row ->
-                StatusLongClickListener.handleRow(this.activity, row)
-            }
+        mAdapter.onItemClickListener = { row ->
+            StatusMenuFragment.newInstance(row)
+                    .show(this.activity.supportFragmentManager, "dialog")
+        }
+
+        mAdapter.onItemLongClickListener = { row ->
+            StatusLongClickListener.handleRow(this.activity, row)
         }
 
         mListView.addOnScrollListener(mOnScrollListener2)
@@ -209,23 +188,27 @@ abstract class BaseFragment : Fragment() {
         return bin.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        /**
-         * mMainPagerAdapter.notifyDataSetChanged() された時に
-         * onCreateView と onActivityCreated がインスタンスが生きたまま呼ばれる
-         * 多重に初期化処理を実行しないように変数チェックを行う
-         */
-        if (mAdapter == null) {
-            // Status(ツイート)をViewに描写するアダプター
-            mAdapter = RecyclerTweetAdapter(activity, arrayListOf())
-            mListView.visibility = View.GONE
-            //            taskExecute();
-        }
-
-        mListView.adapter = mAdapter
+    private fun createAdapter(): RecyclerTweetAdapter {
+        return RecyclerTweetAdapter(activity, arrayListOf())
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        /**
+//         * mMainPagerAdapter.notifyDataSetChanged() された時に
+//         * onCreateView と onActivityCreated がインスタンスが生きたまま呼ばれる
+//         * 多重に初期化処理を実行しないように変数チェックを行う
+//         */
+//        if (mAdapter == null) {
+//            // Status(ツイート)をViewに描写するアダプター
+//            mAdapter = RecyclerTweetAdapter(activity, arrayListOf())
+//            mListView.visibility = View.GONE
+//            taskExecute();
+//        }
+//
+//        mListView.adapter = mAdapter
+//    }
 
     override fun onResume() {
         super.onResume()
@@ -390,6 +373,20 @@ abstract class BaseFragment : Fragment() {
             reload()
         } else {
             clear()
+        }
+    }
+
+    protected fun updatePositionForRemove(removePositions:List<Int>) {
+        for (removePosition in removePositions) {
+            if (removePosition >= 0) {
+                val visiblePosition = mListView.firstVisiblePosition()
+                if (visiblePosition > removePosition) {
+                    val view = mListView.getChildAt(0)
+                    val y = view?.top ?: 0
+                    mListView.setSelectionFromTop(visiblePosition - 1, y)
+                    break
+                }
+            }
         }
     }
 }

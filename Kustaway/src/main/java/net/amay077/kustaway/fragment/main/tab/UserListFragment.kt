@@ -70,7 +70,7 @@ class UserListFragment : BaseFragment() {
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
                 mPullToRefreshLayout.isRefreshing = false
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
                 return
             }
             if (mReloading) {
@@ -94,8 +94,9 @@ class UserListFragment : BaseFragment() {
                     mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
             }
+            mAdapter.notifyDataSetChanged()
             mPullToRefreshLayout.isRefreshing = false
         }
     }

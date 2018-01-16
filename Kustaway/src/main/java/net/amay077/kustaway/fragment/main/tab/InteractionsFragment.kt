@@ -2,13 +2,8 @@ package net.amay077.kustaway.fragment.main.tab
 
 import android.os.AsyncTask
 import android.view.View
-
-import java.util.ArrayList
-
 import net.amay077.kustaway.event.model.StreamingCreateFavoriteEvent
 import net.amay077.kustaway.event.model.StreamingUnFavoriteEvent
-import net.amay077.kustaway.extensions.firstVisiblePosition
-import net.amay077.kustaway.extensions.setSelectionFromTop
 import net.amay077.kustaway.model.AccessTokenManager
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TabManager
@@ -89,7 +84,7 @@ class InteractionsFragment : BaseFragment() {
             if (statuses == null || statuses.size == 0) {
                 mReloading = false
                 mPullToRefreshLayout.isRefreshing = false
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
                 return
             }
             if (mReloading) {
@@ -109,8 +104,9 @@ class InteractionsFragment : BaseFragment() {
                     mAdapter!!.extensionAdd(Row.newStatus(status))
                 }
                 mAutoLoader = true
-                mListView.visibility = View.VISIBLE
+                setListViewVisible(true)
             }
+            mAdapter.notifyDataSetChanged()
             mPullToRefreshLayout.isRefreshing = false
         }
     }
@@ -129,16 +125,6 @@ class InteractionsFragment : BaseFragment() {
      */
     fun onEventMainThread(event: StreamingUnFavoriteEvent) {
         val removePositions = mAdapter!!.removeStatus(event.status.id)
-        for (removePosition in removePositions) {
-            if (removePosition >= 0) {
-                val visiblePosition = mListView.firstVisiblePosition()
-                if (visiblePosition > removePosition) {
-                    val view = mListView.getChildAt(0)
-                    val y = view?.top ?: 0
-                    mListView.setSelectionFromTop(visiblePosition - 1, y)
-                    break
-                }
-            }
-        }
+        updatePositionForRemove(removePositions)
     }
 }
