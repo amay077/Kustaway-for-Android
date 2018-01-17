@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.greenrobot.event.EventBus
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
@@ -35,7 +35,7 @@ class UserTimelineFragment : ListBasedFragment<Row, Long, Status, Long, UserTime
                     ))
                     .get(UserTimelineFragmentViewModel::class.java)
 
-    override fun createAdapter(): ProfileItemAdapter<Row> =
+    override fun createAdapter(): DataItemAdapter<Row> =
             RecyclerTweetAdapter(activity, ArrayList())
 
     override fun convertDataToViewItem(dataItem: Status): Row = Row.newStatus(dataItem)

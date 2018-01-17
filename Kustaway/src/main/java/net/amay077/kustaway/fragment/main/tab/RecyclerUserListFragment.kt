@@ -1,7 +1,7 @@
 package net.amay077.kustaway.fragment.main.tab
 
 import android.arch.lifecycle.ViewModelProviders
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.extensions.applyTapEvents
 import net.amay077.kustaway.fragment.common.ListBasedFragment
@@ -16,7 +16,7 @@ class RecyclerUserListFragment : ListBasedFragment<Row, Long, Status, Long, User
     override val id: Long
         get() = arguments.getLong("userListId")
 
-    override fun createAdapter(): ProfileItemAdapter<Row> =
+    override fun createAdapter(): DataItemAdapter<Row> =
             RecyclerTweetAdapter(activity, ArrayList()).applyTapEvents(activity)
 
     override fun convertDataToViewItem(dataItem: Status): Row = Row.newStatus(dataItem)

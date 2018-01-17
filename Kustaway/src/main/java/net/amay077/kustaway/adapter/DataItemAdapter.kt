@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 /**
  * プロフィール画面の RecyclerView の共通Adapter
  */
-abstract class ProfileItemAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class DataItemAdapter<T> : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /** アイテムを追加する */
     abstract fun add(item: T)

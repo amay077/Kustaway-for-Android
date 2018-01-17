@@ -1,7 +1,7 @@
 package net.amay077.kustaway.fragment.profile
 
 import android.arch.lifecycle.ViewModelProviders
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerUserListAdapter
 import net.amay077.kustaway.fragment.common.ListBasedFragment
 import net.amay077.kustaway.model.TwitterManager
@@ -25,7 +25,7 @@ class UserListMembershipsFragment : ListBasedFragment<UserList, Long, UserList, 
                     ))
                     .get(UserListMembershipsFragmentViewModel::class.java)
 
-    override fun createAdapter(): ProfileItemAdapter<UserList> =
+    override fun createAdapter(): DataItemAdapter<UserList> =
         RecyclerUserListAdapter(context, ArrayList())
 
     override fun convertDataToViewItem(dataItem: UserList): UserList = dataItem

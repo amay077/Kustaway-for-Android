@@ -12,7 +12,6 @@ import net.amay077.kustaway.R
 import net.amay077.kustaway.UserListActivity
 import net.amay077.kustaway.databinding.RowUserListBinding
 import net.amay077.kustaway.util.ImageUtil
-import twitter4j.User
 import twitter4j.UserList
 
 class RecyclerUserListView constructor(
@@ -59,7 +58,7 @@ class RecyclerUserListViewHolder(private val view: RecyclerUserListView) : Recyc
 class RecyclerUserListAdapter(
         private val context: Context,
         private val userLists: MutableList<UserList>) :
-        ProfileItemAdapter<UserList>() {
+        DataItemAdapter<UserList>() {
 
     // 未対応
     override var onItemClickListener: (UserList) -> Unit = {}

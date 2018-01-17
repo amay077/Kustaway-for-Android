@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import de.greenrobot.event.EventBus
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
@@ -17,7 +17,6 @@ import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.viewmodel.FavoritesListFragmentViewModel
-import twitter4j.Query
 import twitter4j.Status
 import twitter4j.User
 
@@ -33,7 +32,7 @@ class FavoritesListFragment : ListBasedFragment<Row, Long, Status, Long, Favorit
                     ))
                     .get(FavoritesListFragmentViewModel::class.java)
 
-    override fun createAdapter(): ProfileItemAdapter<Row> =
+    override fun createAdapter(): DataItemAdapter<Row> =
             RecyclerTweetAdapter(context, ArrayList())
 
     override fun convertDataToViewItem(dataItem: Status): Row = Row.newStatus(dataItem)

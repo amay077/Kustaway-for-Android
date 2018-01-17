@@ -67,7 +67,7 @@ class RecyclerUserViewHolder(private val view: RecyclerUserView) : RecyclerView.
 class RecyclerUserAdapter(
         private val context: Context,
         private val users: MutableList<User>) :
-        ProfileItemAdapter<User>() {
+        DataItemAdapter<User>() {
 
     // 未対応
     override var onItemClickListener: (User) -> Unit = {}

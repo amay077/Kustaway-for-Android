@@ -1,6 +1,6 @@
 package net.amay077.kustaway.fragment.common
 
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.extensions.applyTapEvents
 import net.amay077.kustaway.model.Row
@@ -13,6 +13,6 @@ abstract class TweetListBasedFragment<TViewModel:ListBasedFragmentViewModel<Unit
 
     override fun convertDataToViewItem(dataItem: Status): Row = Row.newStatus(dataItem)
 
-    override fun createAdapter(): ProfileItemAdapter<Row> =
+    override fun createAdapter(): DataItemAdapter<Row> =
             RecyclerTweetAdapter(activity, ArrayList()).applyTapEvents(activity)
 }

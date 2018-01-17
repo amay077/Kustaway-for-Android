@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.amay077.kustaway.adapter.DividerItemDecoration
-import net.amay077.kustaway.adapter.ProfileItemAdapter
+import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
 import net.amay077.kustaway.extensions.firstVisiblePosition
@@ -37,7 +37,7 @@ abstract class ListBasedFragment<
     abstract fun createViewModel(id: TId): TViewModel
 
     /*** 実装クラスで、RecyclerView に設定する Adapter を生成する */
-    abstract fun createAdapter() : ProfileItemAdapter<TViewItem>
+    abstract fun createAdapter() : DataItemAdapter<TViewItem>
 
     /*** 実装クラスで、モデル側の型からView用の型へ変換する */
     abstract fun convertDataToViewItem(dataItem:TDataItem): TViewItem
@@ -45,7 +45,7 @@ abstract class ListBasedFragment<
     /*** 実装クラスで、モデル側の型のIDを得る */
     abstract val id : TId
 
-    protected lateinit var adapter : ProfileItemAdapter<TViewItem>
+    protected lateinit var adapter : DataItemAdapter<TViewItem>
 
     private lateinit var recyclerView: RecyclerView
 

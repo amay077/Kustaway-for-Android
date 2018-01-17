@@ -6,7 +6,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -451,8 +450,7 @@ class RecyclerTweetViewHolder(private val view: RecyclerTweetView) : RecyclerVie
 
 class RecyclerTweetAdapter(
         private val context: Context,
-        private val rows: MutableList<Row>) :
-        ProfileItemAdapter<Row>() {
+        private val rows: MutableList<Row>) : DataItemAdapter<Row>() {
 
     override var onItemClickListener: (Row) -> Unit = {}
     override var onItemLongClickListener: (Row) -> Boolean = { false }
