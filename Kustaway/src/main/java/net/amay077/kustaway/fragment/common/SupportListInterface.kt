@@ -1,8 +1,5 @@
 package net.amay077.kustaway.fragment.common
 
-/**
- * Created by h_okuyama on 2018/01/16.
- */
 interface SupportListInterface {
     val isTop: Boolean get
 

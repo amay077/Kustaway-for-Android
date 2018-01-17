@@ -22,15 +22,15 @@ import twitter4j.TwitterResponse
  * TViewItem - RecyleView に表示する行の型
  * TId - TDataItem を識別するIDの型
  * TDataItem - API等から読み込んだデータ1行の型
- * TQuery - API読み込み結果の「次」の情報を示す型
+ * TCursor - API読み込み結果の「次」の情報を示す型
  * TViewModel - Fragment に対応させる ViewModel の型
  */
 abstract class ListBasedFragment<
         TViewItem,
         TId,
         TDataItem : TwitterResponse?,
-        TQuery,
-        TViewModel : ListBasedFragmentViewModel<TId, TDataItem, TQuery>>
+        TCursor,
+        TViewModel : ListBasedFragmentViewModel<TId, TDataItem, TCursor>>
     : Fragment(), SupportListInterface {
 
     /*** 実装クラスで、 Fragment 用の ViewModel を生成する */
