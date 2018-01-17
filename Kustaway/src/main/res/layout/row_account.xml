@@ -6,6 +6,7 @@
               android:baselineAligned="false"
               android:orientation="horizontal"
               android:foreground="?android:attr/selectableItemBackground"
+              android:background="?android:attr/selectableItemBackground"
               tools:ignore="UseCompoundDrawables">
 
     <ImageView
