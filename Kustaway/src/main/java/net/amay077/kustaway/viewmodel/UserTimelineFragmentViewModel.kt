@@ -13,7 +13,7 @@ import twitter4j.Status
 class UserTimelineFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         userId: Long
-) : ListBasedFragmentViewModel<Long, Status>(userId) {
+) : ListBasedFragmentViewModel<Long, Status, Long>(userId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
@@ -24,11 +24,13 @@ class UserTimelineFragmentViewModel (
                 UserTimelineFragmentViewModel(twitterRepo, userId) as T
     }
 
-    suspend override fun loadListItemsAsync(userId:Long, cursor: Long): PagedResponseList<Status> {
-        val res = twitterRepo.loadUserTimeline(userId, cursor, BasicSettings.getPageCount());
+    suspend override fun loadListItemsAsync(userId:Long, cursor: Long?): PagedResponseList<Status, Long> {
+
+        val actualCursor = cursor ?: -1L
+        val res = twitterRepo.loadUserTimeline(userId, actualCursor, BasicSettings.getPageCount());
 
         val nextCursor = res.lastOrNull { status ->
-            cursor < 0L || cursor > status.id
+            actualCursor < 0L || actualCursor > status.id
         }?.id ?: -1L
 
         return PagedResponseList(res, true, nextCursor)

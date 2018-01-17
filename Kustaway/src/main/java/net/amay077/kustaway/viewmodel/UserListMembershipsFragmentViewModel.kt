@@ -12,7 +12,7 @@ import twitter4j.UserList
 class UserListMembershipsFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         userId: Long
-) : ListBasedFragmentViewModel<Long, UserList>(userId) {
+) : ListBasedFragmentViewModel<Long, UserList, Long>(userId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
@@ -23,8 +23,8 @@ class UserListMembershipsFragmentViewModel (
                 UserListMembershipsFragmentViewModel(twitterRepo, userId) as T
     }
 
-    suspend override fun loadListItemsAsync(userId:Long, cursor: Long): PagedResponseList<UserList> {
-        val res = twitterRepo.loadUserListMemberships(userId, cursor);
+    suspend override fun loadListItemsAsync(userId:Long, cursor: Long?): PagedResponseList<UserList, Long> {
+        val res = twitterRepo.loadUserListMemberships(userId, cursor ?: -1L);
         return PagedResponseList(res, res.hasNext(), res.nextCursor)
     }
 }

@@ -12,7 +12,7 @@ import twitter4j.User
 class RetweetersFragmentViewModel (
         private val twitterRepo: TwitterRepository,
         statusId: Long
-) : ListBasedFragmentViewModel<Long, User>(statusId) {
+) : ListBasedFragmentViewModel<Long, User, Unit>(statusId) {
 
     class Factory(
             private val twitterRepo: TwitterRepository,
@@ -23,10 +23,10 @@ class RetweetersFragmentViewModel (
                 RetweetersFragmentViewModel(twitterRepo, statusId) as T
     }
 
-    suspend override fun loadListItemsAsync(listId:Long, cursor: Long): PagedResponseList<User> {
+    suspend override fun loadListItemsAsync(listId:Long, dummy: Unit?): PagedResponseList<User, Unit> {
         val res = twitterRepo.loadRetweets(listId);
         // Retweet した user を一意にして返す
         return PagedResponseList(res.map { s -> s.user }.distinctBy { u -> u.id },
-                false, -1L)
+                false, Unit)
     }
 }

@@ -10,6 +10,7 @@ import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
+import net.amay077.kustaway.fragment.common.ListBasedFragment
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
@@ -22,7 +23,7 @@ import twitter4j.User
 /**
  * ユーザーのタイムライン
  */
-class UserTimelineFragment : ListBasedFragment<Row, Long, Status, UserTimelineFragmentViewModel>() {
+class UserTimelineFragment : ListBasedFragment<Row, Long, Status, Long, UserTimelineFragmentViewModel>() {
     override val id: Long
         get() = (arguments.getSerializable("user") as User).id
 

@@ -7,10 +7,8 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -48,13 +46,12 @@ import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
 import net.amay077.kustaway.event.settings.BasicSettingsChangeEvent;
 import net.amay077.kustaway.fragment.main.StreamingSwitchDialogFragment;
 import net.amay077.kustaway.fragment.main.tab.DirectMessagesFragment;
-import net.amay077.kustaway.fragment.main.tab.FavoritesFragment;
-import net.amay077.kustaway.fragment.main.tab.HomeTimelineFragment;
-import net.amay077.kustaway.fragment.main.tab.InteractionsFragment;
-import net.amay077.kustaway.fragment.main.tab.SearchFragment;
-import net.amay077.kustaway.fragment.main.tab.SupportListInterface;
-import net.amay077.kustaway.fragment.main.tab.TimelineFragment;
-import net.amay077.kustaway.fragment.main.tab.UserListFragment;
+import net.amay077.kustaway.fragment.main.tab.MyTimelineFragment;
+import net.amay077.kustaway.fragment.main.tab.MyFavoritesFragment;
+import net.amay077.kustaway.fragment.main.tab.MyInteractionsFragment;
+import net.amay077.kustaway.fragment.main.tab.RecyclerSearchFragment;
+import net.amay077.kustaway.fragment.main.tab.RecyclerUserListFragment;
+import net.amay077.kustaway.fragment.common.SupportListInterface;
 import net.amay077.kustaway.model.AccessTokenManager;
 import net.amay077.kustaway.model.TabManager;
 import net.amay077.kustaway.model.TwitterManager;
@@ -548,21 +545,21 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnLongClickListener(mMenuOnLongClickListener);
                 mTabMenus.addView(button);
                 if (tab.id == TabManager.TIMELINE_TAB_ID) {
-                    mMainPagerAdapter.addTab(HomeTimelineFragment.class, null, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(MyTimelineFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.INTERACTIONS_TAB_ID) {
-                    mMainPagerAdapter.addTab(InteractionsFragment.class, null, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(MyInteractionsFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.DIRECT_MESSAGES_TAB_ID) {
                     mMainPagerAdapter.addTab(DirectMessagesFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.FAVORITES_TAB_ID) {
-                    mMainPagerAdapter.addTab(FavoritesFragment.class, null, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(MyFavoritesFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id <= TabManager.SEARCH_TAB_ID) {
                     Bundle args = new Bundle();
                     args.putString("searchWord", tab.name);
-                    mMainPagerAdapter.addTab(SearchFragment.class, args, tab.getName(), tab.id, tab.name);
+                    mMainPagerAdapter.addTab(RecyclerSearchFragment.class, args, tab.getName(), tab.id, tab.name);
                 } else {
                     Bundle args = new Bundle();
                     args.putLong("userListId", tab.id);
-                    mMainPagerAdapter.addTab(UserListFragment.class, args, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(RecyclerUserListFragment.class, args, tab.getName(), tab.id);
                 }
             }
             mMainPagerAdapter.notifyDataSetChanged();

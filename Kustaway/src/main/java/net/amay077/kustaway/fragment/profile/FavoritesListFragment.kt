@@ -10,16 +10,18 @@ import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
+import net.amay077.kustaway.fragment.common.ListBasedFragment
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.viewmodel.FavoritesListFragmentViewModel
+import twitter4j.Query
 import twitter4j.Status
 import twitter4j.User
 
-class FavoritesListFragment : ListBasedFragment<Row, Long, Status, FavoritesListFragmentViewModel>() {
+class FavoritesListFragment : ListBasedFragment<Row, Long, Status, Long, FavoritesListFragmentViewModel>() {
     override val id: Long
         get() = (arguments.getSerializable("user") as User).id
 

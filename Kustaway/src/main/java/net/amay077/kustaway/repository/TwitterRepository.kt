@@ -5,13 +5,7 @@ import net.amay077.kustaway.model.Profile
 import net.amay077.kustaway.model.Relationship
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.settings.BasicSettings
-import twitter4j.PagableResponseList
-import twitter4j.Paging
-import twitter4j.ResponseList
-import twitter4j.Status
-import twitter4j.TwitterException
-import twitter4j.User
-import twitter4j.UserList
+import twitter4j.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.experimental.suspendCoroutine
 
@@ -123,7 +117,7 @@ class TwitterRepository(
         }
     }
 
-    suspend fun loadHomeTimeline(maxId:Long, count:Int) : ResponseList<Status> {
+    suspend fun loadMyTimeline(maxId:Long, count:Int) : ResponseList<Status> {
         return suspendCoroutine { cont ->
             twitterExecutor.submit {
                 try {
@@ -135,6 +129,69 @@ class TwitterRepository(
                     }
 
                     val res = twitter.getHomeTimeline(paging)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
+    suspend fun loadMyMentionsTimeline(maxId:Long, count:Int) : ResponseList<Status> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val paging = Paging().also { p ->
+                        if (maxId > 0) {
+                            p.maxId = maxId - 1
+                            p.count = count
+                        }
+                    }
+
+                    val res = twitter.getMentionsTimeline(paging)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
+    suspend fun loadMyFavorites(maxId:Long, count:Int) : ResponseList<Status> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val paging = Paging().also { p ->
+                        if (maxId > 0) {
+                            p.maxId = maxId - 1
+                            p.count = count
+                        }
+                    }
+
+                    val res = twitter.getFavorites(paging)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
+    suspend fun loadUserListStatuses(userListId:Long, maxId:Long, count:Int) : ResponseList<Status> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val paging = Paging().also { p ->
+                        if (maxId > 0) {
+                            p.maxId = maxId - 1
+                            p.count = count
+                        }
+                    }
+
+                    val res = twitter.getUserListStatuses(userListId, paging)
                     cont.resume(res)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -186,7 +243,34 @@ class TwitterRepository(
         }
     }
 
+    suspend fun search(keyword:String) : QueryResult {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val query = Query( "${keyword} exclude:retweets")
+                    val res = twitter.search(query)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
 
+    suspend fun search(query:Query) : QueryResult {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val res = twitter.search(query)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
 
     /**
      * 指定ユーザーの公式ミュートをOn/Offする（enabled = true なら ON にする）

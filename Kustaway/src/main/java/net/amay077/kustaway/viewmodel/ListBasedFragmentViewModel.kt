@@ -11,12 +11,12 @@ import twitter4j.TwitterResponse
 /**
  * List(RecyclerView) を持つ画面(Fragment)のベースViewModel
  */
-abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
+abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?, TQuery>(
         private val id: TId
 ) : ViewModel() {
 
     /** List用のデータを非同期で読む */
-    protected suspend abstract fun loadListItemsAsync(id:TId, cursor: Long) : PagedResponseList<TDataItem>
+    protected suspend abstract fun loadListItemsAsync(id:TId, cursor: TQuery?) : PagedResponseList<TDataItem, TQuery>
 
     /** List最下段のプログレスの表示ON/OFF */
     private val _isVisibleBottomProgress = MutableLiveData<Boolean>()
@@ -36,7 +36,7 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
 
     // 追加読み込みを有効とするか？
     private var isEnabledAdditionalLoading = false
-    private var cursor: Long = -1
+    private var cursor: TQuery? = null
 
     /** ListView にバインドするデータをロードして listItems に通知する TODO いずれ RxCommand にする */
     fun loadListItems(isAdditional:Boolean) {
@@ -50,7 +50,7 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
                 _isVisibleBottomProgress.postValue(true)
             } else {
                 _isVisiblePullProgress.postValue(true)
-                cursor = -1
+                cursor = null
             }
 
             isEnabledAdditionalLoading = false

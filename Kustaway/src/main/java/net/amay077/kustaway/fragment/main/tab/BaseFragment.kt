@@ -32,6 +32,7 @@ import net.amay077.kustaway.extensions.addOnPagingListener
 import net.amay077.kustaway.extensions.firstVisiblePosition
 import net.amay077.kustaway.extensions.setSelection
 import net.amay077.kustaway.extensions.setSelectionFromTop
+import net.amay077.kustaway.fragment.common.SupportListInterface
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 
 abstract class BaseFragment : Fragment(), SupportListInterface {
