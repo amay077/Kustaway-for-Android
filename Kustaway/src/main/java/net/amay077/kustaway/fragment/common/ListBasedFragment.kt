@@ -134,10 +134,10 @@ abstract class ListBasedFragment<
 
     private var isLoaded : Boolean = false
     override fun firstLoad() {
-        if (!isLoaded) {
-            viewModel.loadListItems(false)
-            isLoaded = true
-        }
+//        if (!isLoaded) {
+//            viewModel.loadListItems(false)
+//            isLoaded = true
+//        }
     }
 
     override fun reload() {

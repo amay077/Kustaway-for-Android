@@ -138,6 +138,27 @@ class TwitterRepository(
         }
     }
 
+    suspend fun loadMyDirectMessages(maxId:Long, count:Int) : ResponseList<DirectMessage> {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val paging = Paging().also { p ->
+                        if (maxId > 0) {
+                            p.maxId = maxId - 1
+                            p.count = count
+                        }
+                    }
+
+                    val res = twitter.getDirectMessages(paging)
+                    cont.resume(res)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
     suspend fun loadMyMentionsTimeline(maxId:Long, count:Int) : ResponseList<Status> {
         return suspendCoroutine { cont ->
             twitterExecutor.submit {

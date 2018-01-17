@@ -45,7 +45,7 @@ import net.amay077.kustaway.event.action.PostAccountChangeEvent;
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
 import net.amay077.kustaway.event.settings.BasicSettingsChangeEvent;
 import net.amay077.kustaway.fragment.main.StreamingSwitchDialogFragment;
-import net.amay077.kustaway.fragment.main.tab.DirectMessagesFragment;
+import net.amay077.kustaway.fragment.main.tab.MyDirectMessagesFragment;
 import net.amay077.kustaway.fragment.main.tab.MyTimelineFragment;
 import net.amay077.kustaway.fragment.main.tab.MyFavoritesFragment;
 import net.amay077.kustaway.fragment.main.tab.MyInteractionsFragment;
@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (tab.id == TabManager.INTERACTIONS_TAB_ID) {
                     mMainPagerAdapter.addTab(MyInteractionsFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.DIRECT_MESSAGES_TAB_ID) {
-                    mMainPagerAdapter.addTab(DirectMessagesFragment.class, null, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(MyDirectMessagesFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.FAVORITES_TAB_ID) {
                     mMainPagerAdapter.addTab(MyFavoritesFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id <= TabManager.SEARCH_TAB_ID) {
