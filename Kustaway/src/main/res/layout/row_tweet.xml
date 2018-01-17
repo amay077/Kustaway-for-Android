@@ -8,6 +8,7 @@
         android:paddingLeft="6dp"
         android:paddingRight="7dp"
         android:paddingTop="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
         tools:layout_height="wrap_content">
 
         <RelativeLayout

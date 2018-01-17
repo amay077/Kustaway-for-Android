@@ -5,6 +5,7 @@
               android:layout_height="?android:attr/listPreferredItemHeight"
               android:baselineAligned="false"
               android:orientation="horizontal"
+              android:foreground="?android:attr/selectableItemBackground"
               tools:ignore="UseCompoundDrawables">
 
     <ImageView
