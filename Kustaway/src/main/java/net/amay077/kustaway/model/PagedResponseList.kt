@@ -6,5 +6,5 @@ package net.amay077.kustaway.model
 data class PagedResponseList<T, Q>(
         val items:List<T>,
         val hasNext: Boolean,
-        val nextCursor: Q
+        val nextCursor: Q?
 )
