@@ -34,7 +34,7 @@ import net.amay077.kustaway.extensions.setSelection
 import net.amay077.kustaway.extensions.setSelectionFromTop
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), SupportListInterface {
 
     protected  lateinit var mAdapter: RecyclerTweetAdapter
     protected var mAutoLoader = false
@@ -53,7 +53,7 @@ abstract class BaseFragment : Fragment() {
         mListView.visibility = if (isVisible) View.VISIBLE else View.GONE;
     }
 
-    val isTop: Boolean
+    override val isTop: Boolean
         get() = mListView.firstVisiblePosition() == 0
 
     /**
@@ -220,7 +220,7 @@ abstract class BaseFragment : Fragment() {
         super.onPause()
     }
 
-    fun firstLoad() {
+    override fun firstLoad() {
         // 初回読み込み済だったら何もしない
         if (mAutoLoader) {
             return
@@ -237,7 +237,7 @@ abstract class BaseFragment : Fragment() {
         taskExecute()
     }
 
-    fun reload() {
+    override fun reload() {
         mReloading = true
         mPullToRefreshLayout.isRefreshing = true
         taskExecute()
@@ -259,7 +259,7 @@ abstract class BaseFragment : Fragment() {
         taskExecute()
     }
 
-    fun goToTop(): Boolean {
+    override fun goToTop(): Boolean {
         if (mListView == null) {
             activity.finish()
             return false

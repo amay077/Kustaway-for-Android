@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -46,11 +47,12 @@ import net.amay077.kustaway.event.action.PostAccountChangeEvent;
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
 import net.amay077.kustaway.event.settings.BasicSettingsChangeEvent;
 import net.amay077.kustaway.fragment.main.StreamingSwitchDialogFragment;
-import net.amay077.kustaway.fragment.main.tab.BaseFragment;
 import net.amay077.kustaway.fragment.main.tab.DirectMessagesFragment;
 import net.amay077.kustaway.fragment.main.tab.FavoritesFragment;
+import net.amay077.kustaway.fragment.main.tab.HomeTimelineFragment;
 import net.amay077.kustaway.fragment.main.tab.InteractionsFragment;
 import net.amay077.kustaway.fragment.main.tab.SearchFragment;
+import net.amay077.kustaway.fragment.main.tab.SupportListInterface;
 import net.amay077.kustaway.fragment.main.tab.TimelineFragment;
 import net.amay077.kustaway.fragment.main.tab.UserListFragment;
 import net.amay077.kustaway.model.AccessTokenManager;
@@ -546,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnLongClickListener(mMenuOnLongClickListener);
                 mTabMenus.addView(button);
                 if (tab.id == TabManager.TIMELINE_TAB_ID) {
-                    mMainPagerAdapter.addTab(TimelineFragment.class, null, tab.getName(), tab.id);
+                    mMainPagerAdapter.addTab(HomeTimelineFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.INTERACTIONS_TAB_ID) {
                     mMainPagerAdapter.addTab(InteractionsFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.DIRECT_MESSAGES_TAB_ID) {
@@ -584,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             int position = (Integer) view.getTag();
-            BaseFragment f = mMainPagerAdapter.findFragmentByPosition(position);
+            SupportListInterface f = (SupportListInterface)mMainPagerAdapter.findFragmentByPosition(position);
             if (f == null) {
                 return;
             }
@@ -609,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onLongClick(View view) {
             int position = (Integer) view.getTag();
-            BaseFragment f = mMainPagerAdapter.findFragmentByPosition(position);
+            SupportListInterface f = (SupportListInterface)mMainPagerAdapter.findFragmentByPosition(position);
             if (f == null) {
                 return false;
             }
@@ -643,7 +645,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                BaseFragment f = mMainPagerAdapter.findFragmentByPosition(position);
+                SupportListInterface f = (SupportListInterface)mMainPagerAdapter.findFragmentByPosition(position);
                 f.firstLoad();
                 if (f.isTop()) {
                     showTopView();

@@ -65,7 +65,6 @@ class TimelineFragment : BaseFragment() {
                 e.printStackTrace()
                 return null
             }
-
         }
 
         override fun onPostExecute(statuses: ResponseList<twitter4j.Status>?) {

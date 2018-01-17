@@ -62,9 +62,9 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public BaseFragment getItem(int position) {
+    public Fragment getItem(int position) {
         TabInfo info = mTabs.get(position);
-        return (BaseFragment) Fragment.instantiate(mContext, info.mClazz.getName(), info.mArgs);
+        return Fragment.instantiate(mContext, info.mClazz.getName(), info.mArgs);
     }
 
     @Override
@@ -77,8 +77,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         return POSITION_NONE;
     }
 
-    public BaseFragment findFragmentByPosition(int position) {
-        return (BaseFragment) instantiateItem(mViewPager, position);
+    public Fragment findFragmentByPosition(int position) {
+        return (Fragment) instantiateItem(mViewPager, position);
     }
 
     public int findPositionById(long id) {
@@ -103,11 +103,11 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         return -1;
     }
 
-    public BaseFragment findFragmentById(long id) {
+    public Fragment findFragmentById(long id) {
         int position = 0;
         for (TabInfo tab : mTabs) {
             if (tab.mId == id) {
-                return (BaseFragment) instantiateItem(mViewPager, position);
+                return (Fragment) instantiateItem(mViewPager, position);
             }
             position++;
         }

@@ -3,6 +3,7 @@ package net.amay077.kustaway.fragment.profile
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,9 @@ import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.ProfileItemAdapter
 import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
+import net.amay077.kustaway.extensions.firstVisiblePosition
+import net.amay077.kustaway.extensions.setSelection
+import net.amay077.kustaway.fragment.main.tab.SupportListInterface
 import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.TwitterResponse
 
@@ -26,7 +30,7 @@ abstract class ListBasedFragment<
         TId,
         TDataItem : TwitterResponse?,
         TViewModel : ListBasedFragmentViewModel<TId, TDataItem>>
-    : Fragment() {
+    : Fragment(), SupportListInterface {
 
     /*** 実装クラスで、 Fragment 用の ViewModel を生成する */
     abstract fun createViewModel(id: TId): TViewModel
@@ -42,6 +46,10 @@ abstract class ListBasedFragment<
 
     protected lateinit var adapter : ProfileItemAdapter<TViewItem>
 
+    private lateinit var recyclerView: RecyclerView
+
+    private lateinit var viewModel: TViewModel
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bin = inflater?.let { inf -> PullToRefreshList2Binding.inflate(inf, container, false) }
         if (bin == null) {
@@ -49,7 +57,9 @@ abstract class ListBasedFragment<
         }
         val binding = bin
 
-        val viewModel = createViewModel(id)
+        recyclerView = binding.recyclerView
+
+        viewModel = createViewModel(id)
 
         // RecyclerView の設定
         binding.recyclerView.visibility = View.GONE
@@ -112,5 +122,26 @@ abstract class ListBasedFragment<
 
         return binding.root
     }
+
+    override val isTop: Boolean
+        get() = recyclerView.firstVisiblePosition() == 0
+
+    override fun goToTop(): Boolean {
+        recyclerView.setSelection(0)
+        return true
+    }
+
+    private var isLoaded : Boolean = false
+    override fun firstLoad() {
+        if (!isLoaded) {
+            viewModel.loadListItems(false)
+            isLoaded = true
+        }
+    }
+
+    override fun reload() {
+        viewModel.loadListItems(false)
+    }
+
 }
 

@@ -49,6 +49,7 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?>(
                 // 追加読み込みの場合は下部プログレスを表示ON
                 _isVisibleBottomProgress.postValue(true)
             } else {
+                _isVisiblePullProgress.postValue(true)
                 cursor = -1
             }
 
