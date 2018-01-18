@@ -13,8 +13,7 @@ import android.view.WindowManager
 import net.amay077.kustaway.R
 import net.amay077.kustaway.adapter.RecyclerUserAdapter
 import net.amay077.kustaway.databinding.FragmentRecyclerRetweetersBinding
-import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.repository.TwitterRepository
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.viewmodel.RetweetersFragmentViewModel
 
 
@@ -46,7 +45,7 @@ class RetweetersFragment : DialogFragment() {
 
         val viewModel = ViewModelProviders
                 .of(this, RetweetersFragmentViewModel.Factory(
-                        TwitterRepository(TwitterManager.getTwitter()),
+                        this.getTwitterRepo(),
                         statusId
                 ))
                 .get(RetweetersFragmentViewModel::class.java)

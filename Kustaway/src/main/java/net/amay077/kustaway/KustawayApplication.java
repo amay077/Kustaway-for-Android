@@ -4,9 +4,12 @@ import android.app.Application;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 
 import net.amay077.kustaway.model.Relationship;
+import net.amay077.kustaway.model.TwitterManager;
 import net.amay077.kustaway.model.UserIconManager;
+import net.amay077.kustaway.repository.TwitterRepository;
 import net.amay077.kustaway.settings.BasicSettings;
 import net.amay077.kustaway.settings.MuteSettings;
 import net.amay077.kustaway.util.ImageUtil;
@@ -15,6 +18,12 @@ public class KustawayApplication extends Application {
 
     private static KustawayApplication sApplication;
     private static Typeface sFontello;
+
+    private TwitterRepository _twitterRepo;
+    @NonNull
+    public TwitterRepository getTwitterRepo() {
+        return _twitterRepo;
+    }
 
     @Override
     public void onCreate() {
@@ -43,6 +52,8 @@ public class KustawayApplication extends Application {
         Relationship.init();
 
         sFontello = Typeface.createFromAsset(getAssets(), "fontello.ttf");
+
+        _twitterRepo = new TwitterRepository(TwitterManager.getTwitter());
     }
 
     /**

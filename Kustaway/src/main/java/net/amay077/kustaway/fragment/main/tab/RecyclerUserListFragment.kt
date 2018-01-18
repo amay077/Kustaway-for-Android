@@ -4,10 +4,9 @@ import android.arch.lifecycle.ViewModelProviders
 import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.extensions.applyTapEvents
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.fragment.common.ListBasedFragment
 import net.amay077.kustaway.model.Row
-import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.viewmodel.UserListFragmentViewModel
 import twitter4j.Status
 
@@ -24,7 +23,7 @@ class RecyclerUserListFragment : ListBasedFragment<Row, Long, Status, Long, User
     override fun createViewModel(userListId: Long): UserListFragmentViewModel =
             ViewModelProviders
                     .of(this, UserListFragmentViewModel.Factory(
-                            TwitterRepository(TwitterManager.getTwitter()),
+                            this.getTwitterRepo(),
                             userListId
                     ))
                     .get(UserListFragmentViewModel::class.java)

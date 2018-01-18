@@ -3,9 +3,8 @@ package net.amay077.kustaway.fragment.list
 import android.arch.lifecycle.ViewModelProviders
 import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerUserAdapter
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.fragment.common.ListBasedFragment
-import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.viewmodel.UserMemberFragmentViewModel
 import twitter4j.User
 
@@ -16,7 +15,7 @@ class UserMemberFragment : ListBasedFragment<User, Long, User, Long, UserMemberF
     override fun createViewModel(listId: Long): UserMemberFragmentViewModel =
             ViewModelProviders
                     .of(this, UserMemberFragmentViewModel.Factory(
-                            TwitterRepository(TwitterManager.getTwitter()),
+                            this.getTwitterRepo(),
                             listId
                     ))
                     .get(UserMemberFragmentViewModel::class.java)

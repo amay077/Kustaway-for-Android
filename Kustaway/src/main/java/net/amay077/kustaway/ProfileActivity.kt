@@ -5,7 +5,6 @@ import android.app.ActivityOptions
 import android.app.AlertDialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.graphics.Color
@@ -22,10 +21,9 @@ import de.greenrobot.event.EventBus
 import net.amay077.kustaway.adapter.SimplePagerAdapter
 import net.amay077.kustaway.databinding.ActivityProfileBinding
 import net.amay077.kustaway.event.AlertDialogEvent
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.fragment.profile.*
 import net.amay077.kustaway.model.Profile
-import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.util.ImageUtil
 import net.amay077.kustaway.util.MessageUtil
 import net.amay077.kustaway.util.ThemeUtil
@@ -86,7 +84,7 @@ class ProfileActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders
                 .of(this, ProfileActivityViewModel.Factory(
-                        TwitterRepository(TwitterManager.getTwitter())
+                        this.getTwitterRepo()
                 ))
                 .get(ProfileActivityViewModel::class.java)
 

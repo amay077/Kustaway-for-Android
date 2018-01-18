@@ -10,12 +10,11 @@ import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.adapter.RecyclerTweetAdapter
 import net.amay077.kustaway.event.action.StatusActionEvent
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.fragment.common.ListBasedFragment
 import net.amay077.kustaway.fragment.dialog.StatusMenuFragment
 import net.amay077.kustaway.listener.StatusLongClickListener
 import net.amay077.kustaway.model.Row
-import net.amay077.kustaway.model.TwitterManager
-import net.amay077.kustaway.repository.TwitterRepository
 import net.amay077.kustaway.viewmodel.FavoritesListFragmentViewModel
 import twitter4j.Status
 import twitter4j.User
@@ -27,7 +26,7 @@ class FavoritesListFragment : ListBasedFragment<Row, Long, Status, Long, Favorit
     override fun createViewModel(userId: Long): FavoritesListFragmentViewModel =
             ViewModelProviders
                     .of(this, FavoritesListFragmentViewModel.Factory(
-                            TwitterRepository(TwitterManager.getTwitter()),
+                            this.getTwitterRepo(),
                             userId
                     ))
                     .get(FavoritesListFragmentViewModel::class.java)
