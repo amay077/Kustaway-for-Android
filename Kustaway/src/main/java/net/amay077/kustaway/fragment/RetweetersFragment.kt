@@ -14,6 +14,7 @@ import net.amay077.kustaway.R
 import net.amay077.kustaway.adapter.RecyclerUserAdapter
 import net.amay077.kustaway.databinding.FragmentRecyclerRetweetersBinding
 import net.amay077.kustaway.extensions.getTwitterRepo
+import net.amay077.kustaway.viewmodel.AddtionalType
 import net.amay077.kustaway.viewmodel.RetweetersFragmentViewModel
 
 
@@ -69,13 +70,20 @@ class RetweetersFragment : DialogFragment() {
             }
 
             // 追加でなかったら全消し
-            if (!data.isAdditional) {
+            if (data.addType == AddtionalType.Clear) {
                 adapter.clear()
             }
 
-            for (dataItem in data.items) {
-                adapter.add(dataItem)
+            if (data.addType == AddtionalType.AddToBottom) {
+                for (dataItem in data.items) {
+                    adapter.add(dataItem)
+                }
+            } else {
+                for (dataItem in data.items) {
+                    adapter.insert(0, dataItem)
+                }
             }
+
             adapter.notifyDataSetChanged()
         })
 

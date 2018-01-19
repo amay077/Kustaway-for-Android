@@ -1,5 +1,6 @@
 package net.amay077.kustaway.repository
 
+import net.amay077.kustaway.adapter.MyUserStreamAdapter
 import net.amay077.kustaway.model.AccessTokenManager
 import net.amay077.kustaway.model.Profile
 import net.amay077.kustaway.model.Relationship
@@ -10,10 +11,13 @@ import java.util.concurrent.Executors
 import kotlin.coroutines.experimental.suspendCoroutine
 
 class TwitterRepository(
-        private val twitter: twitter4j.Twitter
+        private val twitter: twitter4j.Twitter,
+        val userStreamAdapter: MyUserStreamAdapter
 ) {
 
     private val twitterExecutor = Executors.newSingleThreadExecutor() // TODO DIする
+
+    val onCreateStatus = userStreamAdapter.onCreateStatus
 
     /**
      * UserId、またはスクリーン名からプロフィールを読む

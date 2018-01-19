@@ -28,6 +28,7 @@ android {
         versionName '0.5.1'
         applicationId "net.amay077.kustaway"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -88,8 +89,10 @@ dependencies {
     compile "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
 
     // Android Architecture Components
-    implementation 'android.arch.lifecycle:runtime:1.0.3'
-    implementation 'android.arch.lifecycle:extensions:1.0.0'
+    implementation "android.arch.lifecycle:runtime:${arch_runtime_version}"
+    implementation "android.arch.lifecycle:extensions:${arch_version}"
+    implementation "android.arch.lifecycle:reactivestreams:${arch_version}"
+    kapt "android.arch.lifecycle:compiler:${arch_version}"
 
     // Butter Knife
     compile "com.jakewharton:butterknife:${butterKnifeVersion}"
@@ -106,6 +109,13 @@ dependencies {
     compile "org.twitter4j:twitter4j-async:${twitter4jVersion}"
     compile "org.twitter4j:twitter4j-media-support:${twitter4jVersion}"
     compile "org.twitter4j:twitter4j-stream:${twitter4jVersion}"
+
+    // Rx, RxProperty
+    implementation 'io.reactivex.rxjava2:rxjava:2.0.7'
+    implementation 'com.github.k-kagurazaka.rx-property-android:rx-property:4.0.0'
+    implementation 'com.github.k-kagurazaka.rx-property-android:rx-property-kotlin:4.0.0'
+    implementation 'io.reactivex.rxjava2:rxkotlin:2.1.0'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
 
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.google.guava:guava:19.0'

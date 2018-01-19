@@ -6,6 +6,10 @@ import android.graphics.Typeface;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+
 import net.amay077.kustaway.model.Relationship;
 import net.amay077.kustaway.model.TwitterManager;
 import net.amay077.kustaway.model.UserIconManager;
@@ -30,6 +34,9 @@ public class KustawayApplication extends Application {
         super.onCreate();
         sApplication = this;
 
+        AppCenter.start(this, BuildConfig.AppCenterAppSecret,
+                Analytics.class, Crashes.class);
+
         // Twitter4J の user stream の shutdown() で NetworkOnMainThreadException が発生してしまうことに対する暫定対応
         if (!BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
@@ -53,7 +60,9 @@ public class KustawayApplication extends Application {
 
         sFontello = Typeface.createFromAsset(getAssets(), "fontello.ttf");
 
-        _twitterRepo = new TwitterRepository(TwitterManager.getTwitter());
+        _twitterRepo = new TwitterRepository(
+                TwitterManager.getTwitter(),
+                TwitterManager.getUserStreamAdapter());
     }
 
     /**

@@ -13,6 +13,7 @@ import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
 import net.amay077.kustaway.extensions.firstVisiblePosition
 import net.amay077.kustaway.extensions.setSelection
+import net.amay077.kustaway.viewmodel.AddtionalType
 import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.TwitterResponse
 
@@ -62,6 +63,8 @@ abstract class ListBasedFragment<
 
         viewModel = createViewModel(id)
 
+        viewModel.startReceiveStreaming()
+
         // RecyclerView の設定
         binding.recyclerView.visibility = View.GONE
         binding.recyclerView.addItemDecoration(DividerItemDecoration(context)) // 罫線付ける
@@ -108,18 +111,27 @@ abstract class ListBasedFragment<
             }
 
             // 追加でなかったら全消し
-            if (!data.isAdditional) {
+            if (data.addType == AddtionalType.Clear) {
                 adapter.clear()
             }
 
-            for (dataItem in data.items) {
-                adapter.add(convertDataToViewItem(dataItem))
+            if (data.addType == AddtionalType.AddToBottom) {
+                for (dataItem in data.items) {
+                    adapter.add(convertDataToViewItem(dataItem))
+                }
+            } else {
+                for (dataItem in data.items) {
+                    adapter.insert(0, convertDataToViewItem(dataItem))
+                }
             }
+
             adapter.notifyDataSetChanged()
         })
 
-        // 初回のデータ読み込み(ViewModel の init でやるべき？)
-        viewModel.loadListItems(false)
+        if (arguments?.getBoolean("load") ?: false) {
+            // 初回のデータ読み込み(ViewModel の init でやるべき？)
+            viewModel.loadListItems(false)
+        }
 
         return binding.root
     }
@@ -134,10 +146,10 @@ abstract class ListBasedFragment<
 
     private var isLoaded : Boolean = false
     override fun firstLoad() {
-//        if (!isLoaded) {
-//            viewModel.loadListItems(false)
-//            isLoaded = true
-//        }
+        if (!isLoaded) {
+            viewModel.loadListItems(false)
+            isLoaded = true
+        }
     }
 
     override fun reload() {

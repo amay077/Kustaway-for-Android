@@ -29,10 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
-
 import net.amay077.kustaway.adapter.SearchAdapter;
 import net.amay077.kustaway.adapter.main.AccessTokenAdapter;
 import net.amay077.kustaway.adapter.main.MainPagerAdapter;
@@ -44,14 +40,14 @@ import net.amay077.kustaway.event.action.OpenEditorEvent;
 import net.amay077.kustaway.event.action.PostAccountChangeEvent;
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
 import net.amay077.kustaway.event.settings.BasicSettingsChangeEvent;
+import net.amay077.kustaway.fragment.common.SupportListInterface;
 import net.amay077.kustaway.fragment.main.StreamingSwitchDialogFragment;
 import net.amay077.kustaway.fragment.main.tab.MyDirectMessagesFragment;
-import net.amay077.kustaway.fragment.main.tab.MyTimelineFragment;
 import net.amay077.kustaway.fragment.main.tab.MyFavoritesFragment;
 import net.amay077.kustaway.fragment.main.tab.MyInteractionsFragment;
+import net.amay077.kustaway.fragment.main.tab.MyTimelineFragment;
 import net.amay077.kustaway.fragment.main.tab.RecyclerSearchFragment;
 import net.amay077.kustaway.fragment.main.tab.RecyclerUserListFragment;
-import net.amay077.kustaway.fragment.common.SupportListInterface;
 import net.amay077.kustaway.model.AccessTokenManager;
 import net.amay077.kustaway.model.TabManager;
 import net.amay077.kustaway.model.TwitterManager;
@@ -151,9 +147,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        AppCenter.start(getApplication(), BuildConfig.AppCenterAppSecret,
-                Analytics.class, Crashes.class);
 
         ThemeUtil.setTheme(this);
         mActivity = this;
@@ -545,7 +538,9 @@ public class MainActivity extends AppCompatActivity {
                 button.setOnLongClickListener(mMenuOnLongClickListener);
                 mTabMenus.addView(button);
                 if (tab.id == TabManager.TIMELINE_TAB_ID) {
-                    mMainPagerAdapter.addTab(MyTimelineFragment.class, null, tab.getName(), tab.id);
+                    final Bundle args = new Bundle();
+                    args.putBoolean("load", true);
+                    mMainPagerAdapter.addTab(MyTimelineFragment.class, args, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.INTERACTIONS_TAB_ID) {
                     mMainPagerAdapter.addTab(MyInteractionsFragment.class, null, tab.getName(), tab.id);
                 } else if (tab.id == TabManager.DIRECT_MESSAGES_TAB_ID) {

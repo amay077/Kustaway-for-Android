@@ -2,10 +2,13 @@ package net.amay077.kustaway.adapter
 
 import android.os.AsyncTask
 import android.os.Handler
-
-import java.util.ArrayList
+import com.jakewharton.rxrelay2.PublishRelay
+import com.jakewharton.rxrelay2.ReplayRelay
 
 import de.greenrobot.event.EventBus
+import io.reactivex.BackpressureStrategy
+import io.reactivex.Flowable
+import io.reactivex.Observable
 import net.amay077.kustaway.event.model.NotificationEvent
 import net.amay077.kustaway.event.model.StreamingCreateFavoriteEvent
 import net.amay077.kustaway.event.model.StreamingCreateStatusEvent
@@ -18,6 +21,7 @@ import net.amay077.kustaway.model.Relationship
 import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.settings.MuteSettings
+import org.reactivestreams.Publisher
 import twitter4j.DirectMessage
 import twitter4j.Status
 import twitter4j.StatusDeletionNotice
@@ -33,6 +37,9 @@ class MyUserStreamAdapter : UserStreamAdapter() {
     private val mStreamingCreateFavoriteEvents = ArrayList<StreamingCreateFavoriteEvent>()
     private val mStreamingUnFavoriteEvents = ArrayList<StreamingUnFavoriteEvent>()
     private val mStreamingDestroyMessageEvents = ArrayList<StreamingDestroyMessageEvent>()
+
+    private val _onCreateStatus = PublishRelay.create<StreamingCreateStatusEvent>()
+    val onCreateStatus : Flowable<StreamingCreateStatusEvent> = _onCreateStatus.toFlowable(BackpressureStrategy.LATEST)
 
     fun stop() {
         mStopped = true
@@ -51,6 +58,7 @@ class MyUserStreamAdapter : UserStreamAdapter() {
         Handler().post {
             for (event in mStreamingCreateStatusEvents) {
                 EventBus.getDefault().post(event)
+                _onCreateStatus.accept(event)
             }
             for (event in mStreamingDestroyStatusEvents) {
                 EventBus.getDefault().post(event)
@@ -92,6 +100,7 @@ class MyUserStreamAdapter : UserStreamAdapter() {
             mStreamingCreateStatusEvents.add(StreamingCreateStatusEvent(row))
         } else {
             EventBus.getDefault().post(StreamingCreateStatusEvent(row))
+            _onCreateStatus.accept(StreamingCreateStatusEvent(row))
         }
     }
 

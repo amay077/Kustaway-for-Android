@@ -2,6 +2,7 @@ package net.amay077.kustaway.model;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 
 import de.greenrobot.event.EventBus;
 import net.amay077.kustaway.BuildConfig;
@@ -10,8 +11,11 @@ import net.amay077.kustaway.R;
 import net.amay077.kustaway.adapter.MyUserStreamAdapter;
 import net.amay077.kustaway.event.action.AccountChangeEvent;
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
+import net.amay077.kustaway.event.model.StreamingCreateStatusEvent;
 import net.amay077.kustaway.settings.BasicSettings;
 import net.amay077.kustaway.util.MessageUtil;
+
+import io.reactivex.Observable;
 import twitter4j.ConnectionLifeCycleListener;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -24,10 +28,15 @@ import twitter4j.conf.ConfigurationBuilder;
  * Twitterインスタンス管理
  */
 public class TwitterManager {
-    private static MyUserStreamAdapter sUserStreamAdapter;
+    private static final MyUserStreamAdapter sUserStreamAdapter = new MyUserStreamAdapter();
     private static TwitterStream sTwitterStream;
     private static Twitter mTwitter;
     private static boolean sTwitterStreamConnected;
+
+    @NonNull
+    public static MyUserStreamAdapter getUserStreamAdapter() {
+        return sUserStreamAdapter;
+    }
 
     public static void switchAccessToken(final AccessToken accessToken) {
         AccessTokenManager.setAccessToken(accessToken);
@@ -127,7 +136,7 @@ public class TwitterManager {
             return;
         }
         sTwitterStream = getTwitterStream();
-        sUserStreamAdapter = new MyUserStreamAdapter();
+//        sUserStreamAdapter = new MyUserStreamAdapter();
         sTwitterStream.addListener(sUserStreamAdapter);
         sTwitterStream.addConnectionLifeCycleListener(new MyConnectionLifeCycleListener());
         sTwitterStream.user();
