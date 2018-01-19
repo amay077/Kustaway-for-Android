@@ -140,7 +140,7 @@ abstract class ListBasedFragment<
 
             val autoScroll = position == 0 && y == 0 && count < 3
 
-            if (autoScroll) {
+            if (autoScroll || data.addType != AddtionalType.AddToTop) {
                 binding.recyclerView.setSelection(0)
             } else {
                 // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
