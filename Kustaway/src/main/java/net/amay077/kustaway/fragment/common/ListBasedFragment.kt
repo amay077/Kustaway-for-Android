@@ -13,6 +13,7 @@ import net.amay077.kustaway.databinding.PullToRefreshList2Binding
 import net.amay077.kustaway.extensions.addOnPagingListener
 import net.amay077.kustaway.extensions.firstVisiblePosition
 import net.amay077.kustaway.extensions.setSelection
+import net.amay077.kustaway.extensions.setSelectionFromTop
 import net.amay077.kustaway.viewmodel.AddtionalType
 import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.TwitterResponse
@@ -110,22 +111,47 @@ abstract class ListBasedFragment<
                 return@Observer
             }
 
+            // 表示している要素の位置
+            val position = binding.recyclerView.firstVisiblePosition()
+
+            // 縦スクロール位置
+            val view = binding.recyclerView.getChildAt(0)
+            val y = view?.top ?: 0
+
             // 追加でなかったら全消し
             if (data.addType == AddtionalType.Clear) {
                 adapter.clear()
             }
 
+            var count = 0
             if (data.addType == AddtionalType.AddToBottom) {
                 for (dataItem in data.items) {
                     adapter.add(convertDataToViewItem(dataItem))
+                    count++
                 }
             } else {
                 for (dataItem in data.items) {
                     adapter.insert(0, convertDataToViewItem(dataItem))
+                    count++
                 }
             }
 
             adapter.notifyDataSetChanged()
+
+            val autoScroll = position == 0 && y == 0 && count < 3
+
+            if (autoScroll) {
+                binding.recyclerView.setSelection(0)
+            } else {
+                // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
+                binding.recyclerView.setSelectionFromTop(position + count, y)
+
+//            // 未読の新規ツイートをチラ見せ
+//            if (position == 0 && y == 0) {
+//                mListView!!.smoothScrollToPositionFromTop(position + count, 120)
+//            }
+            }
+
         })
 
         if (arguments?.getBoolean("load") ?: false) {
