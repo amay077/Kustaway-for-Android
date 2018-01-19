@@ -130,7 +130,7 @@ abstract class ListBasedFragment<
 
         if (arguments?.getBoolean("load") ?: false) {
             // 初回のデータ読み込み(ViewModel の init でやるべき？)
-            viewModel.loadListItems(false)
+            firstLoad()
         }
 
         return binding.root
