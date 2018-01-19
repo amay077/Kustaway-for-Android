@@ -412,6 +412,7 @@ class ProfileActivity : AppCompatActivity() {
 
         val listArgs = Bundle()
         listArgs.putSerializable("user", user)
+        listArgs.putBoolean("load", true)
         listPagerAdapter.addTab(UserTimelineFragment::class.java, listArgs)
         listPagerAdapter.addTab(FollowingListFragment::class.java, listArgs)
         listPagerAdapter.addTab(FollowersListFragment::class.java, listArgs)
