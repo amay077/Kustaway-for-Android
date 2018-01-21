@@ -6,6 +6,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -42,6 +43,7 @@ import butterknife.BindView;
 import twitter4j.Status;
 
 import net.amay077.kustaway.adapter.SimplePagerAdapter;
+import net.amay077.kustaway.databinding.ActivityScaleImageBinding;
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent;
 import net.amay077.kustaway.fragment.ScaleImageFragment;
 import net.amay077.kustaway.model.TwitterManager;
@@ -57,9 +59,9 @@ import net.amay077.kustaway.widget.ScaleImageViewPager;
  */
 public class ScaleImageActivity extends AppCompatActivity {
 
-    @BindView(R.id.pager) ScaleImageViewPager pager;
-    @BindView(R.id.transitionImage) ImageView transitionImage;
-    @BindView(R.id.symbol) CirclePageIndicator symbol;
+    ScaleImageViewPager pager;
+    ImageView transitionImage;
+    CirclePageIndicator symbol;
 
     private ArrayList<String> imageUrls = new ArrayList<>();
     private SimplePagerAdapter simplePagerAdapter;
@@ -91,9 +93,13 @@ public class ScaleImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        ActivityScaleImageBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_scale_image);
+//        setContentView(R.layout.activity_scale_image);
+//        ButterKnife.bind(this);
 
-        setContentView(R.layout.activity_scale_image);
-        ButterKnife.bind(this);
+        pager = binding.pager;
+        transitionImage = binding.transitionImage;
+        symbol = binding.symbol;
 
         simplePagerAdapter = new SimplePagerAdapter(this, pager);
         symbol.setViewPager(pager);
