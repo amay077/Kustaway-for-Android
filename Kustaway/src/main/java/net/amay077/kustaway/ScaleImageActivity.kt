@@ -3,6 +3,7 @@ package net.amay077.kustaway
 import android.Manifest
 import android.app.Activity
 import android.app.ActivityOptions
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -45,11 +46,14 @@ import twitter4j.Status
 import net.amay077.kustaway.adapter.SimplePagerAdapter
 import net.amay077.kustaway.databinding.ActivityScaleImageBinding
 import net.amay077.kustaway.event.connection.StreamingConnectionEvent
+import net.amay077.kustaway.extensions.getTwitterRepo
 import net.amay077.kustaway.fragment.ScaleImageFragment
 import net.amay077.kustaway.model.TwitterManager
 import net.amay077.kustaway.util.ImageUtil
 import net.amay077.kustaway.util.MessageUtil
 import net.amay077.kustaway.util.StatusUtil
+import net.amay077.kustaway.viewmodel.ProfileActivityViewModel
+import net.amay077.kustaway.viewmodel.ScaleImageActivityViewModel
 import net.amay077.kustaway.widget.ScaleImageViewPager
 
 /**
@@ -64,15 +68,20 @@ class ScaleImageActivity : AppCompatActivity() {
     private lateinit var symbol: CirclePageIndicator
 
     private val imageUrls = ArrayList<String>()
-    private var simplePagerAdapter: SimplePagerAdapter? = null
+    private lateinit var simplePagerAdapter: SimplePagerAdapter
+
+    private lateinit var viewModel: ScaleImageActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         val binding = DataBindingUtil.setContentView<ActivityScaleImageBinding>(this, R.layout.activity_scale_image)
-        //        setContentView(R.layout.activity_scale_image);
-        //        ButterKnife.bind(this);
+
+        viewModel = ViewModelProviders
+                .of(this, ScaleImageActivityViewModel.Factory(
+                ))
+                .get(ScaleImageActivityViewModel::class.java)
 
         pager = binding.pager
         transitionImage = binding.transitionImage
@@ -92,27 +101,22 @@ class ScaleImageActivity : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {}
         })
 
-        val firstUrl: String?
-
         // インテント経由での起動をサポート
-        val intent = intent
-        if (Intent.ACTION_VIEW == intent.action) {
-            val data = intent.data ?: return
-            firstUrl = data.toString()
-        } else {
-            val args = intent.extras ?: return
+        val firstUrl = intent.let { i ->
+            if (Intent.ACTION_VIEW == i.action) {
+                val data = i.data ?: return
+                data.toString()
+            } else {
+                val args = i.extras ?: return
 
-            val status = args.getSerializable("status") as Status
-            if (status != null) {
-                val index = args.getInt("index", 0)
-                showStatus(status, index)
+                val status = args.getSerializable("status") as Status
+                if (status != null) {
+                    val index = args.getInt("index", 0)
+                    showStatus(status, index)
+                }
+
+                args.getString("url")
             }
-
-            firstUrl = args.getString("url")
-        }
-
-        if (firstUrl == null) {
-            return
         }
 
         val pattern = Pattern.compile("https?://twitter\\.com/\\w+/status/(\\d+)/photo/(\\d+)/?.*")
@@ -143,8 +147,8 @@ class ScaleImageActivity : AppCompatActivity() {
         imageUrls.add(firstUrl)
         val args = Bundle()
         args.putString("url", firstUrl)
-        simplePagerAdapter!!.addTab(ScaleImageFragment::class.java, args)
-        simplePagerAdapter!!.notifyDataSetChanged()
+        simplePagerAdapter.addTab(ScaleImageFragment::class.java, args)
+        simplePagerAdapter.notifyDataSetChanged()
     }
 
     fun showStatus(status: twitter4j.Status?, index: Int?) {
@@ -156,7 +160,7 @@ class ScaleImageActivity : AppCompatActivity() {
             imageUrls.add(imageURL)
             val args = Bundle()
             args.putString("url", imageURL)
-            simplePagerAdapter!!.addTab(ScaleImageFragment::class.java, args)
+            simplePagerAdapter.addTab(ScaleImageFragment::class.java, args)
         }
 
         // Activity Transition 用の TransitionName を設定
@@ -165,7 +169,7 @@ class ScaleImageActivity : AppCompatActivity() {
             transitionImage.transitionName = getString(R.string.transition_tweet_image)
         }
 
-        simplePagerAdapter!!.notifyDataSetChanged()
+        simplePagerAdapter.notifyDataSetChanged()
         pager.currentItem = index!!
     }
 
