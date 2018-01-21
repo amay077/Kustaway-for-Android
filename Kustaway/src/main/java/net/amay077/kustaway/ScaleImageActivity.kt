@@ -102,22 +102,22 @@ class ScaleImageActivity : AppCompatActivity() {
         })
 
         // インテント経由での起動をサポート
-        val firstUrl = intent.let { i ->
+        val pair = intent.let { i ->
             if (Intent.ACTION_VIEW == i.action) {
                 val data = i.data ?: return
-                data.toString()
+                Pair(data.toString(), 0)
             } else {
                 val args = i.extras ?: return
 
                 val status = args.getSerializable("status") as Status
-                if (status != null) {
-                    val index = args.getInt("index", 0)
-                    showStatus(status, index)
-                }
+                val index = args.getInt("index", 0)
+                showStatus(status, index)
 
-                args.getString("url")
+                Pair(args.getString("url"), index)
             }
         }
+
+        val firstUrl = pair.first
 
         val pattern = Pattern.compile("https?://twitter\\.com/\\w+/status/(\\d+)/photo/(\\d+)/?.*")
         val matcher = pattern.matcher(firstUrl)
