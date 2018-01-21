@@ -113,7 +113,7 @@ public class ImageUtil {
                 if (videoUrl.isEmpty()) {
                     // 画像タップで拡大表示（ピンチイン・ピンチアウトいつかちゃんとやる）
                     final int openIndex = index;
-                    image.setOnClickListener(v -> ScaleImageActivity.startActivityWithImage(
+                    image.setOnClickListener(v -> ScaleImageActivity.Companion.startActivityWithImage(
                             (Activity)v.getContext(),
                             status,
                             openIndex,
