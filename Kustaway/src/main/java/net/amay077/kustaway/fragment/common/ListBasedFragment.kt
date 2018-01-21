@@ -138,20 +138,23 @@ abstract class ListBasedFragment<
 
             adapter.notifyDataSetChanged()
 
-            val autoScroll = position == 0 && y == 0 && count < 3
-
-            if (autoScroll || data.addType != AddtionalType.AddToTop) {
+            if (data.addType == AddtionalType.Clear) {
                 binding.recyclerView.setSelection(0)
-            } else {
-                // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
-                binding.recyclerView.setSelectionFromTop(position + count, y)
+            } else if (data.addType == AddtionalType.AddToTop) {
+                val autoScroll = position == 0 && y == 0 && count < 3
+
+                if (autoScroll) {
+                    binding.recyclerView.setSelection(0)
+                } else {
+                    // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
+                    binding.recyclerView.setSelectionFromTop(position + count, y)
 
 //            // 未読の新規ツイートをチラ見せ
 //            if (position == 0 && y == 0) {
 //                mListView!!.smoothScrollToPositionFromTop(position + count, 120)
 //            }
+                }
             }
-
         })
 
         if (arguments?.getBoolean("load") ?: false) {
