@@ -2,6 +2,7 @@ package net.amay077.kustaway;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -17,14 +18,8 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.BindView;
-import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import net.amay077.kustaway.adapter.TwitterAdapter;
+import net.amay077.kustaway.databinding.ActivitySearchBinding;
 import net.amay077.kustaway.event.AlertDialogEvent;
 import net.amay077.kustaway.event.action.StatusActionEvent;
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent;
@@ -33,12 +28,17 @@ import net.amay077.kustaway.listener.StatusLongClickListener;
 import net.amay077.kustaway.model.Row;
 import net.amay077.kustaway.model.TabManager;
 import net.amay077.kustaway.model.TwitterManager;
+import net.amay077.kustaway.task.AbstractAsyncTaskLoader;
 import net.amay077.kustaway.util.KeyboardUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
-import net.amay077.kustaway.task.AbstractAsyncTaskLoader;
 import net.amay077.kustaway.widget.ClearEditText;
 import net.amay077.kustaway.widget.FontelloButton;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.greenrobot.event.EventBus;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.SavedSearch;
@@ -46,10 +46,10 @@ import twitter4j.SavedSearch;
 public class SearchActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<QueryResult> {
 
 
-    @BindView(R.id.searchWords) ClearEditText mSearchWords;
-    @BindView(R.id.search_button) FontelloButton mSearchButton;
-    @BindView(R.id.search_list) ListView mSearchList;
-    @BindView(R.id.guruguru) ProgressBar mGuruguru;
+    private ClearEditText mSearchWords;
+    private FontelloButton mSearchButton;
+    private ListView mSearchList;
+    private ProgressBar mGuruguru;
 
     private TwitterAdapter mAdapter;
     private Query mNextQuery;
@@ -60,7 +60,20 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
         super.onCreate(savedInstanceState);
         ThemeUtil.setTheme(this);
         setContentView(R.layout.activity_search);
-        ButterKnife.bind(this);
+        final ActivitySearchBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+
+        mSearchWords = binding.searchWords;
+        mSearchButton = binding.searchButton;
+        mSearchList = binding.searchList;
+        mGuruguru = binding.guruguru;
+
+        binding.tweetButton.setOnClickListener(v -> {
+            onClickTweetButton();
+        });
+
+        binding.searchButton.setOnClickListener(v -> {
+            search();
+        });
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -113,12 +126,12 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
         });
     }
 
-    @OnClick(R.id.search_button)
-    void onClickSearchButton() {
-        search();
-    }
+//    @OnClick(R.id.search_button)
+//    void onClickSearchButton() {
+//        search();
+//    }
 
-    @OnClick(R.id.tweet_button)
+//    @OnClick(R.id.tweet_button)
     void onClickTweetButton() {
         if (mSearchWords.getText() == null) return;
         Intent intent = new Intent(this, PostActivity.class);
