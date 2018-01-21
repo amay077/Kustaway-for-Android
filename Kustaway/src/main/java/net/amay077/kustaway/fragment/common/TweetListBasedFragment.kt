@@ -7,7 +7,8 @@ import net.amay077.kustaway.model.Row
 import net.amay077.kustaway.viewmodel.ListBasedFragmentViewModel
 import twitter4j.Status
 
-abstract class TweetListBasedFragment<TViewModel:ListBasedFragmentViewModel<Unit, Status, Long>> : ListBasedFragment<Row, Unit, Status, Long, TViewModel>() {
+abstract class TweetListBasedFragment<TViewModel:ListBasedFragmentViewModel<Unit, Status, Long>>
+    : ListBasedFragment<Row, Unit, Status, Long, TViewModel>() {
     override val id: Unit
         get() = Unit
 

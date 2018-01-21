@@ -141,9 +141,9 @@ abstract class ListBasedFragment<
             if (data.addType == AddtionalType.Clear) {
                 binding.recyclerView.setSelection(0)
             } else if (data.addType == AddtionalType.AddToTop) {
-                val autoScroll = position == 0 && y == 0 && count < 3
+                val isKeepOnTop = position == 0 // && y == 0 && count < 3
 
-                if (autoScroll) {
+                if (isKeepOnTop) {
                     binding.recyclerView.setSelection(0)
                 } else {
                     // 少しでもスクロールさせている時は画面を動かさない様にスクロー位置を復元する
