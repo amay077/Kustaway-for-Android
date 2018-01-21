@@ -1,5 +1,6 @@
 package net.amay077.kustaway;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -23,6 +24,7 @@ import net.amay077.kustaway.databinding.ActivitySearchBinding;
 import net.amay077.kustaway.event.AlertDialogEvent;
 import net.amay077.kustaway.event.action.StatusActionEvent;
 import net.amay077.kustaway.event.model.StreamingDestroyStatusEvent;
+import net.amay077.kustaway.extensions.ActivityExtensionsKt;
 import net.amay077.kustaway.listener.StatusClickListener;
 import net.amay077.kustaway.listener.StatusLongClickListener;
 import net.amay077.kustaway.model.Row;
@@ -32,6 +34,7 @@ import net.amay077.kustaway.task.AbstractAsyncTaskLoader;
 import net.amay077.kustaway.util.KeyboardUtil;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.ThemeUtil;
+import net.amay077.kustaway.viewmodel.SearchActivityViewModel;
 import net.amay077.kustaway.widget.ClearEditText;
 import net.amay077.kustaway.widget.FontelloButton;
 
@@ -54,13 +57,23 @@ public class SearchActivity extends AppCompatActivity implements LoaderManager.L
     private TwitterAdapter mAdapter;
     private Query mNextQuery;
     public static int RESULT_CREATE_SAVED_SEARCH = 100;
+    private SearchActivityViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtil.setTheme(this);
-        setContentView(R.layout.activity_search);
+//        setContentView(R.layout.activity_search);
+
         final ActivitySearchBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_search);
+
+        viewModel = ViewModelProviders
+                .of(this, new SearchActivityViewModel.Factory(
+                        ActivityExtensionsKt.getTwitterRepo(this)
+                ))
+                .get(SearchActivityViewModel.class);
+
+//        binding.viewModel = viewModel;
 
         mSearchWords = binding.searchWords;
         mSearchButton = binding.searchButton;
