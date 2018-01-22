@@ -383,4 +383,22 @@ class TwitterRepository(
             }
         }
     }
+
+    /**
+     * 指定した Id のツイートを取得する
+     */
+    suspend fun loadStatus(statusId: Long): Status {
+        return suspendCoroutine { cont ->
+            twitterExecutor.submit {
+                try {
+                    val status = twitter.showStatus(statusId)
+
+                    cont.resume(status)
+                } catch (e: Exception) {
+                    cont.resumeWithException(e)
+                }
+            }
+        }
+    }
+
 }
