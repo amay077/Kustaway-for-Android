@@ -47,11 +47,19 @@ class ProfileActivity : AppCompatActivity() {
                 i.putExtra("profileImageURL", profileImageURL)
             }
 
-            if (sharedView != null && transitionName != null &&
-                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                val options = ActivityOptions.makeSceneTransitionAnimation(activity,
-                        sharedView, transitionName)
-                activity.startActivity(intent, options.toBundle())
+            if (sharedView != null && transitionName != null) {
+                val options = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ActivityOptions.makeSceneTransitionAnimation(activity,
+                            sharedView, transitionName)
+                } else {
+                    null
+                }
+
+                if (options != null) {
+                    activity.startActivity(intent, options.toBundle())
+                } else {
+                    activity.startActivity(intent)
+                }
             } else {
                 activity.startActivity(intent)
             }
@@ -70,11 +78,11 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var viewModel: ProfileActivityViewModel
 
-    private lateinit var mUser: User
+    private var _user: User? = null
     // Option Menu ID と遷移先URLのマップ
     private val navigateMenuMap = HashMap<Int, String>()
 
-    private lateinit var menu: Menu
+    private var _menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,7 +113,7 @@ class ProfileActivity : AppCompatActivity() {
         // インテント経由での起動をサポート
         val intent = intent
         var userId: Long? = null
-        var screenName: String? = null
+        var screenName: String?
 
         if (Intent.ACTION_VIEW == intent.action && intent.data != null
                 && intent.data!!.lastPathSegment != null
@@ -171,7 +179,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.profile, menu)
-        this.menu = menu
+        this._menu = menu
         return true
     }
 
@@ -182,74 +190,62 @@ class ProfileActivity : AppCompatActivity() {
                         .setMessage(R.string.confirm_create_block)
                         .setPositiveButton(
                                 R.string.button_create_block
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateBlockEnabled(true)
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> }
                         .show()
                 OPTION_MENU_CREATE_OFFICIAL_MUTE -> AlertDialog.Builder(this@ProfileActivity)
                         .setMessage(R.string.confirm_create_official_mute)
                         .setPositiveButton(
                                 R.string.button_create_official_mute
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateOfficialMute(true)
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> }
                         .show()
                 OPTION_MENU_CREATE_NO_RETWEET -> AlertDialog.Builder(this@ProfileActivity)
                         .setMessage(R.string.confirm_create_no_retweet)
                         .setPositiveButton(
                                 R.string.button_create_no_retweet
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateFriendshipRetweetEnabled(false)
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> }
                         .show()
                 OPTION_MENU_DESTROY_BLOCK -> AlertDialog.Builder(this@ProfileActivity)
                         .setMessage(R.string.confirm_create_block)
                         .setPositiveButton(
                                 R.string.button_destroy_block
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateBlockEnabled(false)
 
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> }
                         .show()
                 OPTION_MENU_DESTROY_OFFICIAL_MUTE -> AlertDialog.Builder(this@ProfileActivity)
                         .setMessage(R.string.confirm_destroy_official_mute)
                         .setPositiveButton(
                                 R.string.button_destroy_official_mute
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateOfficialMute(false)
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> }
                         .show()
                 OPTION_MENU_DESTROY_NO_RETWEET -> AlertDialog.Builder(this@ProfileActivity)
                         .setMessage(R.string.confirm_destroy_no_retweet)
                         .setPositiveButton(
                                 R.string.button_destroy_no_retweet
-                        ) { dialog, which ->
+                        ) { _, _ ->
                             MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                             viewModel.updateFriendshipRetweetEnabled(true)
                         }
-                        .setNegativeButton(
-                                R.string.button_cancel
-                        ) { dialog, which -> }
+                        .setNegativeButton(R.string.button_cancel ) { _, _ -> }
                         .show()
                 else -> {
                 }
@@ -258,25 +254,31 @@ class ProfileActivity : AppCompatActivity() {
         }
         val intent: Intent
         val text: String
+
+        val user = _user;
+        if (user == null) {
+            return true
+        }
+
         when (item.itemId) {
             android.R.id.home -> finish()
             R.id.send_reply -> {
                 intent = Intent(this, PostActivity::class.java)
-                text = "@" + mUser!!.screenName + " "
+                text = "@" + user.screenName + " "
                 intent.putExtra("status", text)
                 intent.putExtra("selection", text.length)
                 startActivity(intent)
             }
             R.id.send_direct_messages -> {
                 intent = Intent(this, PostActivity::class.java)
-                text = "D " + mUser!!.screenName + " "
+                text = "D " + user.screenName + " "
                 intent.putExtra("status", text)
                 intent.putExtra("selection", text.length)
                 startActivity(intent)
             }
             R.id.add_to_list -> {
                 intent = Intent(this, RegisterUserListActivity::class.java)
-                intent.putExtra("userId", mUser!!.id)
+                intent.putExtra("userId", user.id)
                 startActivity(intent)
             }
             R.id.open_twitter, R.id.open_favstar, R.id.open_aclog, R.id.open_twilog -> {
@@ -288,13 +290,11 @@ class ProfileActivity : AppCompatActivity() {
                     .setMessage(R.string.confirm_report_spam)
                     .setPositiveButton(
                             R.string.button_report_spam
-                    ) { dialog, which ->
+                    ) { _, _ ->
                         MessageUtil.showProgressDialog(this@ProfileActivity, getString(R.string.progress_process))
                         viewModel.reportSpam()
                     }
-                    .setNegativeButton(
-                            R.string.button_cancel
-                    ) { dialog, which -> }
+                    .setNegativeButton(R.string.button_cancel) { _, _ -> }
                     .show()
         }
         return true
@@ -316,7 +316,7 @@ class ProfileActivity : AppCompatActivity() {
             MessageUtil.showToast(R.string.toast_load_data_failure, "(missing user)")
             return
         }
-        mUser = user
+        _user = user
 
         // Option Menu 用のマッピング
         navigateMenuMap.put(R.id.open_twitter, "https://twitter.com/" + user.screenName)
@@ -337,22 +337,23 @@ class ProfileActivity : AppCompatActivity() {
 
         val relationship = profile.relationship
 
+        val menu = _menu
         if (menu != null) {
             if (relationship!!.isSourceBlockingTarget) {
-                menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_BLOCK, 100, R.string.menu_destroy_block)
+                menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_BLOCK, 100, R.string.menu_destroy_block)
             } else {
-                menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_BLOCK, 100, R.string.menu_create_block)
+                menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_BLOCK, 100, R.string.menu_create_block)
             }
             if (relationship.isSourceFollowingTarget) {
                 if (relationship.isSourceMutingTarget) {
-                    menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_OFFICIAL_MUTE, 100, R.string.menu_destory_official_mute)
+                    menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_OFFICIAL_MUTE, 100, R.string.menu_destory_official_mute)
                 } else {
-                    menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_OFFICIAL_MUTE, 100, R.string.menu_create_official_mute)
+                    menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_OFFICIAL_MUTE, 100, R.string.menu_create_official_mute)
                 }
                 if (relationship.isSourceWantRetweets) {
-                    menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_NO_RETWEET, 100, R.string.menu_create_no_retweet)
+                    menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_CREATE_NO_RETWEET, 100, R.string.menu_create_no_retweet)
                 } else {
-                    menu!!.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_NO_RETWEET, 100, R.string.menu_destory_no_retweet)
+                    menu.add(OPTION_MENU_GROUP_RELATION, OPTION_MENU_DESTROY_NO_RETWEET, 100, R.string.menu_destory_no_retweet)
                 }
             }
         }
