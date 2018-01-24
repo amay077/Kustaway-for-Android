@@ -19,7 +19,7 @@ import net.amay077.kustaway.util.ImageUtil
 
 class KustawayApplication : Application() {
 
-    var twitterRepo: TwitterRepository? = null
+    var  twitterRepo: TwitterRepository? = null
         private set
 
     override fun onCreate() {
@@ -87,9 +87,13 @@ class KustawayApplication : Application() {
 
     companion object {
 
+        @JvmStatic
         var application: KustawayApplication? = null
             private set
+
+        @JvmStatic
         var fontello: Typeface? = null
             private set
+
     }
 }

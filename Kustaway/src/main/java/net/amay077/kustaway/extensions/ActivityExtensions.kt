@@ -5,5 +5,6 @@ import net.amay077.kustaway.KustawayApplication
 import net.amay077.kustaway.repository.TwitterRepository
 
 fun Activity.getTwitterRepo() : TwitterRepository {
-    return (this.application as KustawayApplication).twitterRepo
+    val app = (this.application as KustawayApplication)!!
+    return app.twitterRepo!!
 }
