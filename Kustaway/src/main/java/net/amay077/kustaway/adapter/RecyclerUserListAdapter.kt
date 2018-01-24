@@ -42,7 +42,8 @@ class RecyclerUserListView constructor(
         }
 
         binding.root.setOnClickListener({ v ->
-            val intent = Intent(v.context, UserListActivity::class.java)
+            val intent = Intent(v.context,
+                    UserListActivity::class.java)
             intent.putExtra("userList", userList)
             context.startActivity(intent)
         })

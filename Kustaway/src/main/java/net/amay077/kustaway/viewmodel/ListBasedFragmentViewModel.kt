@@ -14,6 +14,7 @@ import kotlinx.coroutines.experimental.launch
 import net.amay077.kustaway.model.AccessTokenManager
 import net.amay077.kustaway.model.PagedResponseList
 import net.amay077.kustaway.model.Row
+import twitter4j.TwitterException
 import twitter4j.TwitterResponse
 import java.util.concurrent.TimeUnit
 
@@ -26,6 +27,10 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?, TCu
 
     /** List用のデータを非同期で読む */
     protected suspend abstract fun loadListItemsAsync(id:TId, cursor: TCursor?) : PagedResponseList<TDataItem, TCursor>
+
+    /** Toast */
+    private val _toast = MutableLiveData<String>()
+    val toast : LiveData<String> = _toast
 
     /** List最下段のプログレスの表示ON/OFF */
     private val _isVisibleBottomProgress = MutableLiveData<Boolean>()
@@ -104,18 +109,23 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?, TCu
             isEnabledAdditionalLoading = false
 
             // データを非同期で読む
-            val res = loadListItemsAsync(id, cursor);
+            try {
+                val res = loadListItemsAsync(id, cursor);
+                cursor = res.nextCursor
+                isEnabledAdditionalLoading = res.hasNext
 
-            cursor = res.nextCursor
-            isEnabledAdditionalLoading = res.hasNext
-
-            // 読んだデータを通知してリストを表示ON
-            _listItems.postValue(ProfileItemList(res.items, AddtionalType.AddToBottom))
-            _isVisibleListView.postValue(true)
-
-            // プログレス類は表示OFF
-            _isVisiblePullProgress.postValue(false)
-            _isVisibleBottomProgress.postValue(false)
+                // 読んだデータを通知してリストを表示ON
+                _listItems.postValue(ProfileItemList(res.items, AddtionalType.AddToBottom))
+                _isVisibleListView.postValue(true)
+            } catch (e : TwitterException) {
+                _toast.postValue(e.errorMessage)
+            } catch (e : Throwable) {
+                throw e // TODO CrashReport に捕捉させたいだけなのだが
+            } finally {
+                // プログレス類は表示OFF
+                _isVisiblePullProgress.postValue(false)
+                _isVisibleBottomProgress.postValue(false)
+            }
         }
     }
 

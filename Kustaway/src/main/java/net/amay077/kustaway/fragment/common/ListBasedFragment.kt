@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import net.amay077.kustaway.adapter.DividerItemDecoration
 import net.amay077.kustaway.adapter.DataItemAdapter
 import net.amay077.kustaway.databinding.PullToRefreshList2Binding
@@ -89,6 +90,13 @@ abstract class ListBasedFragment<
         }
 
         // ViewModel の監視
+
+        // Toast の表示
+        viewModel.toast.observe(this, Observer { toast ->
+            if (toast != null) {
+                Toast.makeText(activity, toast, Toast.LENGTH_LONG).show()
+            }
+        })
 
         // 追加読み込みの Progress
         viewModel.isVisibleBottomProgress.observe(this, Observer { isVisible ->
