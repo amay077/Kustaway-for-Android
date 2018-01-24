@@ -2,6 +2,7 @@ package net.amay077.kustaway;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -14,30 +15,22 @@ import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import net.amay077.kustaway.databinding.ActivityVideoBinding;
 import net.amay077.kustaway.model.TwitterManager;
 import net.amay077.kustaway.util.MessageUtil;
 import net.amay077.kustaway.util.StatusUtil;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import butterknife.OnClick;
 import twitter4j.Status;
 
 public class VideoActivity extends AppCompatActivity {
 
-    @BindView(R.id.player)
     VideoView player;
 
-    @BindView(R.id.guruguru)
     ProgressBar guruguru;
-
-
-    @OnClick(R.id.cover)
-    void close() {
-        finish();
-    }
 
     public VideoActivity() {
     }
@@ -50,8 +43,10 @@ public class VideoActivity extends AppCompatActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_video);
-        ButterKnife.bind(this);
+        ActivityVideoBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_video);
+        player = binding.player;
+        guruguru = binding.guruguru;
+        binding.cover.setOnClickListener(v -> { finish(); });
 
         Intent intent = getIntent();
         Bundle args = intent.getExtras();
