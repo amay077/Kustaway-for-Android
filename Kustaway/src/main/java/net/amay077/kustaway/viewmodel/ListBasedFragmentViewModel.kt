@@ -120,6 +120,7 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?, TCu
             } catch (e : TwitterException) {
                 _toast.postValue(e.errorMessage)
             } catch (e : Throwable) {
+                _toast.postValue("p - ${e.message}")
                 throw e // TODO CrashReport に捕捉させたいだけなのだが
             } finally {
                 // プログレス類は表示OFF
