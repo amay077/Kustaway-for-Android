@@ -132,7 +132,7 @@ abstract class ListBasedFragment<
             }
 
             var count = 0
-            if (data.addType == AddtionalType.AddToBottom) {
+            if (data.addType == AddtionalType.AddToBottom || data.addType == AddtionalType.Clear) {
                 for (dataItem in data.items) {
                     adapter.add(convertDataToViewItem(dataItem))
                     count++
