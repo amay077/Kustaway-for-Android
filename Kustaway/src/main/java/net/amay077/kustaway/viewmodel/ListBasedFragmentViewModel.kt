@@ -115,7 +115,8 @@ abstract class ListBasedFragmentViewModel<TId, TDataItem : TwitterResponse?, TCu
                 isEnabledAdditionalLoading = res.hasNext
 
                 // 読んだデータを通知してリストを表示ON
-                _listItems.postValue(ProfileItemList(res.items, AddtionalType.AddToBottom))
+                _listItems.postValue(ProfileItemList(res.items,
+                        if (isAdditional) AddtionalType.AddToBottom else AddtionalType.Clear))
                 _isVisibleListView.postValue(true)
             } catch (e : TwitterException) {
                 _toast.postValue(e.errorMessage)
