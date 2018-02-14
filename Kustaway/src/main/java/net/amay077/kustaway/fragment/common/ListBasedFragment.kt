@@ -124,7 +124,6 @@ abstract class ListBasedFragment<
 
             // 縦スクロール位置
             val view = binding.recyclerView.getChildAt(0)
-            val y = view?.top ?: 0
 
             // 追加でなかったら全消し
             if (data.addType == AddtionalType.Clear) {
@@ -149,7 +148,9 @@ abstract class ListBasedFragment<
             if (data.addType == AddtionalType.Clear) {
                 binding.recyclerView.setSelection(0)
             } else if (data.addType == AddtionalType.AddToTop) {
-                val isKeepOnTop = position == 0 // && y == 0 && count < 3
+                val y = view?.top ?: 0
+
+                val isKeepOnTop = position == 0 && y == 0 // && count < 3
 
                 if (isKeepOnTop) {
                     binding.recyclerView.setSelection(0)
