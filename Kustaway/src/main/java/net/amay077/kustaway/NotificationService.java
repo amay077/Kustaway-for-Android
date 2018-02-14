@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
@@ -94,7 +96,6 @@ public class NotificationService extends Service {
     @SuppressWarnings("UnusedDeclaration")
     public void onEvent(NotificationEvent event) {
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        KustawayApplication application = KustawayApplication.getApplication();
 
         long userId = AccessTokenManager.getUserId();
 
@@ -152,26 +153,66 @@ public class NotificationService extends Service {
             return;
         }
 
+        sendNotification(url, title, text, ticker, smallIcon, id, status);
+    }
+
+    private void sendNotification(String url, String title, String text, String ticker, int smallIcon, long id, Status status) {
+        long userId = AccessTokenManager.getUserId();
+        SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        KustawayApplication application = KustawayApplication.getApplication();
         Resources resources = application.getResources();
-        int width = (int) resources.getDimension(android.R.dimen.notification_large_icon_width) / 3 * 2;
-        int height = (int) resources.getDimension(android.R.dimen.notification_large_icon_height) / 3 * 2;
+//        int width = (int) resources.getDimension(android.R.dimen.notification_large_icon_width) / 3 * 2;
+//        int height = (int) resources.getDimension(android.R.dimen.notification_large_icon_height) / 3 * 2;
 
-        Bitmap icon = ImageLoader.getInstance().loadImageSync(url);
-        icon = Bitmap.createScaledBitmap(icon, width, height, true);
+//        Bitmap icon = ImageLoader.getInstance().loadImageSync(url);
+//        icon = Bitmap.createScaledBitmap(icon, width, height, true);
 
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+        final String appName = getString(R.string.app_name);
+        final String GROUP_KEY = "group";
+        final int SUMMARY_NOTIFICATION_ID = 999;
+
+        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final Intent mainIntent = new Intent(this, MainActivity.class);
+        final PendingIntent mainPendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // サマリーは24以上でしか出さなくていい
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            final Notification summaryNotification = new NotificationCompat.Builder(this, appName)
+                    .setGroupSummary(true)
+                    .setGroup(GROUP_KEY)
+                    .setContentTitle(title)
+                    .setContentText(title)
+                    .setSmallIcon(R.drawable.ic_launcher)
+//                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.ic_launcher_round))
+//                    .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setContentIntent(mainPendingIntent)
+                    .setAutoCancel(true) // 重要。各通知がすべて消えた時に、サマリーも自動で消える
+                    .build();
+            manager.notify(SUMMARY_NOTIFICATION_ID, summaryNotification);
+        }
+
+        final NotificationCompat.BigTextStyle style = new NotificationCompat.BigTextStyle()
+                .setBigContentTitle(title)
+                .setSummaryText(appName)
+                .bigText(text);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, appName)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setContentIntent(mainPendingIntent)
-                .setSmallIcon(smallIcon)
-                .setLargeIcon(icon)
                 .setTicker(ticker)
+                .setSmallIcon(smallIcon)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentIntent(mainPendingIntent)
                 .setAutoCancel(true)
-                .setGroup(getString(R.string.app_name))
-                .setGroupSummary(true)
-                .setWhen(System.currentTimeMillis());
+                .setStyle(style)
+                .setGroup(GROUP_KEY)
+//                .setColor(getColor(R.color.colorPri))
+//                .setLargeIcon(icon)
+//                .setGroup(getString(R.string.app_name))
+//                .setGroupSummary(true)
+                .setWhen(System.currentTimeMillis())
+        ;
 
         boolean vibrate = preferences.getBoolean("notification_vibrate_on", true);
         boolean sound = preferences.getBoolean("notification_sound_on", true);
@@ -230,7 +271,6 @@ public class NotificationService extends Service {
             builder.extend(new NotificationCompat.WearableExtender().addAction(wearReplyAction).addAction(wearFavoriteAction).addAction(statusAction));
         }
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(((int) (id > 0 ? id : 1)), builder.build());
     }
 }
